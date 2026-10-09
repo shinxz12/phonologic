@@ -3,6 +3,9 @@ FROM oven/bun:1.2-alpine AS builder
 
 WORKDIR /app
 
+# Ensure devDependencies (tsc, vite, tailwind) install reliably in builder stage
+ENV NODE_ENV=development
+
 # Copy root workspace manifests
 COPY package.json bun.lock turbo.json ./
 COPY packages/tsconfig/package.json ./packages/tsconfig/
