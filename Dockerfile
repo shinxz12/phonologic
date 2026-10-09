@@ -17,8 +17,7 @@ RUN bun install
 # Copy all source files
 COPY packages/ ./packages/
 COPY apps/ ./apps/
-COPY "Quy tắc.xlsx" ./
-COPY "Quy tắc (Bản gốc 1 sheet).xlsx" ./
+COPY *.xlsx ./
 
 # Build shared packages and apps
 RUN cd packages/shared-types && bun run build || true
@@ -40,8 +39,7 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/apps/backend ./apps/backend
 COPY --from=builder /app/apps/frontend/dist ./apps/frontend/dist
-COPY --from=builder /app/"Quy tắc.xlsx" ./
-COPY --from=builder /app/"Quy tắc (Bản gốc 1 sheet).xlsx" ./
+COPY --from=builder /app/*.xlsx ./
 
 # Copy entrypoint script
 COPY docker-entrypoint.sh /app/docker-entrypoint.sh
