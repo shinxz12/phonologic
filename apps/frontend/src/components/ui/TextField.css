@@ -1,0 +1,38 @@
+.ds-field label {
+  display: block;
+  font: 700 14px/18px var(--font-heading);
+  margin-bottom: 8px;
+}
+.ds-field-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface-low);
+  border: 2px solid var(--surface-highest);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  color: var(--outline);
+}
+.ds-field-control:focus-within {
+  border-color: var(--secondary);
+}
+.ds-field-control.is-error {
+  border-color: var(--error);
+}
+.ds-field input {
+  width: 100%;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  outline: none;
+  font: 600 16px/24px var(--font-body);
+  color: var(--on-surface);
+}
+.ds-field p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--on-surface-variant);
+}
+.ds-field .ds-field-error {
+  color: var(--error);
+}

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@500;600;700&amp;family=Plus+Jakarta+Sans:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}.material-symbols-outlined{font-variation-settings:'FILL' 1,'wght' 700,'GRAD' 0,'opsz' 24;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "error-container": "#ffdad6", "secondary-fixed": "#c8e6ff", "surface-dim": "#dbd9d9", "on-primary": "#ffffff", "surface": "#fbf9f8", "surface-container-lowest": "#ffffff", "on-tertiary-container": "#574300", "primary-container": "#58cc02", "inverse-on-surface": "#f2f0f0", "surface-container-high": "#eae8e7", "on-surface-variant": "#3f4a36", "tertiary": "#755b00", "on-tertiary": "#ffffff", "secondary-container": "#2fb8ff", "tertiary-fixed": "#ffdf92", "on-error-container": "#93000a", "outline-variant": "#becbb1", "surface-tint": "#2b6c00", "error": "#ba1a1a", "on-error": "#ffffff", "on-secondary": "#ffffff", "on-background": "#1b1c1c", "on-secondary-container": "#004666", "surface-container-low": "#f5f3f3", "secondary-fixed-dim": "#88ceff", "on-primary-fixed-variant": "#1f5100", "on-secondary-fixed-variant": "#004c6e", "on-tertiary-fixed-variant": "#594400", "background": "#fbf9f8", "surface-variant": "#e4e2e2", "primary-fixed": "#87fe45", "on-primary-fixed": "#082100", "primary": "#2b6c00", "tertiary-container": "#ddad00", "secondary": "#006590", "surface-container-highest": "#e4e2e2", "on-surface": "#1b1c1c", "inverse-primary": "#6be026", "on-secondary-fixed": "#001e2e", "outline": "#6f7b64", "on-primary-container": "#1e5000", "surface-bright": "#fbf9f8", "primary-fixed-dim": "#6be026", "tertiary-fixed-dim": "#f4bf00", "on-tertiary-fixed": "#241a00", "inverse-surface": "#303030", "surface-container": "#efeded" }, "borderRadius": { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" }, "spacing": { "margin": "1rem", "margin-desktop": "3rem", "space-sm": "0.5rem", "gutter": "1rem", "gutter-desktop": "1.5rem", "gutter-tablet": "1.25rem", "space-md": "1rem", "space-lg": "1.5rem", "margin-tablet": "2rem", "space-xl": "2rem", "space-xs": "0.25rem" }, "fontFamily": { "headline-xl": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Plus Jakarta Sans"], "label-lg": ["Plus Jakarta Sans"], "body-lg": ["Nunito Sans"], "body-sm": ["Nunito Sans"], "headline-sm": ["Plus Jakarta Sans"], "body-md": ["Nunito Sans"], "headline-lg": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "headline-xl-mobile": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"] }, "fontSize": { "headline-xl": ["36px", { "lineHeight": "44px", "fontWeight": "800" }], "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "700" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "800" }], "label-lg": ["16px", { "lineHeight": "20px", "fontWeight": "800" }], "body-lg": ["18px", { "lineHeight": "26px", "fontWeight": "600" }], "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "500" }], "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "700" }], "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "600" }], "headline-lg": ["28px", { "lineHeight": "36px", "fontWeight": "800" }], "label-md": ["14px", { "lineHeight": "18px", "fontWeight": "700" }], "headline-xl-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "800" }], "headline-md": ["22px", { "lineHeight": "28px", "fontWeight": "700" }] } } } };</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-md text-on-surface flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-margin flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-primary-container text-2xl">local_fire_department</span><span class="font-label-md text-label-md text-on-surface">7</span></div><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-secondary-container text-2xl">diamond</span><span class="font-label-md text-label-md text-on-surface">1,420</span></div><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-error text-2xl">favorite</span><span class="font-label-md text-label-md text-on-surface">5</span></div><div class="flex items-center gap-space-xs ml-auto"><span class="font-headline-sm text-headline-sm text-on-surface truncate hidden">Learn</span><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1VlRDHFNfBcZJ1c2LD0K1cSIqDrCumzIn85LBZeaC1kuvhbTWMowXRccY8Hb6P4O03q3L9HiRz4X1iMtA3zA2E7LurSlInO0QXoJwPjfCQRCaDAdFSCu7VVzL1T5PU7KKbFM_8zWyFT7PzqVbsN8I2PlFVt-dvretgzeJBdkDhitPioOQ1SPS0lZS5eCniLs9pUqzkfyTsDdBaagGVR4HYg4z8sPOaa2BsBur301PnA2K1hnhuNH_eXxtKu"/></div></div></header><main class="flex flex-col relative w-full pt-16 pb-24 bg-surface min-h-screen"><div class="flex flex-col w-full relative select-none pb-12">
+<!-- Unit Header Banner -->
+<div class="px-margin pt-space-md pb-space-xs">
+<div class="relative overflow-hidden rounded-lg bg-primary-container text-on-primary-container p-space-md shadow-md">
+<div class="absolute -right-6 -bottom-6 w-28 h-28 bg-primary-fixed opacity-30 rounded-full pointer-events-none"></div>
+<div class="flex items-center justify-between mb-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-on-primary-container text-xl" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-primary-container font-extrabold opacity-90">Phần 1: Nguyên Âm &amp; Tổ Hợp</span>
+</div>
+<button class="flex items-center gap-1 bg-surface text-primary font-label-sm text-label-sm px-space-sm py-1 rounded-full shadow-sm active:scale-95 transition-transform" id="rulebook-btn" style="border-bottom: 2px solid #becbb1;">
+<span class="material-symbols-outlined text-sm">auto_stories</span>
+<span>Sổ Tay</span>
+</button>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-primary-container leading-tight mb-space-sm">
+        Làm Chủ Vần Đơn &amp; Ngoại Lệ
+      </h1>
+<!-- Progress Section -->
+<div class="bg-surface/30 backdrop-blur-sm rounded-full p-1.5 flex items-center gap-space-sm">
+<div class="flex-1 bg-surface-container-high rounded-full h-3 overflow-hidden p-0.5">
+<div class="bg-surface rounded-full h-full w-[45%] transition-all duration-700 ease-out"></div>
+</div>
+<span class="font-label-sm text-label-sm text-on-primary-container font-bold pr-1">45%</span>
+</div>
+</div>
+</div>
+<!-- Winding Path Skill Tree Container -->
+<div class="relative w-full px-margin mt-space-sm flex flex-col items-center">
+<!-- SVG Path Canvas for Connective Lines -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none z-0" xmlns="http://www.w3.org/2000/svg">
+<path d="M 195 70 C 195 110, 260 130, 260 170 C 260 210, 140 240, 140 310 C 140 370, 220 390, 220 450 C 220 510, 180 540, 180 610" fill="none" stroke="#becbb1" stroke-dasharray="16 12" stroke-linecap="round" stroke-width="12"></path>
+</svg>
+<!-- NODE 1: COMPLETED (Slightly Centered / Left) -->
+<div class="relative z-10 flex flex-col items-center w-full my-space-sm">
+<div class="flex flex-col items-center translate-x-4">
+<!-- Floating Stars Badge -->
+<div class="flex items-center gap-0.5 mb-1 bg-surface-container-lowest px-2 py-0.5 rounded-full shadow-sm">
+<span class="material-symbols-outlined text-tertiary-container text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-tertiary-container text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-tertiary-container text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<!-- 3D Tactile Golden Completed Node -->
+<button class="relative w-16 h-16 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary transition-transform active:translate-y-1 shadow-md" style="border-bottom: 5px solid #755b00;">
+<span class="material-symbols-outlined text-3xl font-extrabold text-on-tertiary">done</span>
+</button>
+<!-- Phoneme Card Pill -->
+<div class="mt-2 bg-surface-container-lowest px-3 py-1 rounded-full shadow-sm flex items-center gap-1.5">
+<span class="font-headline-sm text-headline-sm text-primary">/æ/</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">• 'a' ngắn</span>
+</div>
+</div>
+</div>
+<!-- NODE 2: ACTIVE / CURRENT (Shifted Right) with Mascot & Interactive Sheet -->
+<div class="relative z-20 flex flex-col items-center w-full my-space-lg">
+<div class="w-full flex flex-col items-center translate-x-8">
+<!-- Tooltip Card (Callout Bubble) -->
+<div class="relative bg-surface-container-lowest p-space-md rounded-lg shadow-xl w-72 mb-3 animate-bounce" style="animation-duration: 2.8s; border-bottom: 4px solid #eae8e7;">
+<div class="flex items-center justify-between gap-1 mb-1">
+<span class="font-label-sm text-label-sm bg-secondary-fixed text-on-secondary-fixed px-2 py-0.5 rounded-full uppercase">Bài 3 • Cấp 2/5</span>
+<span class="font-label-sm text-label-sm font-bold text-tertiary flex items-center gap-0.5">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">bolt</span> +15 XP
+            </span>
+</div>
+<div class="font-headline-sm text-headline-sm text-on-surface my-1">
+            Ngoại lệ "ea" → <span class="text-primary font-extrabold">/eɪ/</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-sm leading-snug">
+            steak, great, break
+          </p>
+<!-- Primary Push Button (Duolingo 3D Tactile Style) -->
+<button class="w-full py-2.5 px-space-md rounded-DEFAULT bg-primary-container text-on-primary font-headline-sm text-headline-sm tracking-wide uppercase transition-all duration-75 active:translate-y-1" id="start-lesson-btn" style="border-bottom: 4px solid #1f5100;">
+            Bắt Đầu Ngay
+          </button>
+<!-- Arrow pointing down to node -->
+<div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-surface-container-lowest rotate-45"></div>
+</div>
+<!-- Cheering Mascot and Active Pulsing Button Container -->
+<div class="relative flex items-center justify-center">
+<!-- Cute Owl Mascot (Left Side) -->
+<div class="absolute -left-28 -top-8 flex flex-col items-center w-24">
+<!-- Speech bubble -->
+<div class="relative bg-surface-container-lowest text-on-surface p-2 rounded-DEFAULT text-center shadow-md mb-1.5 -rotate-3 text-left">
+<p class="font-label-sm text-label-sm leading-tight text-on-surface font-extrabold">
+                Cố lên! Chuỗi 7 ngày! 🔥
+              </p>
+<div class="absolute -bottom-1.5 right-4 w-3 h-3 bg-surface-container-lowest rotate-45"></div>
+</div>
+<img alt="Phono Owl Mascot" class="w-16 h-16 object-contain drop-shadow-md animate-pulse" data-alt="An adorable energetic green owl mascot wearing phonetic headphones, Duolingo cartoon flat-pop art style, celebrating with wide friendly eyes and open wings, clean 3D character design, vibrant green and sunny yellow tones on transparent clean aesthetic background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqLx_pPCqk-xRKOZC9uhBYPHmS3y01QPC7iUcuVZYPFvj8mDkFEknmyslOFV9B04GM1DJrgdqwtim96E3OD2ebPR6khPA7gCc5yHrVPjy05TdhM5cXCscKD0IYi0iWmQ6bvXBAI4YoB_LbnC6g2AykDCDXPn_Iz8AAYgyNktxYGE7hcR18qF7LPoEjWA5hAXN0LBq9MPZosgvUkAFwkSl7oxlZgeSDfoNI7D16_zsxEGyHqAq93dalLQ" style="animation-duration: 3s;"/>
+</div>
+<!-- Pulsing Halo & Node -->
+<div class="relative flex items-center justify-center">
+<div class="absolute w-24 h-24 rounded-full bg-primary-fixed opacity-40 animate-ping" style="animation-duration: 2s;"></div>
+<button class="relative w-20 h-20 rounded-full bg-primary-container flex items-center justify-center text-on-primary transition-transform active:translate-y-1 shadow-xl" style="border-bottom: 6px solid #1f5100;">
+<span class="material-symbols-outlined text-4xl text-on-primary" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- NODE 3: LOCKED (Shifted Left) -->
+<div class="relative z-10 flex flex-col items-center w-full my-space-md">
+<div class="flex flex-col items-center -translate-x-12">
+<div class="relative w-16 h-16 rounded-full bg-surface-variant flex items-center justify-center text-outline transition-transform shadow-sm" style="border-bottom: 5px solid #becbb1;">
+<span class="material-symbols-outlined text-2xl text-outline" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<div class="mt-2 bg-surface-container-low px-3 py-1 rounded-full flex items-center gap-1 shadow-sm opacity-80">
+<span class="font-headline-sm text-headline-sm text-on-surface-variant">/iː/</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">• 'ee, ea, ie'</span>
+</div>
+</div>
+</div>
+<!-- NODE 4: TREASURE CHEST BONUS (Shifted Center-Right) -->
+<div class="relative z-10 flex flex-col items-center w-full my-space-md">
+<div class="flex flex-col items-center translate-x-10">
+<!-- Floating Reward Glow -->
+<div class="relative">
+<div class="absolute inset-0 bg-tertiary-fixed rounded-full blur-md opacity-50 scale-125"></div>
+<button class="relative w-18 h-18 p-3 rounded-2xl bg-surface-container-lowest flex flex-col items-center justify-center shadow-lg active:scale-95 transition-all" id="chest-btn" style="border-bottom: 4px solid #eae8e7;">
+<img alt="Phonetic Chest" class="w-12 h-12 object-contain" data-alt="A whimsical golden fantasy treasure chest overflowing with glowing blue phonetic alphabet gems and sparkling stars, isometric 3D game icon style, vibrant cartoon game aesthetic, bright warm golden lighting, clean background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDX6HCu90g52KGxyjzs8NkrZs4klcS6SAMIBrFSlr5rTwxqwIMk8_4htgrSVIiJ-3Uj1BLJe4Dg5eX6yX8vB1EZYGdqfDBWDZhaTH6pFzGTDL2WNqnhnrjPHcN7tcJKOa7pJWOUgzW1RilSjGyk3Oyf8Gi5-Oqw2jrG27k5xWqmXQcPXh5rXigapV2CvKm-ecg6175bR4KH2M8bULhBFBdjXO2ALd3dq6smAen1lLg2JiqWvu80HmkFsw"/>
+</button>
+</div>
+<div class="mt-2 bg-tertiary-fixed text-on-tertiary-fixed px-3 py-0.5 rounded-full flex items-center gap-1 shadow-sm font-label-sm text-label-sm font-bold">
+<span class="material-symbols-outlined text-sm text-secondary" style="font-variation-settings: 'FILL' 1;">diamond</span>
+<span>Rương Âm Vị (+50)</span>
+</div>
+</div>
+</div>
+<!-- NODE 5: BOSS LEVEL CHALLENGE (Centered Bottom) -->
+<div class="relative z-10 flex flex-col items-center w-full my-space-lg">
+<div class="flex flex-col items-center">
+<!-- Danger Badge Banner -->
+<div class="flex items-center gap-1 bg-error-container text-on-error-container px-2.5 py-0.5 rounded-full font-label-sm text-label-sm mb-1.5 shadow-sm">
+<span class="material-symbols-outlined text-xs">timer</span>
+<span class="uppercase font-extrabold tracking-wide">Trùm Chặng • 60 Giây</span>
+</div>
+<!-- 3D Boss Skull/Swords Stone -->
+<button class="relative w-20 h-20 rounded-2xl bg-error flex flex-col items-center justify-center text-on-error shadow-xl active:translate-y-1 transition-all" style="border-bottom: 6px solid #93000a;">
+<span class="material-symbols-outlined text-4xl text-on-error" style="font-variation-settings: 'FILL' 1;">swords</span>
+<span class="font-label-sm text-label-sm font-black tracking-widest text-on-error uppercase">BOSS</span>
+</button>
+<div class="mt-2 bg-surface-container-lowest px-3 py-1 rounded-DEFAULT shadow-md flex flex-col items-center text-center">
+<span class="font-headline-sm text-headline-sm text-error">Thử Thách Phản Xạ 4 Chiều</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Phân biệt ngữ âm cấp tốc</span>
+</div>
+</div>
+</div>
+</div>
+<!-- FLOATING BOTTOM PILL: Daily Quest Sneak Peek -->
+<div class="sticky bottom-2 mx-margin z-30">
+<div class="bg-surface-container-lowest/95 backdrop-blur-md rounded-full shadow-lg p-space-sm flex items-center justify-between gap-space-sm" style="border-bottom: 3px solid #eae8e7;">
+<div class="flex items-center gap-space-sm pl-1">
+<div class="w-9 h-9 rounded-full bg-secondary-fixed flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">target</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface font-extrabold leading-none">Nhiệm vụ: Đạt 5 Combo Âm</span>
+<div class="w-32 bg-surface-container h-1.5 rounded-full mt-1 overflow-hidden">
+<div class="bg-secondary-container h-full w-3/5 rounded-full"></div>
+</div>
+</div>
+</div>
+<button class="bg-surface-container-high hover:bg-surface-dim text-on-surface font-label-sm text-label-sm px-3 py-1.5 rounded-full transition-transform active:scale-95 flex items-center gap-1" id="quick-jump-btn">
+<span>Xem</span>
+<span class="material-symbols-outlined text-xs">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Micro-interaction Celebration & Sounds Handler -->
+<script>
+    (function() {
+      const startBtn = document.getElementById('start-lesson-btn');
+      const chestBtn = document.getElementById('chest-btn');
+      const rulebookBtn = document.getElementById('rulebook-btn');
+
+      if (startBtn) {
+        startBtn.addEventListener('click', function(e) {
+          this.classList.add('scale-95');
+          setTimeout(() => this.classList.remove('scale-95'), 120);
+        });
+      }
+
+      if (chestBtn) {
+        chestBtn.addEventListener('click', function() {
+          this.classList.add('rotate-6');
+          setTimeout(() => this.classList.remove('rotate-6'), 150);
+        });
+      }
+
+      if (rulebookBtn) {
+        rulebookBtn.addEventListener('click', function() {
+          this.classList.add('scale-90');
+          setTimeout(() => this.classList.remove('scale-90'), 100);
+        });
+      }
+    })();
+  </script>
+</div></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/90 backdrop-blur-xl shadow-[0_-1px_8px_rgba(0,0,0,0.04)]" data-active-classes="text-primary-container scale-105"><div class="flex justify-around items-center h-16 px-space-xs"><a aria-current="page" class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] transition-all text-primary-container scale-105" data-path="learn" href="#"><span class="material-symbols-outlined text-2xl">school</span><span class="font-label-sm text-label-sm">Học bài</span></a><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-all" data-path="practice" href="#"><span class="material-symbols-outlined text-2xl">bolt</span><span class="font-label-sm text-label-sm">Phản xạ</span></a><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-all" data-path="leaderboard" href="#"><span class="material-symbols-outlined text-2xl">leaderboard</span><span class="font-label-sm text-label-sm">Xếp hạng</span></a><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-all" data-path="shop" href="#"><span class="material-symbols-outlined text-2xl">storefront</span><span class="font-label-sm text-label-sm">Cửa hàng</span></a><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-all" data-path="profile" href="#"><span class="material-symbols-outlined text-2xl">account_circle</span><span class="font-label-sm text-label-sm">Hồ sơ</span></a></div></nav></body></html>

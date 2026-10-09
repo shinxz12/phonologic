@@ -1,0 +1,18 @@
+.ds-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 700 14px/20px var(--font-heading);
+  margin: 0 0 12px;
+}
+.ds-step > span {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  font-size: 12px;
+}

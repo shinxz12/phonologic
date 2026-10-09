@@ -1,0 +1,25 @@
+.ds-instruction {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  border-radius: var(--radius);
+}
+.ds-instruction-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #def5ca;
+  color: var(--primary);
+}
+.ds-instruction strong {
+  font: 700 14px/20px var(--font-heading);
+}
+.ds-instruction p {
+  margin: 4px 0 0;
+  font: 500 14px/20px var(--font-body);
+  color: var(--on-surface-variant);
+}

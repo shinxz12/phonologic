@@ -1,0 +1,37 @@
+.ds-lesson-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.ds-lesson-node > button {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 68px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--primary-container);
+  box-shadow: 0 7px 0 #46a302;
+  color: white;
+  cursor: pointer;
+}
+.ds-lesson-node--current > button {
+  outline: 7px solid #def5ca;
+  outline-offset: 5px;
+}
+.ds-lesson-node--locked > button {
+  background: var(--surface-highest);
+  box-shadow: 0 7px 0 #cecccc;
+  color: #91938d;
+  cursor: not-allowed;
+}
+.ds-lesson-node--reward > button {
+  background: var(--tertiary-fixed);
+  box-shadow: 0 7px 0 #ddad00;
+  color: var(--tertiary);
+}
+.ds-lesson-node > span {
+  font: 700 12px/18px var(--font-heading);
+  text-align: center;
+}

@@ -1,0 +1,62 @@
+.ds-segment:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.ds-segment {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border: 0;
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 16px 12px;
+  min-width: 64px;
+  min-height: 76px;
+  cursor: pointer;
+  color: var(--on-surface);
+}
+.ds-segment strong {
+  font: 800 22px/28px var(--font-heading);
+}
+.ds-segment > span {
+  font: 700 12px/16px var(--font-heading);
+}
+.ds-segment.is-selected {
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+  box-shadow: 0 3px 0 var(--secondary);
+}
+.ds-segment.is-incorrect {
+  background: var(--error-container);
+  color: var(--error);
+}
+.ds-segment .ds-segment-marker {
+  position: absolute;
+  right: -5px;
+  top: -5px;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+}
+.ds-segment.is-incorrect .ds-segment-marker {
+  background: var(--error);
+}
+.ds-segment:disabled.is-correct {
+  opacity: 1;
+}
+.ds-segment:disabled.is-incorrect {
+  opacity: 1;
+}
+@media (max-width: 600px) {
+  .ds-segment {
+    padding: 12px 8px;
+  }
+}

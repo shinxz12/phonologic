@@ -1,0 +1,223 @@
+{
+  "screens": [
+    {
+      "deviceType": "DESKTOP",
+      "height": "3332",
+      "htmlCode": {
+        "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzAwMDY1ZDY2MjUzMjE0NmIwNTAzYzE4YWFiMThhMmRlEgsSBxCouMX2xhgYAZIBJAoKcHJvamVjdF9pZBIWQhQxNzMxNjU1NzMyMzEwOTk1MzI5NQ&filename=&opi=89354086",
+        "mimeType": "text/html",
+        "name": "projects/15200353473775041979/screens/f5683b8d98a3448aaed7f906077601ea/fileEntries/html"
+      },
+      "name": "projects/17316557323109953295/screens/f5683b8d98a3448aaed7f906077601ea",
+      "screenshot": {
+        "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1WYFeYbK3WCMGFY8SZTKVmxtn1kMhw564E0A4yoUYgOTH6APdgHbbbVn8qwBgTBzZ_Yxbg8RY6K35OQlPT6PCzuXa_xFyqLNRQHU1oEzYHThOB0z7mbQ3qC7o4pLoi1Lklf987e3LAhRMx1dRWJB8TpzOYWgD2aaSiCG8eKxaiwThI5OkDd5xjpJRpw_RCjhspci-VASor3mHzuYSeCDrgMw_XmXLtSAlFRBRUJTWZz7iYFg0Qc-ilJGc-0",
+        "name": "projects/15200353473775041979/screens/f5683b8d98a3448aaed7f906077601ea/fileEntries/screenshot"
+      },
+      "title": "Lộ trình Học Ngữ Âm & Cây Kỹ Năng (Duolingo Style)",
+      "width": "2560"
+    },
+    {
+      "deviceType": "DESKTOP",
+      "height": "2048",
+      "htmlCode": {
+        "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzAwMDY1ZDY2MjUzMjE0NGEwNTAzYzE4YWFiMThhMmRlEgsSBxCouMX2xhgYAZIBJAoKcHJvamVjdF9pZBIWQhQxNzMxNjU1NzMyMzEwOTk1MzI5NQ&filename=&opi=89354086",
+        "mimeType": "text/html",
+        "name": "projects/15200353473775041979/screens/59e012c1929340038107480fa8838b6f/fileEntries/html"
+      },
+      "name": "projects/17316557323109953295/screens/59e012c1929340038107480fa8838b6f",
+      "screenshot": {
+        "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1UKJrbuEf1_YxHodiIMEbVLvtNrfyCbtrzz9bIaAglmMWD_8xnfqks7I0W4beNEvH0p7pqh0Zji37Lgk6Ga0ywy3fb8CN8w72s1bV3-7o392-P_7bi7aPsTJhiysPTqGN1PTUb25NuMcS03TMSMRjTPGb7n12nplIsX01FWuboAtgLcyM1S2iykNUf26MqEJgQ01zFiU5JGE-eMlQ7726B3HWiASrA-uCferLo5uJ9NOZ29wp_y3cqcmV8",
+        "name": "projects/15200353473775041979/screens/59e012c1929340038107480fa8838b6f/fileEntries/screenshot"
+      },
+      "title": "Luyện Phản Xạ 4 Chiều (Duolingo Quiz Game)",
+      "width": "2560"
+    },
+    {
+      "deviceType": "DESKTOP",
+      "height": "3006",
+      "htmlCode": {
+        "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzAwMDY1ZDY2MjUzMjE0NjkwNTAzYzE4YWFiMThhMmRlEgsSBxCouMX2xhgYAZIBJAoKcHJvamVjdF9pZBIWQhQxNzMxNjU1NzMyMzEwOTk1MzI5NQ&filename=&opi=89354086",
+        "mimeType": "text/html",
+        "name": "projects/17316557323109953295/files/3756364498942652664"
+      },
+      "name": "projects/17316557323109953295/screens/037ba233f8c5492fa5487a174789a83d",
+      "screenshot": {
+        "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1VcotJTkMAkMhTMhoLouGB_Mufeg7sc-TX6cOS5Y4isFgJB8WM9X98aDbQ6yXWKf9CQydpp73EtTLLRQNZzQGaQzSw18iegVWNW32fdJSdhYJJfyhtmsM6UvfceFwjC05E-RHC6X4ApXetwIppoi_VmzkXlOdS12xs2VT6xlmeyQGGWehkQnCYtvSkO2SeUlunS3PutAwkYlUrCJzN-UQT9wMllcF6oISQ3fStV6SdSQf018wH9gbsFfYw",
+        "name": "projects/17316557323109953295/files/1337416648466936201"
+      },
+      "title": "Luyện Từ Vựng: Bóc Tách Âm & Nghĩa Tiếng Việt (Duolingo Style)",
+      "width": "2560"
+    },
+    {
+      "deviceType": "MOBILE",
+      "height": "2644",
+      "htmlCode": {
+        "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzAwMDY1ZDY2MjUzMjE0NTIwNTAzYzE4YWFiMThhMmRlEgsSBxCouMX2xhgYAZIBJAoKcHJvamVjdF9pZBIWQhQxNzMxNjU1NzMyMzEwOTk1MzI5NQ&filename=&opi=89354086",
+        "mimeType": "text/html",
+        "name": "projects/17316557323109953295/files/17316103402290350004"
+      },
+      "name": "projects/17316557323109953295/screens/03872e3ef396419296ba5919e469fd43",
+      "screenshot": {
+        "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1W-wOPHLwnKc4Y_O86nyYs24b9iZOb_P4jUfYZRdrLXeTQ77GxiifSlNx6hW5gCQvBykosC2g1-oqe5LCQFEpe7tMgERamr_me34DR_UJhdJHZoi8g6yBL8PZkKMxvsnYDBVJo3CXDdtlT1QXUSolMu8uafZMHJ4oRvPegsH_3nQ07UBcL7RHau4sOQ1pVNuhbe_4XvyXApWlHJt9nuyUQ6QpS1iXkLh_A6G1hxa9gZ5hY5uUc2lhL9eYc",
+        "name": "projects/17316557323109953295/files/10950086025041555550"
+      },
+      "title": "App Mobile: Luyện Từ Vựng & Bóc Tách Âm (Minh Họa)",
+      "width": "780"
+    },
+    {
+      "height": "1024",
+      "htmlCode": {},
+      "name": "projects/17316557323109953295/screens/79ed7926e4e7443f8b6e570785b956b7",
+      "screenshot": {
+        "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1X6sgczd7LQhx0skelm99_hIOpM8gJ6jI-6NXDqKcKAysMB7pBVeaAwgA-wsEAPd0no_aIVjAIuXZf-WDwIyreW4NxteUl42Pn3zob3vJCvTi71bsdU8u8f6C-2XssHChpUb2kXHQYCJqm7yvuhQmUeq4-oG_pR30Mkjan_FGfjTLFH1QtLR6tmwoJjc7321NZy2G_j453mYdzf78zRpFYGa5kpiZKD4qVTmo1wR4iU0XRFEn2AqBd7iarV",
+        "name": "projects/15200353473775041979/screens/79ed7926e4e7443f8b6e570785b956b7/fileEntries/screenshot"
+      },
+      "title": "A cute, vibrant, warm vector illustration in Duolingo / flat modern edtech cartoon style depicting a happy loving daughter with her smiling parent, warm family scene, bright playful colors, clean lines, isolated on a light soft background, sticker style friendly character design",
+      "width": "1024"
+    },
+    {
+      "deviceType": "MOBILE",
+      "height": "3312",
+      "htmlCode": {
+        "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzAwMDY1ZDY2MjUzMjE0NGQwNTAzYzE4YWFiMThhMmRlEgsSBxCouMX2xhgYAZIBJAoKcHJvamVjdF9pZBIWQhQxNzMxNjU1NzMyMzEwOTk1MzI5NQ&filename=&opi=89354086",
+        "mimeType": "text/html",
+        "name": "projects/15200353473775041979/screens/cd973f78d7784e8b9d7046939fbdbf42/fileEntries/html"
+      },
+      "name": "projects/17316557323109953295/screens/cd973f78d7784e8b9d7046939fbdbf42",
+      "screenshot": {
+        "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1VqLeM-3apgWGCCLhNhKlkSDxkSu8pEefW9P3jinNfygv0sAZ-QeoJaKmZYOCwKmGTl98WjytLhgORQ6YOnXKSDzif4eDpkkGR4p_GuUx0vndhopwG7dl3e_-RCXSauB64P682IkMwtQGxfLjAZGU-laS7GnFLqqWg1zaNZSe9ZhW24R8w-igWnx9NxUnBZDGAZ1LYwEZyUxX-7mEg6USRFkStoYiGOB93kM1ewuz47KRD1Zyoc68E5rOqy",
+        "name": "projects/15200353473775041979/screens/cd973f78d7784e8b9d7046939fbdbf42/fileEntries/screenshot"
+      },
+      "title": "App Mobile: Hồ Sơ Cá Nhân (Duolingo Style)",
+      "width": "780"
+    },
+    {
+      "deviceType": "DESKTOP",
+      "height": "2232",
+      "htmlCode": {
+        "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzAwMDY1ZDY2MjUzMjE0NzAwNTAzYzE4YWFiMThhMmRlEgsSBxCouMX2xhgYAZIBJAoKcHJvamVjdF9pZBIWQhQxNzMxNjU1NzMyMzEwOTk1MzI5NQ&filename=&opi=89354086",
+        "mimeType": "text/html",
+        "name": "projects/15200353473775041979/screens/7db7a20b661047c2a7f8d0ced9ccabde/fileEntries/html"
+      },
+      "name": "projects/17316557323109953295/screens/7db7a20b661047c2a7f8d0ced9ccabde",
+      "screenshot": {
+        "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1X71oC9eNh9bxgejvxX34Ylhqm5GMKvMZ1Vbt7g8acjm1Mj1902F_-MclISVG9WWwkavrXQwL0aVZNTfJh5AnzwAlAktQ2lEuunnnuEwyHfTj4i7cncCwPcM2EQQ9FG5KFzdSPJf1Nhg9YWYlgwkHOfIbAaB1L6_j5CaBsUUT1-OMygDnUILSANyk5gfgEEpl-NeqrxK0UdMzmsPAlkUbzZ24kqkxfS6nY_3fR0DtPVNpvJD9cK6MBh2swQ",
+        "name": "projects/15200353473775041979/screens/7db7a20b661047c2a7f8d0ced9ccabde/fileEntries/screenshot"
+      },
+      "title": "Luyện Phản Xạ: Âm (Sound) ➔ Tổ Hợp Chữ (Duolingo Style)",
+      "width": "2560"
+    },
+    {
+      "deviceType": "DESKTOP",
+      "height": "2136",
+      "htmlCode": {
+        "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzAwMDY1ZDY2MjUzMjE0NTUwNTAzYzE4YWFiMThhMmRlEgsSBxCouMX2xhgYAZIBJAoKcHJvamVjdF9pZBIWQhQxNzMxNjU1NzMyMzEwOTk1MzI5NQ&filename=&opi=89354086",
+        "mimeType": "text/html",
+        "name": "projects/17316557323109953295/files/1452515348844488524"
+      },
+      "name": "projects/17316557323109953295/screens/5e6ce68c6f9f43dc89b3afe7165dad9e",
+      "screenshot": {
+        "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1Vlj14Q6Ijm6QsM1iM6qe0sdv7ZtUc47ql0ccX5KpIWcdMuWAwQQg-3hMExLOlqWciSiUIEL6xDvH7jXZMTDRa2v_azMMvg0TI2KXqYnhOaLjf6_YCdxqWWrv1cvBKra90vFFxqQ4cmUCqqgtSGMuUh8_HLuNfNdZ9nrNPL_x_PojA3D0Vrz2BI7ZNklWBPeYIo7UzpGtaz3oIFf2_VlTC43ytADvVtOwLir7xMH18OZrhPuB1AFxO6NIrG",
+        "name": "projects/17316557323109953295/files/18313528622316137470"
+      },
+      "title": "Tablet: Studio Luyện Âm & Từ Vựng Đa Năng",
+      "width": "2560"
+    },
+    {
+      "deviceType": "DESKTOP",
+      "height": "2656",
+      "htmlCode": {
+        "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzAwMDY1ZDY2MjUzMjE0NTcwNTAzYzE4YWFiMThhMmRlEgsSBxCouMX2xhgYAZIBJAoKcHJvamVjdF9pZBIWQhQxNzMxNjU1NzMyMzEwOTk1MzI5NQ&filename=&opi=89354086",
+        "mimeType": "text/html",
+        "name": "projects/15200353473775041979/screens/545feae3972f4466a3c5aef5936791c7/fileEntries/html"
+      },
+      "name": "projects/17316557323109953295/screens/545feae3972f4466a3c5aef5936791c7",
+      "screenshot": {
+        "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1X9S5lJ_E3qcYUYaD7BkXja2vRdvhElAENXmNd0wGMspuabTgx4Ff-VgV5jJgOs-yohow4RnjQY1cRPpPBYvlP-DC-k2ZkSIjJQz5FqbI18dePRCG72X6IyKUH6JRC_OIKMnRHKrTJgVFluE8GxXQwjRE5nwMc02cWt-w9wjSZ9LNsd7x2mP_--k5zb3hEjKY2RuPNjWpiHCxoukO_un4S2GzUOtxtTW84RKV24pzLSb4Evq2iFTuxba4Gq",
+        "name": "projects/15200353473775041979/screens/545feae3972f4466a3c5aef5936791c7/fileEntries/screenshot"
+      },
+      "title": "Luyện Phản Xạ: Chữ ➔ Âm Vị (Duolingo Style)",
+      "width": "2560"
+    },
+    {
+      "deviceType": "MOBILE",
+      "height": "2780",
+      "htmlCode": {
+        "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzAwMDY1ZDY2MjUzMjE0NzMwNTAzYzE4YWFiMThhMmRlEgsSBxCouMX2xhgYAZIBJAoKcHJvamVjdF9pZBIWQhQxNzMxNjU1NzMyMzEwOTk1MzI5NQ&filename=&opi=89354086",
+        "mimeType": "text/html",
+        "name": "projects/15200353473775041979/screens/893878154e954490a795d304171b7624/fileEntries/html"
+      },
+      "name": "projects/17316557323109953295/screens/893878154e954490a795d304171b7624",
+      "screenshot": {
+        "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1X_BMUm6O8KZFTu9b1_MekpmUY6qXvW6cyUh3IhF24LWIMRfTsZ3H4SSKxKd-v6gx5edDAUVXh4aEqCwuLn1xmvCbeFYX5ccPgsV513fpdKWn4T3j_puRAunHrnZwVXpStLEQeSbxJfMzN9e_kjfSmgUl50xqYQ126ty3I1E6W7F320y10Rv1kYvFjKjCnvHODIKLDiaVNwuXmsNZBFxn-84QztAO5vM0V1nkI265juMEauhyW4CH9KnFZg",
+        "name": "projects/15200353473775041979/screens/893878154e954490a795d304171b7624/fileEntries/screenshot"
+      },
+      "title": "App Mobile: Lộ Trình Học & Cây Kỹ Năng (Duolingo Style)",
+      "width": "780"
+    },
+    {
+      "deviceType": "MOBILE",
+      "height": "3928",
+      "htmlCode": {
+        "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzAwMDY1ZDY2MjUzMjE0NWMwNTAzYzE4YWFiMThhMmRlEgsSBxCouMX2xhgYAZIBJAoKcHJvamVjdF9pZBIWQhQxNzMxNjU1NzMyMzEwOTk1MzI5NQ&filename=&opi=89354086",
+        "mimeType": "text/html",
+        "name": "projects/17316557323109953295/files/14111305756834401929"
+      },
+      "name": "projects/17316557323109953295/screens/b4a0c731f4a9417098d690f23264bed0",
+      "screenshot": {
+        "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1UdxkM3CX3bj9_OScfPkBB6G3ul7Lkww78pzxaNZS3oT3PRhjkPkmUlShp9NgLfA5df2slEO4ormBPVrMzFM_f3ZR_NQNRotenmIHkRGIPQHVdbCsIQT-zStoPDgVFZCSnAKF_ygTNijnPgSpsQ0IzEhcoYYr1hjGO1YM9lIf0qrZD8svLg-njDhTREMYi025Jn7ccKFlXeNAPt7Oxi_GKDp8HAWDkmx4iot7cF6s2nwERhYtsUeTZ79Cno",
+        "name": "projects/17316557323109953295/files/7388147481799855342"
+      },
+      "title": "App Mobile: Luyện Đọc - Bóc Tách Từ Ngẫu Nhiên & Thu Âm AI",
+      "width": "780"
+    },
+    {
+      "deviceType": "MOBILE",
+      "height": "2676",
+      "htmlCode": {
+        "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzAwMDY1ZDY2MjUzMjE0NjYwNTAzYzE4YWFiMThhMmRlEgsSBxCouMX2xhgYAZIBJAoKcHJvamVjdF9pZBIWQhQxNzMxNjU1NzMyMzEwOTk1MzI5NQ&filename=&opi=89354086",
+        "mimeType": "text/html",
+        "name": "projects/15200353473775041979/screens/ba669144fe424273a3cf6c0e035dd723/fileEntries/html"
+      },
+      "name": "projects/17316557323109953295/screens/ba669144fe424273a3cf6c0e035dd723",
+      "screenshot": {
+        "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1WBmsQybBLDTHPXuO9s9jxecRe1wZl-PtJ6OnAC4txSWClsDnhbcEASKTOu7crqjHIwysbhWy9q9J5g-Sie8ixWBA-vGMAQm6gkPrlarDde4BSVNkiOEdHJwq0-ud5r42fmjHhk8-2a8pWjNggv-AWUdfqAjYqIQvOsD32WINXqbfJbJ9B2Q8C7nGJcF1IJEEQuz6suGOTlPTybRJOktvGbvW30Qp2CV6xwy0Ghe1RatIF5wF1w4ifmOZOM",
+        "name": "projects/15200353473775041979/screens/ba669144fe424273a3cf6c0e035dd723/fileEntries/screenshot"
+      },
+      "title": "App Mobile: Tab Reading - Thư Viện Bài Đọc & Ngữ Âm",
+      "width": "780"
+    },
+    {
+      "deviceType": "MOBILE",
+      "height": "1768",
+      "htmlCode": {
+        "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzAwMDY1ZDY2MjUzMjE0NTkwNTAzYzE4YWFiMThhMmRlEgsSBxCouMX2xhgYAZIBJAoKcHJvamVjdF9pZBIWQhQxNzMxNjU1NzMyMzEwOTk1MzI5NQ&filename=&opi=89354086",
+        "mimeType": "text/html",
+        "name": "projects/15200353473775041979/screens/6c4a32a1055943b0891c01b9948538c7/fileEntries/html"
+      },
+      "name": "projects/17316557323109953295/screens/6c4a32a1055943b0891c01b9948538c7",
+      "screenshot": {
+        "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1XHgG6vAJZ2BnprIU_5KWaPY8PKeCIBD33sgRcZJnO7GYGu7Tr8o5V2WYKTm5VKLvZSyphkUhP7w9oWyxrlRnszBZMCrpsmRi00rbuE4Q8Z1FZcRiC7GOHcS9D-3-MaReNAOmn3d54lP_mbq4-N0QJgAD-LYJ5BJaC9SU2OEtoU7En70zKRkA7iBBUkCocX_Jj8_KaNWaPld-XDp953B8TW289ffw9y8Fg-EMGtO8jT6LGxMr1wkMbUpdgW",
+        "name": "projects/15200353473775041979/screens/6c4a32a1055943b0891c01b9948538c7/fileEntries/screenshot"
+      },
+      "title": "App Mobile: Đăng Nhập (Duolingo Style)",
+      "width": "780"
+    },
+    {
+      "deviceType": "MOBILE",
+      "height": "2164",
+      "htmlCode": {
+        "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzAwMDY1ZDY2MjUzMjE0NTAwNTAzYzE4YWFiMThhMmRlEgsSBxCouMX2xhgYAZIBJAoKcHJvamVjdF9pZBIWQhQxNzMxNjU1NzMyMzEwOTk1MzI5NQ&filename=&opi=89354086",
+        "mimeType": "text/html",
+        "name": "projects/15200353473775041979/screens/c6aea0b1d8b344769f9157f88d055cdc/fileEntries/html"
+      },
+      "name": "projects/17316557323109953295/screens/c6aea0b1d8b344769f9157f88d055cdc",
+      "screenshot": {
+        "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1WcOiNPJJ8ClckYJQzsRcMJEUk2zdLt27PxOZ96ea9NfjNpoQH0SC-se-Fg60_KRQAnJyy-z2iPoLYaicbvFfcyqwPdvA4quHJ0A-EWXIQSPM_H_xAXGP-YPfc7Q8pJjlBn-iXZ5wx1keIU-c5SJYqNQ2KdBH7kVOBLWg9qRjUrm5WkVSIy7pzkKnNNPyVHHAa_8bUc2e_q-W0z9VOtnsNp6DKyGL7yzFrlRqcE4GtCCfn9hhCK38EFDFrK",
+        "name": "projects/15200353473775041979/screens/c6aea0b1d8b344769f9157f88d055cdc/fileEntries/screenshot"
+      },
+      "title": "App Mobile: Đăng Ký (Duolingo Style)",
+      "width": "780"
+    }
+  ]
+}

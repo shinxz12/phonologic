@@ -1,0 +1,28 @@
+{
+  "name": "@phonologic/db",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "generate": "drizzle-kit generate",
+    "migrate": "drizzle-kit migrate",
+    "push": "drizzle-kit push",
+    "studio": "drizzle-kit studio",
+    "seed": "bun src/seed.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@phonologic/shared-types": "workspace:*",
+    "drizzle-orm": "^0.39.3",
+    "postgres": "^3.4.5"
+  },
+  "devDependencies": {
+    "@phonologic/tsconfig": "workspace:*",
+    "@types/bcryptjs": "^3.0.0",
+    "@types/node": "^22.10.0",
+    "bcryptjs": "^3.0.3",
+    "drizzle-kit": "^0.30.4",
+    "typescript": "^5.4.5"
+  }
+}

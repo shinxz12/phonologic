@@ -1,0 +1,26 @@
+{
+  "name": "phonologic-monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=20.0.0",
+    "bun": ">=1.0.0"
+  },
+  "scripts": {
+    "build": "bunx turbo run build",
+    "dev": "bunx turbo run dev",
+    "lint": "bunx turbo run lint",
+    "typecheck": "bunx turbo run typecheck",
+    "format": "bunx prettier --write \"**/*.{ts,tsx,md,json}\"",
+    "clean": "bunx turbo run clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.5"
+  },
+  "packageManager": "bun@1.1.8"
+}

@@ -1,0 +1,39 @@
+.ds-feedback {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+  border-radius: var(--radius);
+  background: #def5ca;
+  color: var(--primary);
+}
+.ds-feedback > div {
+  flex: 1;
+}
+.ds-feedback strong {
+  font: 800 18px/24px var(--font-heading);
+}
+.ds-feedback p {
+  margin: 5px 0 0;
+  font-size: 14px;
+  line-height: 20px;
+}
+.ds-feedback--error {
+  background: var(--error-container);
+  color: var(--error);
+}
+.ds-feedback--info {
+  background: var(--secondary-fixed);
+  color: var(--secondary);
+}
+@media (max-width: 600px) {
+  .ds-feedback {
+    flex-wrap: wrap;
+    padding: 16px;
+  }
+}
+@media (max-width: 600px) {
+  .ds-feedback > .ds-button {
+    width: 100%;
+  }
+}

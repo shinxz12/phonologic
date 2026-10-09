@@ -1,0 +1,54 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap");
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  background: var(--surface);
+  color: var(--on-surface);
+  font: 600 16px/24px var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+button,
+input {
+  font: inherit;
+}
+a {
+  color: inherit;
+}
+h1,
+h2,
+h3 {
+  font-family: var(--font-heading);
+  margin: 0;
+}
+h2 {
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: 800;
+}
+h3 {
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 700;
+}
+p {
+  margin: 0;
+}
+
+:where(button, a, input):focus-visible {
+  outline: 3px solid var(--secondary);
+  outline-offset: 4px;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

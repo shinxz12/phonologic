@@ -1,0 +1,378 @@
+<!DOCTYPE html><html lang="vi"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"><meta content="mobile_stack" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@500;600;700;800&amp;family=Plus+Jakarta+Sans:wght@700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{width:100%;margin:0;padding:0;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "inverse-surface": "#303030", "inverse-primary": "#6be026", "error": "#ba1a1a", "on-primary": "#ffffff", "on-secondary-container": "#004666", "on-secondary": "#ffffff", "on-background": "#1b1c1c", "surface-dim": "#dbd9d9", "secondary-fixed": "#c8e6ff", "secondary-container": "#2fb8ff", "tertiary-container": "#ddad00", "outline": "#6f7b64", "surface-container-low": "#f5f3f3", "tertiary": "#755b00", "secondary-fixed-dim": "#88ceff", "on-surface": "#1b1c1c", "surface-bright": "#fbf9f8", "on-secondary-fixed-variant": "#004c6e", "secondary": "#006590", "on-tertiary-container": "#574300", "tertiary-fixed-dim": "#f4bf00", "on-surface-variant": "#3f4a36", "on-tertiary": "#ffffff", "surface-variant": "#e4e2e2", "inverse-on-surface": "#f2f0f0", "on-tertiary-fixed-variant": "#594400", "on-secondary-fixed": "#001e2e", "surface-tint": "#2b6c00", "background": "#fbf9f8", "surface-container": "#efeded", "on-error-container": "#93000a", "primary": "#2b6c00", "tertiary-fixed": "#ffdf92", "primary-container": "#58cc02", "on-error": "#ffffff", "on-tertiary-fixed": "#241a00", "surface-container-high": "#eae8e7", "surface-container-lowest": "#ffffff", "primary-fixed-dim": "#6be026", "primary-fixed": "#87fe45", "on-primary-fixed": "#082100", "surface-container-highest": "#e4e2e2", "surface": "#fbf9f8", "on-primary-container": "#1e5000", "outline-variant": "becbb1", "error-container": "#ffdad6", "on-primary-fixed-variant": "#1f5100" }, "borderRadius": { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" }, "spacing": { "gutter-tablet": "1.25rem", "space-xl": "2rem", "gutter-desktop": "1.5rem", "gutter": "1rem", "space-lg": "1.5rem", "space-md": "1rem", "margin-desktop": "3rem", "space-xs": "0.25rem", "margin-tablet": "2rem", "margin": "1rem", "space-sm": "0.5rem" }, "fontFamily": { "body-md": ["Nunito Sans"], "headline-lg": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "label-lg": ["Plus Jakarta Sans"], "headline-xl-mobile": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "headline-xl": ["Plus Jakarta Sans"], "body-lg": ["Nunito Sans"], "headline-lg-mobile": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "body-sm": ["Nunito Sans"] }, "fontSize": { "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "600" }], "headline-lg": ["28px", { "lineHeight": "36px", "fontWeight": "800" }], "headline-md": ["22px", { "lineHeight": "28px", "fontWeight": "700" }], "label-lg": ["16px", { "lineHeight": "20px", "fontWeight": "800" }], "headline-xl-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "800" }], "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "700" }], "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "700" }], "headline-xl": ["36px", { "lineHeight": "44px", "fontWeight": "800" }], "body-lg": ["18px", { "lineHeight": "26px", "fontWeight": "600" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "800" }], "label-md": ["14px", { "lineHeight": "18px", "fontWeight": "700" }], "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "500" }] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-gutter flex items-center justify-between"><button class="w-11 h-11 flex items-center justify-center text-on-surface-variant hover:text-on-surface rounded-full transition-colors" onclick="history.back()"><span class="material-symbols-outlined text-[24px]">close</span></button><h1 class="font-headline-sm text-headline-sm text-on-surface font-bold text-center flex-grow truncate px-space-sm">Reading Detail</h1><div class="flex items-center gap-space-sm"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex flex-col relative w-full pt-16 bg-surface flex-grow"><div class="flex flex-col w-full pb-36">
+<!-- Top Lesson Track Info: Progress & Hearts Gamification Bar -->
+<div class="px-gutter pt-space-sm pb-space-xs flex items-center justify-between gap-space-md">
+<!-- Progress Bar (60%) -->
+<div class="flex-grow bg-surface-container-high h-4 rounded-full overflow-hidden p-0.5 shadow-inner">
+<div class="bg-primary-container h-full rounded-full transition-all duration-500 ease-out flex items-center justify-end pr-1" style="width: 60%;">
+<div class="w-1.5 h-1.5 rounded-full bg-on-primary opacity-75"></div>
+</div>
+</div>
+<!-- Hearts Status Pill -->
+<div class="flex items-center gap-1 bg-surface-container-lowest px-3 py-1 rounded-full shadow-sm">
+<span class="material-symbols-outlined text-error text-[20px] animate-pulse" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="font-headline-sm text-label-md text-error">5</span>
+</div>
+<!-- XP Streak Badge -->
+<div class="flex items-center gap-1 bg-surface-container-lowest px-3 py-1 rounded-full shadow-sm">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-[20px]" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+<span class="font-headline-sm text-label-md text-tertiary">14</span>
+</div>
+</div>
+<div class="px-gutter flex flex-col gap-space-lg mt-space-sm">
+<!-- 1. Reading Passage Bento Card -->
+<div class="bg-surface-container-lowest rounded-DEFAULT p-space-md shadow-sm relative overflow-hidden">
+<!-- Story Theme Scrim / Header -->
+<div class="flex items-center justify-between pb-space-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[22px]" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">The Baker's Daughter</span>
+</div>
+<span class="bg-secondary-fixed text-on-secondary-fixed text-label-sm font-label-sm px-2.5 py-1 rounded-full uppercase tracking-wider">
+          Phần 2 / 3
+        </span>
+</div>
+<!-- Passage Context Illustration & Narrative -->
+<div class="flex flex-col gap-space-sm">
+<div class="relative w-full h-36 rounded-DEFAULT overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A warm and delightful storybook illustration of a kind baker in a white apron walking hand-in-hand with his joyful little daughter through a vibrant golden autumn park filled with falling amber leaves, gentle morning sunlight, warm orange and green pastel palette, modern Duolingo friendly vector style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWYoGer1LEnIbAENsMGhV05-50eX3yWuZmUpexLiKyWgd4MOzB8pL4kQqJ_6X-OaBr3xdexal-cIyAGDg4mCesJr6FL49VpuoH0Dsb22HQDeAQc2oOipd2vlPgedKOPFO1YpfcZCkZmbzPl7WlS3sqbEZY1ztddwf63GIhdMm6kwsbRZVOjIwHVtoNRReOFoKaPcRO5RnF22jo2pgLeo13Z8UWHgfyNitbr3pX5cDBcXQhu71EXdEkpw">
+<div class="absolute bottom-2 left-2 bg-on-surface/70 backdrop-blur-md px-2.5 py-1 rounded-full flex items-center gap-1.5 text-on-primary text-label-sm font-label-sm">
+<span class="material-symbols-outlined text-[16px]">headphones</span>
+<span class="">Giọng chuẩn Bản Xứ Anh-Mỹ</span>
+</div>
+</div>
+<!-- Interactive Paragraph -->
+<p class="font-body-lg text-body-lg text-on-surface leading-relaxed mt-1">
+          Every autumn morning, the baker and his little 
+          <!-- Target Word Highlighted Badge with 3D tactile elevation -->
+<button class="inline-flex items-center gap-1 px-2.5 py-0.5 mx-1 rounded-full bg-secondary-container text-on-secondary-container font-headline-sm text-headline-sm shadow-[0_3px_0_0_#006590] active:translate-y-0.5 active:shadow-none transition-all" id="targetWordBtn">
+<span class="">daughter</span>
+<span class="material-symbols-outlined text-[18px]">volume_up</span>
+<span class="text-tertiary-container text-[14px]">✨</span>
+</button>
+          walk through the golden park. They laugh and talk about sweet warm bread. Today, she helped him bake a loaf of cake.
+        </p>
+</div>
+<!-- Word Extraction Banner Info -->
+<div class="mt-space-md p-space-sm bg-secondary-fixed/50 rounded-DEFAULT flex items-center justify-between gap-space-sm">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-8 h-8 rounded-full bg-secondary text-on-secondary flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[18px]">psychology_alt</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="text-label-sm font-label-sm text-on-secondary-fixed truncate">Từ ngữ cảnh mục tiêu:</span>
+<span class="font-headline-sm text-headline-sm text-secondary truncate">DAUGHTER <span class="font-body-sm text-body-sm text-on-surface-variant font-normal">/ˈdɔː.tər/</span></span>
+</div>
+</div>
+<div class="flex items-center gap-1 flex-shrink-0">
+<button class="px-2.5 py-1.5 rounded-full bg-surface-container text-on-surface font-label-sm text-label-sm shadow-[0_2px_0_0_#dbd9d9] active:translate-y-0.5 active:shadow-none flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">play_arrow</span>
+<span class="">Câu</span>
+</button>
+<button class="px-2.5 py-1.5 rounded-full bg-surface-container text-on-surface font-label-sm text-label-sm shadow-[0_2px_0_0_#dbd9d9] active:translate-y-0.5 active:shadow-none flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[16px]">speed</span>
+<span class="">0.75x</span>
+</button>
+</div>
+</div>
+</div>
+<!-- 2. Step 1: Meaning in Context Multiple Choice -->
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-primary-container text-on-primary-container font-headline-sm text-label-sm flex items-center justify-center">1</div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Trong bài đọc, từ "daughter" mang nghĩa gì?</h2>
+</div>
+<div class="grid grid-cols-1 gap-space-sm">
+<!-- Option A (SELECTED & CORRECT) -->
+<div class="bg-surface-container-lowest rounded-DEFAULT p-space-md shadow-[0_4px_0_0_#2b6c00] bg-surface-bright flex flex-col gap-1 transition-transform">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="w-7 h-7 rounded-full bg-primary-container text-on-primary font-headline-sm text-label-md flex items-center justify-center shadow-sm">A</span>
+<span class="font-headline-sm text-headline-sm text-primary">Con gái (ruột)</span>
+</div>
+<span class="material-symbols-outlined text-primary-container text-[24px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="mt-2 pt-2 bg-surface-container-low rounded-DEFAULT px-3 py-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">lightbulb</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+<strong class="text-on-surface">Ngữ cảnh:</strong> "The baker's daughter" = Con gái của người thợ làm bánh.
+            </p>
+</div>
+</div>
+<!-- Option B -->
+<div class="bg-surface-container-lowest rounded-DEFAULT p-space-md shadow-[0_3px_0_0_#dbd9d9] flex items-center justify-between opacity-60">
+<div class="flex items-center gap-3">
+<span class="w-7 h-7 rounded-full bg-surface-container text-on-surface-variant font-headline-sm text-label-md flex items-center justify-center">B</span>
+<span class="font-body-md text-body-md text-on-surface">Cháu gái (Niece / Granddaughter)</span>
+</div>
+<div class="w-5 h-5 rounded-full bg-surface-container"></div>
+</div>
+<!-- Option C -->
+<div class="bg-surface-container-lowest rounded-DEFAULT p-space-md shadow-[0_3px_0_0_#dbd9d9] flex items-center justify-between opacity-60">
+<div class="flex items-center gap-3">
+<span class="w-7 h-7 rounded-full bg-surface-container text-on-surface-variant font-headline-sm text-label-md flex items-center justify-center">C</span>
+<span class="font-body-md text-body-md text-on-surface">Người mẹ (Mother)</span>
+</div>
+<div class="w-5 h-5 rounded-full bg-surface-container"></div>
+</div>
+<!-- Option D -->
+<div class="bg-surface-container-lowest rounded-DEFAULT p-space-md shadow-[0_3px_0_0_#dbd9d9] flex items-center justify-between opacity-60">
+<div class="flex items-center gap-3">
+<span class="w-7 h-7 rounded-full bg-surface-container text-on-surface-variant font-headline-sm text-label-md flex items-center justify-center">D</span>
+<span class="font-body-md text-body-md text-on-surface">Người giúp việc (Assistant)</span>
+</div>
+<div class="w-5 h-5 rounded-full bg-surface-container"></div>
+</div>
+</div>
+</div>
+<!-- 3. Step 2: Phoneme Segmentation & Phonics Interaction -->
+<div class="bg-surface-container-lowest rounded-DEFAULT p-space-md shadow-sm flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-secondary text-on-secondary font-headline-sm text-label-sm flex items-center justify-center">2</div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Chạm chùm âm tạo ra /ɔː/</h2>
+</div>
+<span class="bg-secondary-fixed text-on-secondary-fixed px-2.5 py-0.5 rounded-full font-label-sm text-label-sm">
+          Long Vowel O
+        </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+        Từ vựng này có tổ hợp nguyên âm đặc biệt. Hãy chọn khối chữ đại diện cho âm <strong class="text-secondary">/ɔː/</strong>:
+      </p>
+<!-- Phonics Interactive Blocks Grid -->
+<div class="grid grid-cols-4 gap-2 pt-1">
+<!-- Block 1: d -->
+<button class="h-16 rounded-DEFAULT bg-surface-container-low flex flex-col items-center justify-center shadow-[0_4px_0_0_#dbd9d9] active:translate-y-1 active:shadow-none transition-all">
+<span class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">d</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">/d/</span>
+</button>
+<!-- Block 2: augh (Target Match - Highlighted) -->
+<button class="h-16 rounded-DEFAULT bg-secondary-fixed flex flex-col items-center justify-center shadow-[0_4px_0_0_#006590] relative active:translate-y-1 active:shadow-none transition-all">
+<div class="absolute -top-2 -right-1 bg-primary-container text-on-primary rounded-full p-0.5 shadow-sm">
+<span class="material-symbols-outlined text-[14px] block">check</span>
+</div>
+<span class="font-headline-lg-mobile text-headline-lg-mobile text-secondary font-extrabold">augh</span>
+<span class="font-label-sm text-label-sm text-on-secondary-fixed font-bold">/ɔː/</span>
+</button>
+<!-- Block 3: t -->
+<button class="h-16 rounded-DEFAULT bg-surface-container-low flex flex-col items-center justify-center shadow-[0_4px_0_0_#dbd9d9] active:translate-y-1 active:shadow-none transition-all">
+<span class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">t</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">/t/</span>
+</button>
+<!-- Block 4: er -->
+<button class="h-16 rounded-DEFAULT bg-surface-container-low flex flex-col items-center justify-center shadow-[0_4px_0_0_#dbd9d9] active:translate-y-1 active:shadow-none transition-all">
+<span class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">er</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">/ər/</span>
+</button>
+</div>
+<!-- Phonics Tip Box -->
+<div class="bg-surface-container-low p-2.5 rounded-DEFAULT flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="font-body-sm text-body-sm text-primary">
+<strong>Xuất sắc!</strong> Trong tiếng Anh, nhóm chữ <em>"augh"</em> câm g, h và phát âm thành <em>/ɔː/</em> (như trong <em>caught, taught</em>).
+        </span>
+</div>
+</div>
+<!-- 4. Step 3: AI Speech Practice & Pronunciation Assessment -->
+<div class="bg-surface-container-lowest rounded-DEFAULT p-space-md shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-tertiary text-on-tertiary font-headline-sm text-label-sm flex items-center justify-center">3</div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Luyện phát âm chuẩn cùng AI:</h2>
+</div>
+<!-- AI Score & Audio Waveform Hero Panel -->
+<div class="bg-surface-container-low rounded-DEFAULT p-space-md flex flex-col gap-space-sm items-center text-center">
+<!-- Floating Score Pill -->
+<div class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-primary-container text-on-primary shadow-[0_2px_0_0_#1e5000]">
+<span class="material-symbols-outlined text-[20px]">verified</span>
+<span class="font-headline-sm text-label-lg">98/100 • Phát âm xuất sắc! 🌟</span>
+</div>
+<!-- Detailed Phoneme Accuracy Breakdowns -->
+<div class="flex items-center justify-center gap-2 w-full pt-1">
+<div class="flex flex-col items-center bg-surface-container-lowest px-3 py-2 rounded-DEFAULT shadow-sm flex-1">
+<span class="font-label-md text-label-md text-on-surface">/d/</span>
+<span class="font-headline-sm text-label-sm text-primary">100%</span>
+</div>
+<div class="flex flex-col items-center bg-secondary-fixed px-3 py-2 rounded-DEFAULT shadow-sm flex-1">
+<span class="font-label-md text-label-md text-secondary">/ɔː/</span>
+<span class="font-headline-sm text-label-sm text-secondary">98%</span>
+</div>
+<div class="flex flex-col items-center bg-surface-container-lowest px-3 py-2 rounded-DEFAULT shadow-sm flex-1">
+<span class="font-label-md text-label-md text-on-surface">/t/</span>
+<span class="font-headline-sm text-label-sm text-primary">95%</span>
+</div>
+<div class="flex flex-col items-center bg-surface-container-lowest px-3 py-2 rounded-DEFAULT shadow-sm flex-1">
+<span class="font-label-md text-label-md text-on-surface">/ər/</span>
+<span class="font-headline-sm text-label-sm text-primary">99%</span>
+</div>
+</div>
+<!-- Audio Waveform Visualizer Playback -->
+<div class="w-full flex items-center justify-center gap-1.5 py-2">
+<div class="w-1.5 h-3 bg-secondary rounded-full"></div>
+<div class="w-1.5 h-6 bg-secondary-container rounded-full"></div>
+<div class="w-1.5 h-9 bg-secondary rounded-full"></div>
+<div class="w-1.5 h-12 bg-secondary rounded-full animate-pulse"></div>
+<div class="w-1.5 h-7 bg-secondary-container rounded-full"></div>
+<div class="w-1.5 h-10 bg-secondary rounded-full animate-pulse"></div>
+<div class="w-1.5 h-5 bg-secondary-container rounded-full"></div>
+<div class="w-1.5 h-8 bg-secondary rounded-full"></div>
+<div class="w-1.5 h-3 bg-secondary rounded-full"></div>
+</div>
+<!-- Dual Playback Micro Action Buttons -->
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface font-label-md text-label-md shadow-[0_2px_0_0_#dbd9d9] active:translate-y-0.5 active:shadow-none flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary text-[20px]">volume_up</span>
+<span class="">Nghe lại máy</span>
+</button>
+<button class="px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface font-label-md text-label-md shadow-[0_2px_0_0_#dbd9d9] active:translate-y-0.5 active:shadow-none flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[20px]">play_circle</span>
+<span class="">Giọng bạn thu</span>
+</button>
+</div>
+</div>
+<!-- Tactile Big Duolingo 3D Microphone Action Center -->
+<div class="flex flex-col items-center justify-center gap-2 pt-2">
+<div class="relative flex items-center justify-center">
+<!-- Pulse wave ambient ring -->
+<div class="absolute w-24 h-24 rounded-full bg-primary-container/20 animate-ping"></div>
+<div class="absolute w-20 h-20 rounded-full bg-primary-container/30"></div>
+<!-- Chunky 3D Push Button -->
+<button class="relative z-10 w-16 h-16 rounded-full bg-primary-container text-on-primary flex items-center justify-center shadow-[0_6px_0_0_#1e5000] active:translate-y-1 active:shadow-[0_2px_0_0_#1e5000] transition-all" id="micBtn">
+<span class="material-symbols-outlined text-[34px]">mic</span>
+</button>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Chạm hoặc giữ mic để thu lại âm thanh</span>
+</div>
+<!-- Passive alternative action -->
+<button class="text-center font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface py-1 transition-colors">
+        Tôi không thể nói lúc này
+      </button>
+</div><!-- 4. Step 4: Spelling & Phonics Letter Assembly Challenge -->
+<div class="bg-surface-container-lowest rounded-DEFAULT p-space-md shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-secondary text-on-secondary font-headline-sm text-label-sm flex items-center justify-center">4</div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Ghép &amp; Viết chính tả: "daughter"</h2>
+</div>
+<span class="bg-primary-fixed text-on-primary-fixed-variant px-2.5 py-0.5 rounded-full font-label-sm text-label-sm uppercase tracking-wider">
+Chính tả chuẩn xác!
+</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+Chạm các mảnh ghép chữ cái hoặc chùm âm vị bên dưới để tạo thành từ hoàn chỉnh:
+</p>
+<!-- Word Construction Slots / Tiles Display -->
+<div class="bg-surface-container-low rounded-DEFAULT p-space-md flex flex-col items-center justify-center gap-space-sm">
+<div class="flex items-center justify-center gap-1.5 flex-wrap w-full">
+<!-- Slot 1: d -->
+<div class="flex flex-col items-center gap-1">
+<div class="w-10 h-12 rounded-DEFAULT bg-surface-container-lowest border-2 border-primary-container text-primary font-headline-lg-mobile text-headline-lg-mobile font-black flex items-center justify-center shadow-[0_3px_0_0_#1e5000]">d</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">/d/</span>
+</div>
+<!-- Slot 2: augh (Phoneme group highlighted) -->
+<div class="flex flex-col items-center gap-1">
+<div class="px-2.5 h-12 rounded-DEFAULT bg-secondary-fixed border-2 border-secondary text-secondary font-headline-lg-mobile text-headline-lg-mobile font-black flex items-center justify-center shadow-[0_3px_0_0_#006590]">augh</div>
+<span class="font-label-sm text-label-sm text-secondary font-bold">/ɔː/</span>
+</div>
+<!-- Slot 3: t -->
+<div class="flex flex-col items-center gap-1">
+<div class="w-10 h-12 rounded-DEFAULT bg-surface-container-lowest border-2 border-primary-container text-primary font-headline-lg-mobile text-headline-lg-mobile font-black flex items-center justify-center shadow-[0_3px_0_0_#1e5000]">t</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">/t/</span>
+</div>
+<!-- Slot 4: er -->
+<div class="flex flex-col items-center gap-1">
+<div class="px-2.5 h-12 rounded-DEFAULT bg-surface-container-lowest border-2 border-primary-container text-primary font-headline-lg-mobile text-headline-lg-mobile font-black flex items-center justify-center shadow-[0_3px_0_0_#1e5000]">er</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">/ər/</span>
+</div>
+</div>
+<!-- Audio replay button for spelling -->
+<div class="pt-1 flex items-center gap-2">
+<button class="px-3 py-1.5 rounded-full bg-surface-container-lowest text-on-surface font-label-sm text-label-sm shadow-[0_2px_0_0_#dbd9d9] active:translate-y-0.5 active:shadow-none flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-[18px]">volume_up</span>
+<span class="">Phát âm mẫu</span>
+</button>
+<span class="text-label-sm text-primary font-bold flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[16px]">check_circle</span> 8/8 ký tự đúng
+</span>
+</div>
+</div>
+<!-- Letter Bank / Scrambled Pieces -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant px-1">
+<span class="">Ngân hàng âm vị / ký tự:</span>
+<span class="text-secondary">Chạm để gỡ hoặc xếp</span>
+</div>
+<div class="grid grid-cols-4 gap-2">
+<button class="h-12 rounded-DEFAULT bg-surface-container-high opacity-60 text-on-surface-variant font-headline-sm text-headline-sm flex items-center justify-center shadow-none cursor-default">
+d
+</button>
+<button class="h-12 rounded-DEFAULT bg-surface-container-high opacity-60 text-on-surface-variant font-headline-sm text-headline-sm flex items-center justify-center shadow-none cursor-default">
+augh
+</button>
+<button class="h-12 rounded-DEFAULT bg-surface-container-high opacity-60 text-on-surface-variant font-headline-sm text-headline-sm flex items-center justify-center shadow-none cursor-default">
+t
+</button>
+<button class="h-12 rounded-DEFAULT bg-surface-container-high opacity-60 text-on-surface-variant font-headline-sm text-headline-sm flex items-center justify-center shadow-none cursor-default">
+er
+</button>
+</div>
+</div>
+<!-- Spelling Tip / Phonics Rule Notice -->
+<div class="bg-surface-container-low p-2.5 rounded-DEFAULT flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px] flex-shrink-0">edit_note</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">
+<strong class="text-on-surface">Mẹo chính tả:</strong> Nhớ mẹo <em>"d-augh-t-er"</em>: cụm <strong>-augh-</strong> xuất hiện trong các từ quá khứ và danh từ cổ (daughter, caught, taught, naughty).
+</span>
+</div>
+</div>
+</div>
+<!-- 5. Bottom Sticky Duolingo Celebration Sheet -->
+<div class="fixed bottom-0 left-0 right-0 z-50 bg-surface-container-lowest shadow-[0_-4px_24px_rgba(0,0,0,0.08)] pb-safe">
+<!-- Feedback Ribbon -->
+<div class="bg-primary-fixed p-space-md flex flex-col gap-space-sm">
+<div class="flex items-center gap-3">
+<!-- 3D Check Circle Icon -->
+<div class="w-12 h-12 rounded-full bg-primary-container text-on-primary flex items-center justify-center shadow-[0_3px_0_0_#1e5000] flex-shrink-0">
+<span class="material-symbols-outlined text-[28px] font-black">check</span>
+</div>
+<div class="flex flex-col min-w-0">
+<h3 class="font-headline-sm text-headline-sm text-on-primary-fixed font-black">Chính xác tuyệt đối!</h3>
+<p class="font-body-sm text-body-sm text-on-primary-fixed-variant truncate">
+            Đã làm chủ từ vựng 'daughter' theo ngữ cảnh (+20 XP)
+          </p>
+</div>
+</div>
+<!-- Next Random Target Word Preview -->
+<div class="bg-surface-container-lowest/80 backdrop-blur-sm rounded-DEFAULT px-3 py-1.5 flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Từ ngẫu nhiên tiếp theo:</span>
+<span class="font-headline-sm text-label-md text-secondary">"autumn" hoặc "laugh"</span>
+</div>
+<!-- Big Duolingo Continue 3D Push Button -->
+<button class="w-full py-3.5 px-space-md rounded-DEFAULT bg-primary-container text-on-primary font-headline-sm text-label-lg uppercase tracking-wide shadow-[0_5px_0_0_#1e5000] active:translate-y-1 active:shadow-[0_1px_0_0_#1e5000] transition-all flex items-center justify-center gap-2">
+<span class="">TIẾP TỤC BÀI ĐỌC</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<script>
+  // Interactive micro-feedback for Target Word and Mic Buttons
+  const targetWordBtn = document.getElementById('targetWordBtn');
+  if (targetWordBtn) {
+    targetWordBtn.addEventListener('click', () => {
+      targetWordBtn.classList.add('scale-105');
+      setTimeout(() => targetWordBtn.classList.remove('scale-105'), 180);
+    });
+  }
+
+  const micBtn = document.getElementById('micBtn');
+  if (micBtn) {
+    micBtn.addEventListener('click', () => {
+      micBtn.classList.toggle('bg-error');
+      setTimeout(() => {
+        micBtn.classList.remove('bg-error');
+      }, 1000);
+    });
+  }
+</script></main>
+
+</body></html>

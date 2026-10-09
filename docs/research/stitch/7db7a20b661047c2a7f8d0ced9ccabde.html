@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,400..800;1,6..12,400..800&amp;family=Plus+Jakarta+Sans:ital,wght@0,400..800;1,400..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-tertiary-fixed": "#241a00", "outline": "#6f7b64", "on-primary-fixed-variant": "#1f5100", "on-tertiary-container": "#574300", "on-error": "#ffffff", "on-background": "#1b1c1c", "tertiary-fixed-dim": "#f4bf00", "surface-container-highest": "#e4e2e2", "surface-variant": "#e4e2e2", "inverse-on-surface": "#f2f0f0", "surface-container-lowest": "#ffffff", "secondary": "#006590", "on-secondary-fixed-variant": "#004c6e", "primary-container": "#58cc02", "surface-dim": "#dbd9d9", "surface-container-high": "#eae8e7", "surface-container": "#efeded", "on-surface-variant": "#3f4a36", "surface-tint": "#2b6c00", "on-secondary": "#ffffff", "on-secondary-container": "#004666", "inverse-primary": "#6be026", "surface": "#fbf9f8", "outline-variant": "#becbb1", "secondary-fixed": "#c8e6ff", "error": "#ba1a1a", "on-secondary-fixed": "#001e2e", "on-surface": "#1b1c1c", "secondary-container": "#2fb8ff", "on-tertiary": "#ffffff", "primary-fixed-dim": "#6be026", "error-container": "#ffdad6", "on-primary-fixed": "#082100", "on-primary-container": "#1e5000", "surface-bright": "#fbf9f8", "primary": "#2b6c00", "on-error-container": "#93000a", "secondary-fixed-dim": "#88ceff", "background": "#fbf9f8", "inverse-surface": "#303030", "on-primary": "#ffffff", "primary-fixed": "#87fe45", "tertiary-fixed": "#ffdf92", "tertiary-container": "#ddad00", "surface-container-low": "#f5f3f3", "tertiary": "#755b00", "on-tertiary-fixed-variant": "#594400" }, "borderRadius": { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" }, "spacing": { "space-lg": "1.5rem", "margin-tablet": "2rem", "margin": "1rem", "space-xs": "0.25rem", "space-sm": "0.5rem", "gutter-desktop": "1.5rem", "gutter-tablet": "1.25rem", "space-md": "1rem", "margin-desktop": "3rem", "gutter": "1rem", "space-xl": "2rem" }, "fontFamily": { "headline-lg-mobile": [ "Plus Jakarta Sans" ], "headline-xl": [ "Plus Jakarta Sans" ], "headline-lg": [ "Plus Jakarta Sans" ], "headline-xl-mobile": [ "Plus Jakarta Sans" ], "headline-md": [ "Plus Jakarta Sans" ], "body-lg": [ "Nunito Sans" ], "body-md": [ "Nunito Sans" ], "label-md": [ "Plus Jakarta Sans" ], "headline-sm": [ "Plus Jakarta Sans" ], "body-sm": [ "Nunito Sans" ], "label-sm": [ "Plus Jakarta Sans" ], "label-lg": [ "Plus Jakarta Sans" ] }, "fontSize": { "headline-lg-mobile": [ "24px", { "lineHeight": "32px", "fontWeight": "800" } ], "headline-xl": [ "36px", { "lineHeight": "44px", "fontWeight": "800" } ], "headline-lg": [ "28px", { "lineHeight": "36px", "fontWeight": "800" } ], "headline-xl-mobile": [ "28px", { "lineHeight": "36px", "fontWeight": "800" } ], "headline-md": [ "22px", { "lineHeight": "28px", "fontWeight": "700" } ], "body-lg": [ "18px", { "lineHeight": "26px", "fontWeight": "600" } ], "body-md": [ "16px", { "lineHeight": "24px", "fontWeight": "600" } ], "label-md": [ "14px", { "lineHeight": "18px", "fontWeight": "700" } ], "headline-sm": [ "18px", { "lineHeight": "24px", "fontWeight": "700" } ], "body-sm": [ "14px", { "lineHeight": "20px", "fontWeight": "500" } ], "label-sm": [ "12px", { "lineHeight": "16px", "fontWeight": "700" } ], "label-lg": [ "16px", { "lineHeight": "20px", "fontWeight": "800" } ] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest z-50 flex flex-col justify-between py-space-lg px-margin"><div class="flex flex-col gap-space-lg"><div class="flex items-center gap-space-sm px-space-xs"><img alt="PhonoLogic Duolingo Style Mascot Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0nNpUbnGlKdrr8s0RkSHv1vbUW7KhNwkMOGervohwge-2Zwi7QwTNV7htawTt111nlfkt6LIj7iLpWY47bbYIbXrC8_V7tcv5sHkNISMTls6XX7XjRzd0IK8fv4eoJJrdEY3U7NNIiHu0XSDY_ykWPamxwG-FVS8qiS6XI7WcGtMfJczr-0rkvHu_x9OHBRTePwxPcSPgfgQlB_RwVcwblLjocJXle29btAACK_9QXXzvq7i5QpxNfQ"/><span class="font-headline-md text-headline-md tracking-tight uppercase text-primary font-extrabold">PhonoLogic</span></div><nav class="flex flex-col gap-space-xs" data-active-classes="bg-secondary-fixed text-on-secondary-fixed font-headline-sm text-headline-sm rounded-lg"><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all font-label-lg text-label-lg uppercase tracking-wide" data-path="hoc-bai" href="#"><span class="material-symbols-outlined text-[24px]">school</span><span>Học Bài</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all font-label-lg text-label-lg uppercase tracking-wide" data-path="luyen-phan-xa" href="#"><span class="material-symbols-outlined text-[24px]">bolt</span><span>Luyện Phản Xạ</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all font-label-lg text-label-lg uppercase tracking-wide" data-path="ma-tran-quy-tac" href="#"><span class="material-symbols-outlined text-[24px]">grid_view</span><span>Ma Trận Quy Tắc</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all font-label-lg text-label-lg uppercase tracking-wide" data-path="tu-vung-va-am-vi" href="#"><span class="material-symbols-outlined text-[24px]">record_voice_over</span><span>Từ Vựng &amp; Âm Vị</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all font-label-lg text-label-lg uppercase tracking-wide" data-path="bang-xep-hang" href="#"><span class="material-symbols-outlined text-[24px]">leaderboard</span><span>Bảng Xếp Hạng</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all font-label-lg text-label-lg uppercase tracking-wide" data-path="cua-hang" href="#"><span class="material-symbols-outlined text-[24px]">storefront</span><span>Cửa Hàng</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all font-label-lg text-label-lg uppercase tracking-wide" data-path="xem-them" href="#"><span class="material-symbols-outlined text-[24px]">more_horiz</span><span>Xem Thêm</span></a></nav></div><div class="px-space-xs"><div class="bg-surface-container p-space-md rounded-lg flex items-center gap-space-sm"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEBBzPUz3Jd4qEKPTUsTnxJsRQez1u-_NI9PN1Qlaz_QyAdufHbB678ErTGcl0YOxnYTnTGLZErwboXsqGvewI8V-rz9Ph8n89TMt5MI_uMOyCyrdHCGY6iENWLs-GMB85kTfEZiyv6IT12XWoLkoBxQkRVLyl3JW2rVyqmD84Y7veTaMVSnCqa6GCKSPVlvJWfzwU1vlrZTQRFwf-30I15t03S7NRdLj8YUxgMaH6NUBndBO8OcIgvQ"/><div class="flex flex-col min-w-0"><span class="font-label-md text-label-md text-on-surface truncate">Cao Thủ Âm Vị</span><span class="font-label-sm text-label-sm text-on-surface-variant">Cấp 14</span></div></div></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-16 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-xl"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs bg-surface-container-low px-space-md py-space-xs rounded-full shadow-[0_2px_0_0_rgba(0,0,0,0.06)]"><span class="material-symbols-outlined text-tertiary-container text-[20px]">local_fire_department</span><span class="font-label-md text-label-md text-on-surface font-extrabold">7 Ngày</span></div><div class="flex items-center gap-space-xs bg-surface-container-low px-space-md py-space-xs rounded-full shadow-[0_2px_0_0_rgba(0,0,0,0.06)]"><span class="material-symbols-outlined text-secondary text-[20px]">diamond</span><span class="font-label-md text-label-md text-on-surface font-extrabold">1,420 Đá Quý</span></div><div class="flex items-center gap-space-xs bg-surface-container-low px-space-md py-space-xs rounded-full shadow-[0_2px_0_0_rgba(0,0,0,0.06)]"><span class="material-symbols-outlined text-error text-[20px]">favorite</span><span class="font-label-md text-label-md text-on-surface font-extrabold">5/5</span></div></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs bg-surface-container-low py-space-xs px-space-sm rounded-full"><span class="material-symbols-outlined text-primary text-[22px]">military_tech</span><span class="font-label-md text-label-md text-on-surface font-bold">Cúp Vàng</span></div><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEBBzPUz3Jd4qEKPTUsTnxJsRQez1u-_NI9PN1Qlaz_QyAdufHbB678ErTGcl0YOxnYTnTGLZErwboXsqGvewI8V-rz9Ph8n89TMt5MI_uMOyCyrdHCGY6iENWLs-GMB85kTfEZiyv6IT12XWoLkoBxQkRVLyl3JW2rVyqmD84Y7veTaMVSnCqa6GCKSPVlvJWfzwU1vlrZTQRFwf-30I15t03S7NRdLj8YUxgMaH6NUBndBO8OcIgvQ"/></div></header><main class="relative pt-16 bg-surface min-h-screen"><div class="flex flex-col w-full">
+<!-- Interactive PhonoLogic Quiz View Container -->
+<div class="w-full max-w-[1280px] mx-auto px-margin md:px-margin-tablet lg:px-space-xl py-space-md pb-36">
+<!-- Top Gamified Quiz Header -->
+<div class="w-full flex items-center justify-between gap-space-md mb-space-lg bg-surface-container-lowest p-space-md rounded-lg shadow-sm">
+<!-- Exit Button -->
+<button aria-label="Đóng bài tập" class="w-10 h-10 rounded-full flex items-center justify-center bg-surface-container-low hover:bg-surface-container text-on-surface-variant transition-transform active:scale-95" type="button">
+<span class="material-symbols-outlined font-bold text-[24px]">close</span>
+</button>
+<!-- Smooth Progress Bar -->
+<div class="flex-1 max-w-xl mx-space-sm">
+<div class="flex items-center justify-between mb-space-xs px-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Tiến trình thử thách</span>
+<span class="font-label-md text-label-md text-primary font-extrabold">6 / 10 câu</span>
+</div>
+<div class="h-4 w-full bg-surface-container rounded-full overflow-hidden p-0.5">
+<div class="h-full bg-primary-container rounded-full transition-all duration-500 ease-out shadow-[inset_0_-2px_0_rgba(0,0,0,0.15)]" style="width: 60%;"></div>
+</div>
+</div>
+<!-- Live Streak Combo & Hearts -->
+<div class="flex items-center gap-space-sm">
+<!-- Combo Streak Badge -->
+<div class="flex items-center gap-1 bg-surface-container-low px-space-md py-space-xs rounded-full shadow-[0_3px_0_0_rgba(0,0,0,0.06)]">
+<span class="material-symbols-outlined text-tertiary-container text-[22px]" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+<div class="flex flex-col leading-none">
+<span class="font-label-sm text-label-sm text-tertiary font-extrabold">COMBO</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-black">x5</span>
+</div>
+</div>
+<!-- Heart Meter -->
+<div class="flex items-center gap-1 bg-surface-container-low px-space-md py-space-xs rounded-full shadow-[0_3px_0_0_rgba(0,0,0,0.06)]">
+<span class="material-symbols-outlined text-error text-[22px]" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-extrabold">5/5</span>
+</div>
+</div>
+</div>
+<!-- Mode Badge & XP Incentive Strip -->
+<div class="flex flex-wrap items-center justify-between gap-space-sm mb-space-md px-space-xs">
+<div class="inline-flex items-center gap-space-xs bg-secondary-fixed text-on-secondary-fixed px-space-md py-1.5 rounded-full shadow-sm">
+<span class="material-symbols-outlined text-[18px]">psychology</span>
+<span class="font-label-md text-label-md uppercase tracking-wider">Chế độ 1: Âm (IPA) ➔ Tổ hợp chữ</span>
+</div>
+<div class="inline-flex items-center gap-1 bg-tertiary-fixed text-on-tertiary-fixed px-space-md py-1 rounded-full shadow-sm">
+<span class="material-symbols-outlined text-[18px]">stars</span>
+<span class="font-label-lg text-label-lg font-black">+10 XP KHI HOÀN THÀNH</span>
+</div>
+</div>
+<!-- Main Workspace: Asymmetric 2-Column Split (Lesson Stage vs Reflex Matrix) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- Left / Center: Interactive Practice Arena (8 cols) -->
+<section class="lg:col-span-8 flex flex-col gap-space-md">
+<!-- Mascot Speech Bubble Card -->
+<div class="flex items-start gap-space-md bg-surface-container-lowest p-space-md rounded-lg shadow-sm">
+<!-- Stylized Owl Mascot Avatar -->
+<div class="relative flex-shrink-0">
+<div class="w-16 h-16 rounded-2xl bg-secondary-container flex items-center justify-center shadow-[0_4px_0_0_#006590]">
+<span class="material-symbols-outlined text-[38px] text-on-secondary">smart_toy</span>
+</div>
+<div class="absolute -bottom-1 -right-1 bg-primary-container text-on-primary-container rounded-full p-0.5 flex items-center justify-center">
+<span class="material-symbols-outlined text-[14px]">volume_up</span>
+</div>
+</div>
+<!-- Dialog Bubble -->
+<div class="relative flex-1 bg-surface-container-low p-space-md rounded-2xl shadow-[0_3px_0_0_rgba(0,0,0,0.05)]">
+<span class="font-headline-sm text-headline-sm text-on-surface block mb-1">Thử thách nhận diện âm!</span>
+<p class="font-body-md text-body-md text-on-surface-variant">
+              Nghe âm mẫu cẩn thận và chọn <span class="text-primary font-extrabold uppercase">tất cả</span> các tổ hợp chữ cái (spelling combinations) có thể tạo ra âm này trong tiếng Anh!
+            </p>
+</div>
+</div>
+<!-- Central Prominent Target Sound Card -->
+<div class="bg-surface-container-lowest rounded-lg p-space-lg shadow-sm flex flex-col items-center text-center">
+<div class="flex items-center gap-space-xs text-on-surface-variant mb-space-xs">
+<span class="material-symbols-outlined text-[20px] text-secondary">graphic_eq</span>
+<span class="font-label-md text-label-md uppercase tracking-wider">Âm IPA mục tiêu: Nguyên âm đôi (Diphthong)</span>
+</div>
+<!-- Big IPA Symbol Display -->
+<div class="my-space-xs flex items-baseline justify-center gap-space-sm">
+<span class="font-headline-xl text-headline-xl text-secondary font-black tracking-wide drop-shadow-sm">/eɪ/</span>
+<span class="font-headline-sm text-headline-sm text-on-surface-variant font-bold">(Face, Cake, Day, Steak)</span>
+</div>
+<!-- Master Audio Waveform Button -->
+<button aria-label="Phát âm mẫu /eɪ/" class="mt-space-sm group flex items-center justify-center gap-space-md px-space-xl py-3 rounded-full bg-secondary-container hover:brightness-105 active:translate-y-1 text-on-secondary transition-all shadow-[0_5px_0_0_#006590] active:shadow-[0_1px_0_0_#006590]" id="master-audio-btn" type="button">
+<span class="material-symbols-outlined text-[30px] transition-transform group-hover:scale-110">volume_up</span>
+<span class="font-label-lg text-label-lg tracking-wide uppercase font-extrabold text-on-secondary">Bấm nghe phát âm mẫu (/eɪ/)</span>
+<!-- Lively Waveform Bars -->
+<div class="flex items-center gap-1 h-6 px-1">
+<span class="w-1.5 h-3 bg-on-secondary rounded-full animate-pulse"></span>
+<span class="w-1.5 h-6 bg-on-secondary rounded-full animate-bounce"></span>
+<span class="w-1.5 h-4 bg-on-secondary rounded-full animate-pulse"></span>
+<span class="w-1.5 h-5 bg-on-secondary rounded-full animate-bounce"></span>
+<span class="w-1.5 h-2 bg-on-secondary rounded-full animate-pulse"></span>
+</div>
+</button>
+</div>
+<!-- Instructional Sub-label -->
+<div class="flex items-center justify-between px-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface font-extrabold flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[22px]">checklist</span>
+            Chọn các thẻ tổ hợp chữ phù hợp:
+          </span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-bold bg-surface-container px-space-sm py-1 rounded-full">
+            Được chọn nhiều đáp án
+          </span>
+</div>
+<!-- 4-Card Multi-Choice Option Grid with Tactile Extrusion -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+<!-- OPTION A (Correct & Pre-selected state) -->
+<div aria-checked="true" class="group relative cursor-pointer select-none rounded-lg p-space-md transition-all duration-150 transform active:translate-y-1 bg-secondary-fixed text-on-secondary-fixed shadow-[0_5px_0_0_#006590] active:shadow-[0_1px_0_0_#006590]" role="checkbox" tabindex="0">
+<div class="flex items-start justify-between gap-space-sm mb-space-sm">
+<span class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-surface-container-lowest text-secondary font-headline-sm text-headline-sm font-black shadow-sm">A</span>
+<span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary-container text-on-primary-container shadow-sm">
+<span class="material-symbols-outlined text-[20px] font-black">check</span>
+</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="font-headline-lg text-headline-lg text-on-secondary-fixed font-black tracking-wide">ai, ay, a-e</span>
+<div class="inline-flex items-center gap-1 bg-surface-container-lowest/80 px-2 py-0.5 rounded w-fit">
+<span class="font-label-sm text-label-sm text-primary font-black uppercase">Phổ biến 70%</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface mt-1">
+                Ví dụ: <strong class="underline decoration-secondary">train</strong>, <strong class="underline decoration-secondary">day</strong>, <strong class="underline decoration-secondary">cake</strong>
+</p>
+</div>
+</div>
+<!-- OPTION B (Correct & Pre-selected state) -->
+<div aria-checked="true" class="group relative cursor-pointer select-none rounded-lg p-space-md transition-all duration-150 transform active:translate-y-1 bg-secondary-fixed text-on-secondary-fixed shadow-[0_5px_0_0_#006590] active:shadow-[0_1px_0_0_#006590]" role="checkbox" tabindex="0">
+<div class="flex items-start justify-between gap-space-sm mb-space-sm">
+<span class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-surface-container-lowest text-secondary font-headline-sm text-headline-sm font-black shadow-sm">B</span>
+<span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary-container text-on-primary-container shadow-sm">
+<span class="material-symbols-outlined text-[20px] font-black">check</span>
+</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="font-headline-lg text-headline-lg text-on-secondary-fixed font-black tracking-wide">ea, ey, eigh</span>
+<div class="inline-flex items-center gap-1 bg-surface-container-lowest/80 px-2 py-0.5 rounded w-fit">
+<span class="font-label-sm text-label-sm text-tertiary font-black uppercase">Ngoại lệ đặc biệt</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface mt-1">
+                Ví dụ: <strong class="underline decoration-secondary">steak</strong>, <strong class="underline decoration-secondary">they</strong>, <strong class="underline decoration-secondary">eight</strong>
+</p>
+</div>
+</div>
+<!-- OPTION C (Distractor / Unselected Neutral State) -->
+<div aria-checked="false" class="group relative cursor-pointer select-none rounded-lg p-space-md transition-all duration-150 transform active:translate-y-1 bg-surface-container-lowest text-on-surface shadow-[0_5px_0_0_#eae8e7] active:shadow-[0_1px_0_0_#eae8e7] hover:bg-surface-container-low" role="checkbox" tabindex="0">
+<div class="flex items-start justify-between gap-space-sm mb-space-sm">
+<span class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-surface-container text-on-surface-variant font-headline-sm text-headline-sm font-black">C</span>
+<span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-surface-container text-on-surface-variant opacity-60">
+<span class="material-symbols-outlined text-[18px]">radio_button_unchecked</span>
+</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="font-headline-lg text-headline-lg text-on-surface font-extrabold tracking-wide">ee, ea, ie</span>
+<div class="inline-flex items-center gap-1 bg-error-container/60 px-2 py-0.5 rounded w-fit">
+<span class="font-label-sm text-label-sm text-on-error-container font-bold uppercase">Bẫy thường gặp</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">
+                Tạo âm <strong class="text-error font-extrabold">/iː/</strong> (tree, sea, piece)
+              </p>
+</div>
+</div>
+<!-- OPTION D (Distractor / Unselected Neutral State) -->
+<div aria-checked="false" class="group relative cursor-pointer select-none rounded-lg p-space-md transition-all duration-150 transform active:translate-y-1 bg-surface-container-lowest text-on-surface shadow-[0_5px_0_0_#eae8e7] active:shadow-[0_1px_0_0_#eae8e7] hover:bg-surface-container-low" role="checkbox" tabindex="0">
+<div class="flex items-start justify-between gap-space-sm mb-space-sm">
+<span class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-surface-container text-on-surface-variant font-headline-sm text-headline-sm font-black">D</span>
+<span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-surface-container text-on-surface-variant opacity-60">
+<span class="material-symbols-outlined text-[18px]">radio_button_unchecked</span>
+</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="font-headline-lg text-headline-lg text-on-surface font-extrabold tracking-wide">oa, ow, o-e</span>
+<div class="inline-flex items-center gap-1 bg-error-container/60 px-2 py-0.5 rounded w-fit">
+<span class="font-label-sm text-label-sm text-on-error-container font-bold uppercase">Bẫy nguyên âm</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">
+                Tạo âm <strong class="text-error font-extrabold">/oʊ/</strong> (boat, snow, home)
+              </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Column: Phản Xạ 4 Chiều & Mẹo Quy Tắc Rail (4 cols) -->
+<aside class="lg:col-span-4 flex flex-col gap-space-md">
+<!-- 4-Dimensional Reflex Tracker Card -->
+<div class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm">
+<div class="flex items-center justify-between pb-space-sm mb-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-[22px]">swap_driving_apps_wheel</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-extrabold uppercase tracking-tight">Phản Xạ 4 Chiều</h3>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-black bg-primary-fixed/50 px-2 py-0.5 rounded-full">Level 3</span>
+</div>
+<!-- Dimension Step List -->
+<div class="flex flex-col gap-space-xs">
+<!-- Step 1: Active -->
+<div class="flex items-center justify-between p-space-sm rounded-xl bg-secondary-fixed text-on-secondary-fixed shadow-[0_2px_0_0_#006590]">
+<div class="flex items-center gap-space-xs min-w-0">
+<span class="w-6 h-6 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-label-sm text-label-sm font-black">1</span>
+<span class="font-label-md text-label-md font-extrabold truncate">Âm ➔ Chữ viết</span>
+</div>
+<span class="font-label-sm text-label-sm bg-surface-container-lowest text-secondary px-2 py-0.5 rounded-full font-black">3/5 câu</span>
+</div>
+<!-- Step 2: Upcoming -->
+<div class="flex items-center justify-between p-space-sm rounded-xl bg-surface-container-low text-on-surface-variant">
+<div class="flex items-center gap-space-xs min-w-0">
+<span class="w-6 h-6 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center font-label-sm text-label-sm font-bold">2</span>
+<span class="font-label-md text-label-md truncate">Chữ ➔ Âm vị</span>
+</div>
+<span class="material-symbols-outlined text-[18px]">lock</span>
+</div>
+<!-- Step 3: Upcoming -->
+<div class="flex items-center justify-between p-space-sm rounded-xl bg-surface-container-low text-on-surface-variant">
+<div class="flex items-center gap-space-xs min-w-0">
+<span class="w-6 h-6 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center font-label-sm text-label-sm font-bold">3</span>
+<span class="font-label-md text-label-md truncate">Từ ví dụ ➔ Âm IPA</span>
+</div>
+<span class="material-symbols-outlined text-[18px]">lock</span>
+</div>
+<!-- Step 4: Upcoming -->
+<div class="flex items-center justify-between p-space-sm rounded-xl bg-surface-container-low text-on-surface-variant">
+<div class="flex items-center gap-space-xs min-w-0">
+<span class="w-6 h-6 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center font-label-sm text-label-sm font-bold">4</span>
+<span class="font-label-md text-label-md truncate">Âm ➔ Nhận diện Từ</span>
+</div>
+<span class="material-symbols-outlined text-[18px]">lock</span>
+</div>
+</div>
+</div>
+<!-- Phonetics Mnemonic Box -->
+<div class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm">
+<div class="flex items-center gap-space-xs text-tertiary mb-space-sm">
+<span class="material-symbols-outlined text-[22px]">lightbulb</span>
+<h3 class="font-headline-sm text-headline-sm font-extrabold uppercase">Mẹo Phản Xạ Quy Tắc</h3>
+</div>
+<div class="bg-tertiary-fixed text-on-tertiary-fixed p-space-sm rounded-xl mb-space-sm">
+<p class="font-body-md text-body-md font-bold leading-snug">
+              Âm <span class="font-black text-headline-sm text-headline-sm">/eɪ/</span> có tới 8 cách viết khác nhau!
+            </p>
+<p class="font-body-sm text-body-sm mt-1">
+              Nhớ bộ ba ngoại lệ kinh điển của chữ <strong class="underline">"ea"</strong>: <span class="font-bold">steak, great, break</span>!
+            </p>
+</div>
+<!-- Quick Reference Chips -->
+<div class="space-y-1.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider block">Bảng tra nhanh âm /eɪ/:</span>
+<div class="flex flex-wrap gap-1.5">
+<span class="bg-surface-container px-2 py-1 rounded-md font-label-sm text-label-sm text-on-surface font-extrabold">a_e: late</span>
+<span class="bg-surface-container px-2 py-1 rounded-md font-label-sm text-label-sm text-on-surface font-extrabold">ai: rain</span>
+<span class="bg-surface-container px-2 py-1 rounded-md font-label-sm text-label-sm text-on-surface font-extrabold">ay: play</span>
+<span class="bg-surface-container px-2 py-1 rounded-md font-label-sm text-label-sm text-on-surface font-extrabold">ey: obey</span>
+<span class="bg-surface-container px-2 py-1 rounded-md font-label-sm text-label-sm text-on-surface font-extrabold">eigh: weight</span>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</div>
+<!-- Duolingo Style Fixed Bottom Action Drawer (Success Banner) -->
+<div class="fixed bottom-0 left-64 right-0 z-40 bg-primary-fixed/40 backdrop-blur-md shadow-[0_-4px_16px_rgba(43,108,0,0.08)] py-space-md px-margin md:px-margin-tablet lg:px-space-xl">
+<div class="max-w-[1280px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-space-md">
+<!-- Left Feedback Message -->
+<div class="flex items-center gap-space-md w-full sm:w-auto">
+<div class="w-14 h-14 rounded-full bg-surface-container-lowest text-primary flex items-center justify-center shadow-[0_4px_0_0_#87fe45] flex-shrink-0">
+<span class="material-symbols-outlined text-[36px] font-black">check_circle</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-headline-md text-headline-md text-primary font-black tracking-tight leading-tight">Chính xác xuất sắc!</span>
+<span class="font-body-md text-body-md text-on-surface font-bold">
+            Tổ hợp <code class="bg-surface-container-lowest px-1.5 py-0.5 rounded text-primary">ai, ay</code> và nhóm ngoại lệ <code class="bg-surface-container-lowest px-1.5 py-0.5 rounded text-primary">ea, eigh</code> đều phát âm thành /eɪ/.
+          </span>
+</div>
+</div>
+<!-- Right 3D Duolingo Continue Action Button -->
+<div class="flex items-center gap-space-md w-full sm:w-auto justify-end">
+<button class="w-full sm:w-auto min-w-[200px] px-space-xl py-3.5 bg-primary-container text-on-primary font-headline-sm text-headline-sm tracking-wide uppercase font-black rounded-2xl shadow-[0_5px_0_0_#1e5000] hover:brightness-105 active:translate-y-1 active:shadow-[0_1px_0_0_#1e5000] transition-all flex items-center justify-center gap-space-xs" id="continue-action-btn" type="button">
+<span>Tiếp tục</span>
+<span class="material-symbols-outlined text-[24px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Inline Interaction Logic for Selection & Hotkey Feedback -->
+<script>
+    (function() {
+      // Audio button pulse microinteraction
+      const audioBtn = document.getElementById('master-audio-btn');
+      if (audioBtn) {
+        audioBtn.addEventListener('click', function() {
+          audioBtn.classList.add('scale-95');
+          setTimeout(() => audioBtn.classList.remove('scale-95'), 150);
+        });
+      }
+
+      // Continue action keyboard shortcut (Enter key triggers next)
+      window.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+          const continueBtn = document.getElementById('continue-action-btn');
+          if (continueBtn) {
+            continueBtn.classList.add('translate-y-1');
+            setTimeout(() => continueBtn.classList.remove('translate-y-1'), 150);
+          }
+        }
+      });
+    })();
+  </script>
+</div></main></div></body></html>
