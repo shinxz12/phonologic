@@ -271,9 +271,9 @@ export function SpeakingExercise({
                   </svg>
 
                   {/* Center Percentage Display */}
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
+                  <div className="absolute inset-0 flex items-center justify-center text-center pointer-events-none">
                     <span
-                      className={`font-display font-black text-2xl tracking-tight ${
+                      className={`font-display font-black text-3xl tracking-tight ${
                         scoreResult.score >= 80
                           ? 'text-emerald-700'
                           : scoreResult.score >= 65
@@ -284,15 +284,6 @@ export function SpeakingExercise({
                       }`}
                     >
                       {scoreResult.score}%
-                    </span>
-                    <span className="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">
-                      {scoreResult.score >= 80
-                        ? t('Chuẩn xác')
-                        : scoreResult.score >= 65
-                        ? t('Khá tốt')
-                        : scoreResult.score >= 45
-                        ? t('Cần cải thiện')
-                        : t('Thử lại')}
                     </span>
                   </div>
                 </div>
