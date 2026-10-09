@@ -3,6 +3,11 @@ import { useTranslation } from 'react-i18next';
 import type { Accent } from '@phonologic/shared-types';
 import { useAudioRecorder } from '../useAudioRecorder';
 import { playBrowserTts } from '../audioUtils';
+import {
+  scorePronunciation,
+  startClientSpeechRecognition,
+  type PronunciationScoreResult,
+} from '../pronunciationScorer';
 import { Button, AudioControl, Card, Badge, Icon } from '../../../components';
 
 export interface SpeakingExerciseProps {
@@ -44,8 +49,80 @@ export function SpeakingExercise({
   const [isPlayingRecorded, setIsPlayingRecorded] = useState(false);
   const [speed, setSpeed] = useState<'0.75x' | '1x'>('0.75x');
   const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [scoreResult, setScoreResult] = useState<PronunciationScoreResult | null>(null);
+  const recognitionRef = useRef<{ stop: () => void; isSupported: boolean } | null>(null);
+  const transcriptRef = useRef<{ transcript: string; confidence: number }>({ transcript: '', confidence: 0 });
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const pressStartTimeRef = useRef<number>(0);
+  const autoStopTimeoutRef = useRef<number | null>(null);
 
+  const handlePointerDown = async () => {
+    if (status === 'requesting' || isRecording) return;
+    pressStartTimeRef.current = Date.now();
+    setScoreResult(null);
+    transcriptRef.current = { transcript: '', confidence: 0 };
+    recognitionRef.current = startClientSpeechRecognition(accent, (res) => {
+      transcriptRef.current = res;
+    });
+
+    try {
+      if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+        navigator.vibrate(40);
+      }
+    } catch {}
+
+    await startRecording();
+
+    clearTimeout(autoStopTimeoutRef.current ?? undefined);
+    autoStopTimeoutRef.current = window.setTimeout(() => {
+      handleStopRecording();
+    }, 5500);
+  };
+
+  const handlePointerUp = () => {
+    if (autoStopTimeoutRef.current) {
+      clearTimeout(autoStopTimeoutRef.current);
+      autoStopTimeoutRef.current = null;
+    }
+    const pressDuration = Date.now() - pressStartTimeRef.current;
+    if (pressDuration < 250 && isRecording) {
+      return; // Tap detected, keep recording for tap-to-toggle
+    }
+    if (isRecording) {
+      handleStopRecording();
+    }
+  };
+
+  const handleStopRecording = () => {
+    if (autoStopTimeoutRef.current) {
+      clearTimeout(autoStopTimeoutRef.current);
+      autoStopTimeoutRef.current = null;
+    }
+    stopRecording();
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+    }
+    setTimeout(() => {
+      const res = scorePronunciation(
+        word,
+        transcriptRef.current.transcript,
+        transcriptRef.current.confidence,
+        duration,
+        0.5
+      );
+      setScoreResult(res);
+    }, 350);
+  };
+
+  const handleReset = () => {
+    if (autoStopTimeoutRef.current) {
+      clearTimeout(autoStopTimeoutRef.current);
+      autoStopTimeoutRef.current = null;
+    }
+    setScoreResult(null);
+    transcriptRef.current = { transcript: '', confidence: 0 };
+    resetRecording();
+  };
   const handlePlaySample = () => {
     const rate = speed === '0.75x' ? 0.75 : 1.0;
     playBrowserTts(word, accent, rate);
@@ -130,26 +207,25 @@ export function SpeakingExercise({
             </p>
           </div>
         ) : isRecording ? (
-          <div className="flex flex-col items-center gap-3">
+          <div className="flex flex-col items-center gap-3 select-none">
             <div className="relative flex items-center justify-center">
-              <span className="absolute w-20 h-20 rounded-full bg-error/20 animate-ping" />
+              <span className="absolute w-24 h-24 rounded-full bg-error/25 animate-ping pointer-events-none" />
               <Button
                 type="button"
                 variant="danger"
-                onClick={stopRecording}
-                className="relative z-10 size-20! rounded-full! p-0!"
+                onPointerUp={handlePointerUp}
+                onPointerLeave={handlePointerUp}
+                onClick={handleStopRecording}
+                className="relative z-10 size-24! rounded-full! p-0! shadow-lg cursor-pointer"
                 aria-label={t('Dừng thu âm')}
               >
-                <Icon name="stop" size={36} />
+                <Icon name="mic" size={42} />
               </Button>
             </div>
             <div className="flex items-center gap-2 text-error font-mono font-bold text-sm">
               <span className="w-2.5 h-2.5 rounded-full bg-error animate-pulse" />
               00:{duration < 10 ? `0${duration}` : duration}
             </div>
-            <span className="text-xs text-on-surface-variant font-medium">
-              {t('Đang ghi âm... Nhấn nút vuông để dừng')}
-            </span>
           </div>
         ) : status === 'stopped' && audioUrl ? (
           <div className="flex flex-col items-center gap-4 w-full">
@@ -159,6 +235,76 @@ export function SpeakingExercise({
               onEnded={() => setIsPlayingRecorded(false)}
               className="hidden"
             />
+
+            {/* Circular Accuracy Gauge matching ELSA / Duolingo */}
+            {scoreResult && (
+              <div className="flex flex-col items-center gap-2.5 py-1">
+                <div className="relative flex items-center justify-center">
+                  <svg className="w-24 h-24 -rotate-90" viewBox="0 0 96 96">
+                    {/* Background track */}
+                    <circle
+                      cx="48"
+                      cy="48"
+                      r="38"
+                      className="stroke-surface-highest/60 fill-none"
+                      strokeWidth="6"
+                    />
+                    {/* Colored progress stroke */}
+                    <circle
+                      cx="48"
+                      cy="48"
+                      r="38"
+                      className={`fill-none transition-all duration-700 ease-out ${
+                        scoreResult.score >= 80
+                          ? 'stroke-emerald-500'
+                          : scoreResult.score >= 65
+                          ? 'stroke-primary'
+                          : scoreResult.score >= 45
+                          ? 'stroke-amber-500'
+                          : 'stroke-rose-500'
+                      }`}
+                      strokeWidth="6"
+                      strokeLinecap="round"
+                      strokeDasharray="238.76"
+                      strokeDashoffset={238.76 * (1 - scoreResult.score / 100)}
+                    />
+                  </svg>
+
+                  {/* Center Percentage Display */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
+                    <span
+                      className={`font-display font-black text-2xl tracking-tight ${
+                        scoreResult.score >= 80
+                          ? 'text-emerald-700'
+                          : scoreResult.score >= 65
+                          ? 'text-primary'
+                          : scoreResult.score >= 45
+                          ? 'text-amber-700'
+                          : 'text-rose-700'
+                      }`}
+                    >
+                      {scoreResult.score}%
+                    </span>
+                    <span className="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">
+                      {scoreResult.score >= 80
+                        ? t('Chuẩn xác')
+                        : scoreResult.score >= 65
+                        ? t('Khá tốt')
+                        : scoreResult.score >= 45
+                        ? t('Cần cải thiện')
+                        : t('Thử lại')}
+                    </span>
+                  </div>
+                </div>
+
+                {scoreResult.transcript && (
+                  <span className="text-xs text-on-surface-variant font-medium text-center">
+                    {t('Nghe được:')} <strong className="text-on-surface font-bold">"{scoreResult.transcript}"</strong>
+                    {scoreResult.matched && <span className="text-emerald-600 ml-1 font-bold">✓</span>}
+                  </span>
+                )}
+              </div>
+            )}
 
             <div className="flex flex-wrap items-center justify-center gap-3 w-full">
               <Button
@@ -175,7 +321,7 @@ export function SpeakingExercise({
                 type="button"
                 variant="outline"
                 size="md"
-                onClick={resetRecording}
+                onClick={handleReset}
               >
                 <Icon name="refresh" size={20} />
                 {t('Thu lại')}
@@ -193,19 +339,18 @@ export function SpeakingExercise({
             </div>
           </div>
         ) : (
-          <div className="flex flex-col items-center gap-3">
+          <div className="flex flex-col items-center gap-3 select-none">
             <Button
               type="button"
-              onClick={startRecording}
+              onPointerDown={handlePointerDown}
+              onPointerUp={handlePointerUp}
+              onClick={handlePointerDown}
               disabled={status === 'requesting'}
-              className="size-20! rounded-full! p-0!"
-              aria-label={t('Bắt đầu thu âm')}
+              className="size-24! rounded-full! p-0! bg-primary text-white shadow-lg cursor-pointer hover:scale-105 active:scale-95 transition-transform"
+              aria-label={t('Nhấn giữ để nói · Thả tay để chấm điểm')}
             >
-              <Icon name="mic" size={38} />
+              <Icon name="mic" size={42} />
             </Button>
-            <span className="text-xs text-on-surface-variant font-medium">
-              {status === 'requesting' ? t('Đang kết nối microphone...') : t('Nhấn mic để bắt đầu nói')}
-            </span>
           </div>
         )}
 
