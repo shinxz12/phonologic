@@ -18,9 +18,12 @@
     "clean": "bunx turbo run clean && rm -rf node_modules"
   },
   "devDependencies": {
-    "turbo": "^2.0.0",
+    "exceljs": "^4.4.0",
+    "jszip": "^3.10.2",
     "prettier": "^3.2.5",
-    "typescript": "^5.4.5"
+    "turbo": "^2.0.0",
+    "typescript": "^5.4.5",
+    "xlsx": "^0.18.5"
   },
   "packageManager": "bun@1.1.8"
 }

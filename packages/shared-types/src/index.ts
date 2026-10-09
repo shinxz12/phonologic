@@ -8,3 +8,4 @@ export * from './dto/rbac';
 
 export * from './responses/auth';
 export * from './responses/rbac';
+export * from './learning';

@@ -1,7 +1,8 @@
 import bcrypt from 'bcryptjs';
 import { ALL_PERMISSIONS, SYSTEM_ROLES } from '@phonologic/shared-types';
 import { createDbClient } from './index';
-import { permissions, rolePermissions, roles, userRoles, users } from './schema';
+import { learningContentDrafts, permissions, rolePermissions, roles, userRoles, users } from './schema';
+import { INITIAL_SOURCE_RULES } from './initial-draft-rules';
 import { eq } from 'drizzle-orm';
 
 async function seed() {
@@ -104,6 +105,30 @@ async function seed() {
         roleId: adminRole.id,
       });
     }
+  }
+  // 4. Seed Initial Content Draft from Excel Rules
+  console.log('📚 Khởi tạo bản nháp nội dung học tập (155 quy tắc nguồn)...');
+  const [existingDraft] = await db
+    .select({ id: learningContentDrafts.id })
+    .from(learningContentDrafts)
+    .where(eq(learningContentDrafts.id, 'current'))
+    .limit(1);
+
+  if (!existingDraft) {
+    await db.insert(learningContentDrafts).values({
+      id: 'current',
+      notationVersion: '0.1.0-draft',
+      notationConfirmed: false,
+      bundle: {
+        notationVersion: '0.1.0-draft',
+        notationConfirmed: false,
+        rules: INITIAL_SOURCE_RULES,
+        lessons: [],
+        readings: [],
+      },
+      updatedAt: new Date(),
+    });
+    console.log(`✅ Đã khởi tạo bản nháp với ${INITIAL_SOURCE_RULES.length} quy tắc nguồn.`);
   }
 
   console.log('✅ Gieo dữ liệu thành công!');

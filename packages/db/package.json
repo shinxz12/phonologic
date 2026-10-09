@@ -10,6 +10,9 @@
     "push": "drizzle-kit push",
     "studio": "drizzle-kit studio",
     "seed": "bun src/seed.ts",
+    "seed:production": "bun src/seed-production-curriculum.ts",
+    "generate:excel": "bun src/generate-production-curriculum.ts",
+    "import-draft": "bun src/import-excel-draft.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

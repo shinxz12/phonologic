@@ -185,4 +185,34 @@ Tình huống cần kiểm chứng trước release: đáp án `ea` nhiều âm;
 4. Nền tảng đầu tiên: mobile web responsive được đề xuất; native app cần phạm vi riêng.
 5. Nhà cung cấp và tiêu chí chấp nhận chấm phát âm, thời gian lưu bản thu, ngân sách lượt chấm.
 
-Sau khi các quyết định này được xác nhận, có thể chuyển tài liệu thành PRD chi tiết, backlog triển khai và acceptance criteria theo từng màn. Chưa triển khai ứng dụng trong giai đoạn phân tích này.
+Các quyết định này vẫn là đầu vào của chủ sản phẩm/nội dung, không thể suy ra chính xác từ ảnh thiết kế. Phần triển khai hiện tại và các giới hạn được ghi riêng bên dưới.
+
+## 13. Triển khai và kiểm chứng hiện tại
+
+### Thiết kế và kiến trúc
+
+- Đã truy cập Stitch qua MCP (`list_screens`, `get_project`, `get_screen`), đối chiếu thiết kế sống với bản lưu trong `docs/research/stitch`. Dùng treatment xanh của các màn cụ thể và design system hiện có, không dựng thêm bộ primitives.
+- Màn frontend mới dùng Tailwind CSS v4 và tái sử dụng `components/ui`, `components/learning`, `components/layout`: Button/IconButton, Card, Badge, TextField, ProgressBar, FeedbackPanel, AnswerOption, SegmentTile, LessonNode, AudioControl và Navigation.
+- API dùng Axios 1.20.0 với interceptor inject access token, refresh single-flight, retry một lần và logout khi refresh hết hiệu lực. TanStack React Query 5.104.1 quản lý query/mutation và invalidation.
+- Toàn bộ nhãn hệ thống, thao tác, lỗi và feedback hỗ trợ EN/VI qua i18next; lưu lựa chọn ngôn ngữ và đổi được cả thông báo đang hiển thị. Nội dung học do biên tập viên soạn, không tự dịch từ hay biến đổi hệ phiên âm.
+- Backend NestJS chạy bằng Bun, dữ liệu PostgreSQL/Drizzle. Quyền quản trị nội dung là `rbac.manageRoles`; không chỉ ẩn nút trên frontend.
+
+### Luồng đã kết nối FE–BE
+
+- Đăng ký/đăng nhập/đăng xuất, refresh token, sửa hồ sơ/mật khẩu và mục tiêu/giọng học.
+- Lộ trình, sổ tay quy tắc đã duyệt, sáu dạng câu hỏi, feedback, resume phiên học, ôn câu sai và báo lỗi nội dung.
+- Thu âm/nghe lại/upload, nghe bản thu riêng tư từ API và xóa. Giới hạn file 5 MB, kiểm tra MIME và ownership. Hoàn thành quiz không tự bỏ qua bước nói đang chờ.
+- Thư viện đọc, tìm kiếm/bộ lọc, từ mục tiêu theo offset, ghép chữ và lưu tiến độ đọc. Hoàn tất bài yêu cầu đủ các từ mục tiêu.
+- Tiến bộ dựa trên đáp án, phiên học và hoạt động thực tế; không suy diễn độ chính xác quiz thành chất lượng phát âm.
+- Quản trị 155 quy tắc Excel dạng draft, chỉnh sửa, soạn lesson/reading bằng JSON, kiểm tra nội dung, xuất bản phiên bản bất biến và xử lý báo cáo. Phiên học và bài đọc đã mở giữ snapshot, không bị sửa theo nội dung xuất bản sau.
+
+### Bằng chứng và giới hạn
+
+- Typecheck/build frontend và backend thành công; bốn regression test chấm đáp án thành công, bao gồm trường hợp các mảnh chữ lặp giống nhau được hoán đổi mà vẫn ghép đúng từ.
+- Smoke HTTP với PostgreSQL kiểm tra quyền truy cập, start/answer đồng thời, idempotency, không lộ đáp án trước khi trả lời, resume, cập nhật từ đọc đồng thời, snapshot, publish đồng thời/không hợp lệ và audio khác chủ bị từ chối.
+- Smoke trình duyệt desktop/mobile kiểm tra auth, sáu dạng câu, ôn lỗi, reading, bản thu, hồ sơ và quản trị. Bốn request đồng thời khi access token hết hiệu lực chỉ phát một request refresh. Refresh bị thu hồi xóa auth, không lặp vô hạn. Đổi EN/VI cả khi lỗi và feedback đang hiển thị; kiểm tra mobile 390 px không tràn ngang, riêng reading/quản trị kiểm tra thêm 320 px. Publish không hợp lệ hiển thị lỗi từng trường ở cả hai ngôn ngữ, không phát sinh unhandled rejection và không tạo phiên bản.
+- Kiểm tra audio dùng MediaRecorder thực với nguồn Web Audio có kiểm soát, upload/lưu/nghe lại/xóa qua API thực. Chưa xác nhận microphone vật lý vì prompt quyền của máy không hoàn tất.
+- Chưa có nhà cung cấp chấm phát âm: `assessment` và `score` là null. TTS trình duyệt được ghi rõ không phải audio tham chiếu đã kiểm duyệt.
+- Database phát triển chỉ seed 155 draft, 0 quy tắc được duyệt và 0 bài học/bài đọc được publish; không tự xác nhận hệ phiên âm hay publish lesson mẫu. Database smoke riêng đã được xóa sau kiểm chứng. Backend đã chạy lại trên database phát triển sạch; giao diện hiển thị đúng trạng thái chờ nội dung được duyệt.
+
+Chủ sản phẩm cần cung cấp đặc tả hệ phiên âm, người duyệt, tập pilot và audio chuẩn, provider/tiêu chí chấm nói, chính sách lưu audio và lịch ôn theo thời gian. Mail recovery/social login và các nghiệp vụ P2 như shop, heart, gem, league, PRO/thanh toán chưa có provider/quy tắc vận hành để triển khai đúng; không tạo kết quả hoặc luồng giao dịch giả. Xem `apps/frontend/README.md` để chạy ứng dụng và cấu hình môi trường.

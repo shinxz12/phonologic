@@ -39,7 +39,7 @@ p {
   margin: 0;
 }
 
-:where(button, a, input):focus-visible {
+:where(button, a, input, select, textarea):focus-visible {
   outline: 3px solid var(--secondary);
   outline-offset: 4px;
 }

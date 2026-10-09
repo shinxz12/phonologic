@@ -1,11 +1,12 @@
 import { Button } from "../ui/Button";
+import { useTranslation } from 'react-i18next';
 import "./AudioControl.css";
 
 export function AudioControl({
   onPlay,
   speed = "0.75x",
   onSpeedChange,
-  label = "Nghe âm mẫu",
+  label,
   disabled = false,
 }: {
   onPlay: () => void;
@@ -14,6 +15,7 @@ export function AudioControl({
   label?: string;
   disabled?: boolean;
 }) {
+  const { t } = useTranslation();
   return (
     <div className="ds-audio">
       <Button
@@ -23,14 +25,14 @@ export function AudioControl({
         onClick={onPlay}
         disabled={disabled}
       >
-        {label}
+        {label ?? t("Nghe âm mẫu")}
       </Button>
       {onSpeedChange && (
         <Button
           variant="outline"
           size="sm"
           onClick={onSpeedChange}
-          aria-label={`Tốc độ ${speed}`}
+          aria-label={t("Tốc độ {{speed}}", { speed })}
         >
           {speed}
         </Button>

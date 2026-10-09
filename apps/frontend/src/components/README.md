@@ -35,6 +35,8 @@ import { Button, SegmentTile, AnswerOption } from './components';
 
 Selection stays controlled by the consuming screen. The primitives do not award XP, play audio, record speech or call backend services. AudioControl forwards user intent through callbacks. `notation` is displayed verbatim; no IPA conversion or phonetic assumptions.
 
+New application screens compose these components with Tailwind utilities; they do not introduce replacement Button/Card/feedback primitives. `main.tsx` initializes EN/VI i18next once. AudioControl localizes its default label and playback-speed announcement; Navigation localizes its landmark labels. Consumers translate screen-specific labels and actions before passing props. `components/layout/LanguageSelector` composes existing Buttons and persists the selected locale. Course strings and opaque custom notation remain authored data, not automatic UI translations.
+
 ## Design provenance
 
 Source project: https://stitch.withgoogle.com/projects/17316557323109953295
