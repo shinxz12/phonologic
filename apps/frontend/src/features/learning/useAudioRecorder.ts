@@ -156,19 +156,30 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
 
     let stream: MediaStream;
     try {
-      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    } catch (err: unknown) {
-      if (!mountedRef.current || generationRef.current !== currentGen) {
+      // Bật chống ồn phần cứng/trình duyệt (WebRTC DSP noise suppression)
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          noiseSuppression: true,
+          echoCancellation: true,
+          autoGainControl: true,
+        },
+      });
+    } catch {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      } catch (err: unknown) {
+        if (!mountedRef.current || generationRef.current !== currentGen) {
+          return false;
+        }
+        setStatus('error');
+        const key =
+          err instanceof DOMException &&
+          (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError')
+            ? 'Quyền truy cập microphone bị từ chối. Vui lòng cho phép quyền microphone trên trình duyệt hoặc chọn Bỏ qua.'
+            : 'Không thể kết nối với microphone thiết bị.';
+        setRecorderError({ key });
         return false;
       }
-      setStatus('error');
-      const key =
-        err instanceof DOMException &&
-        (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError')
-          ? 'Quyền truy cập microphone bị từ chối. Vui lòng cho phép quyền microphone trên trình duyệt hoặc chọn Bỏ qua.'
-          : 'Không thể kết nối với microphone thiết bị.';
-      setRecorderError({ key });
-      return false;
     }
 
     // If unmounted or reset while getUserMedia was pending, stop granted tracks immediately
@@ -237,13 +248,23 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
       if (AudioCtx) {
         const ctx = new AudioCtx();
         audioContextRef.current = ctx;
+        // Bộ lọc High-pass filter cắt hoàn toàn tiếng ù rền trầm của quạt máy tính (< 120Hz)
         const source = ctx.createMediaStreamSource(stream);
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'highpass';
+        filter.frequency.value = 120;
+
         const analyser = ctx.createAnalyser();
         analyser.fftSize = 256;
-        source.connect(analyser);
+
+        source.connect(filter);
+        filter.connect(analyser);
+
         const freqData = new Uint8Array(analyser.frequencyBinCount);
         const startRecordTime = Date.now();
         let lastSoundTime = Date.now();
+        let ambientNoiseFloor = 20;
+        let calibrationSamples = 0;
 
         vadIntervalRef.current = window.setInterval(() => {
           if (!mountedRef.current || generationRef.current !== currentGen) return;
@@ -259,18 +280,27 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
           }
 
           // 2. Đo năng lượng dải tần giọng người (bins 2 đến 36 ~150Hz - 4.5kHz)
-          // Bỏ qua bin 0 để loại bỏ 100% độ lệch DC (DC offset của phần cứng mic)
           analyser.getByteFrequencyData(freqData);
           let peakVoice = 0;
           for (let i = 2; i < Math.min(36, freqData.length); i++) {
             if (freqData[i] > peakVoice) peakVoice = freqData[i];
           }
 
-          // Ngưỡng giọng người phát âm thật: peakVoice > 38 (loại bỏ tiếng ồn môi trường/quạt/xe cộ)
-          if (peakVoice > 38) {
+          // Trong 300ms đầu, tự động học đo mức ồn của quạt máy tính để thích ứng
+          if (calibrationSamples < 3) {
+            calibrationSamples++;
+            if (peakVoice > ambientNoiseFloor) ambientNoiseFloor = peakVoice;
+            lastSoundTime = Date.now();
+            return;
+          }
+
+          // Ngưỡng giọng nói động: luôn cao hơn tiếng ồn của quạt máy tính + 14 đơn vị (tối thiểu 35)
+          const dynamicVoiceThreshold = Math.max(35, ambientNoiseFloor + 14);
+
+          if (peakVoice > dynamicVoiceThreshold) {
             lastSoundTime = Date.now();
           } else {
-            // Đúng 2s (từ) hoặc 4s (đoạn) im lặng -> ngắt lập tức
+            // Đúng thời gian im lặng (1.5s với từ, 4s với đoạn) -> ngắt lập tức
             if (Date.now() - lastSoundTime >= silenceTimeoutMs) {
               if (vadIntervalRef.current) {
                 window.clearInterval(vadIntervalRef.current);
