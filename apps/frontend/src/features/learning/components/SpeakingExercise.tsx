@@ -59,13 +59,17 @@ export function SpeakingExercise({
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [scoreResult, setScoreResult] = useState<PronunciationScoreResult | null>(null);
   const [isListening, setIsListening] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [recognitionNotice, setRecognitionNotice] = useState<string | null>(null);
   const [listeningSeconds, setListeningSeconds] = useState(0);
-  const recognitionRef = useRef<{ stop: () => void; isSupported: boolean } | null>(null);
+  const recognitionRef = useRef<ReturnType<typeof startClientSpeechRecognition> | null>(null);
+  const recognitionGenerationRef = useRef(0);
   const transcriptRef = useRef<{ transcript: string; confidence: number }>({ transcript: '', confidence: 0 });
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const autoStopTimeoutRef = useRef<number | null>(null);
   const listeningTimerRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(0);
+  const stopTimeRef = useRef<number | null>(null);
 
   const clearAutoStopTimeout = () => {
     if (autoStopTimeoutRef.current !== null) {
@@ -81,28 +85,34 @@ export function SpeakingExercise({
     }
   };
 
-  const stopRecognition = () => {
+  const cancelRecognition = () => {
     if (recognitionRef.current) {
-      recognitionRef.current.stop();
+      recognitionRef.current.cancel();
       recognitionRef.current = null;
     }
   };
 
   useEffect(() => {
     return () => {
+      recognitionGenerationRef.current += 1;
       clearAutoStopTimeout();
       clearListeningTimer();
-      stopRecognition();
+      cancelRecognition();
     };
   }, []);
 
   const handleStartRecording = async () => {
-    if (status === 'requesting' || isRecording || isListening) return;
+    if (status === 'requesting' || isRecording || isListening || isProcessing) return;
+    const generation = ++recognitionGenerationRef.current;
     clearAutoStopTimeout();
     clearListeningTimer();
+    cancelRecognition();
     setScoreResult(null);
+    setRecognitionNotice(null);
+    setIsProcessing(false);
     transcriptRef.current = { transcript: '', confidence: 0 };
     startTimeRef.current = Date.now();
+    stopTimeRef.current = null;
 
     const isSpeechSupported = Boolean(getSpeechRecognitionClass());
 
@@ -116,20 +126,72 @@ export function SpeakingExercise({
       recognitionRef.current = startClientSpeechRecognition(
         accent,
         (res) => {
+          if (generation !== recognitionGenerationRef.current) return;
           transcriptRef.current = res;
         },
+        (recognitionError) => {
+          if (generation !== recognitionGenerationRef.current) return;
+          clearAutoStopTimeout();
+          clearListeningTimer();
+          recognitionRef.current = null;
+          setIsListening(false);
+          setIsProcessing(false);
+
+          if (recognitionError) {
+            const message = recognitionError === 'no-speech'
+              ? 'Chưa nhận diện được giọng nói. Hãy thử lại.'
+              : recognitionError === 'network'
+                ? 'Không thể nhận diện giọng nói do lỗi kết nối. Kiểm tra mạng và thử lại.'
+                : recognitionError === 'not-allowed' || recognitionError === 'service-not-allowed'
+                  ? 'Quyền nhận diện giọng nói bị từ chối. Hãy cho phép microphone và thử lại.'
+                  : 'Không thể nhận diện giọng nói trên thiết bị này. Hãy thử lại.';
+            setRecognitionNotice(message);
+            return;
+          }
+
+          const durationSeconds = Math.max(
+            0.6,
+            ((stopTimeRef.current ?? Date.now()) - startTimeRef.current) / 1000
+          );
+          const result = scorePronunciation(
+            word,
+            transcriptRef.current.transcript,
+            transcriptRef.current.confidence,
+            durationSeconds,
+            0.5
+          );
+          if (result.transcript) {
+            setScoreResult(result);
+          } else {
+            setRecognitionNotice('Chưa nhận diện được giọng nói. Hãy thử lại.');
+          }
+        },
         () => {
-          // onSpeechEnd: auto-stop when user stops speaking
+          if (generation !== recognitionGenerationRef.current) return;
           handleStopRecording();
         }
       );
+
+      if (!recognitionRef.current.isSupported) {
+        recognitionRef.current = null;
+        clearListeningTimer();
+        setIsListening(false);
+        const started = await startRecording();
+        if (started && generation === recognitionGenerationRef.current) {
+          setRecognitionNotice('Trình duyệt chưa hỗ trợ nhận diện giọng nói. Bạn có thể nghe lại bản thu để tự đối chiếu.');
+        }
+        return;
+      }
 
       // Auto-stop after 6.5s fallback
       autoStopTimeoutRef.current = window.setTimeout(() => {
         handleStopRecording();
       }, 6500);
     } else {
-      await startRecording();
+      const started = await startRecording();
+      if (started && generation === recognitionGenerationRef.current) {
+        setRecognitionNotice('Trình duyệt chưa hỗ trợ nhận diện giọng nói. Bạn có thể nghe lại bản thu để tự đối chiếu.');
+      }
     }
   };
 
@@ -137,33 +199,22 @@ export function SpeakingExercise({
     clearAutoStopTimeout();
     clearListeningTimer();
     setIsListening(false);
-    stopRecognition();
     stopRecording();
-
-    const durationSeconds = Math.max(0.6, (Date.now() - startTimeRef.current) / 1000);
-    const applyScore = () => {
-      const res = scorePronunciation(
-        word,
-        transcriptRef.current.transcript,
-        transcriptRef.current.confidence,
-        durationSeconds,
-        0.5
-      );
-      setScoreResult(res);
-    };
-
-    if (transcriptRef.current.transcript) {
-      applyScore();
-    } else {
-      setTimeout(applyScore, 350);
+    stopTimeRef.current ??= Date.now();
+    if (recognitionRef.current) {
+      setIsProcessing(true);
+      recognitionRef.current.stop();
     }
   };
 
   const handleReset = () => {
+    recognitionGenerationRef.current += 1;
     clearAutoStopTimeout();
     clearListeningTimer();
-    stopRecognition();
+    cancelRecognition();
     setIsListening(false);
+    setIsProcessing(false);
+    setRecognitionNotice(null);
     setListeningSeconds(0);
     setScoreResult(null);
     transcriptRef.current = { transcript: '', confidence: 0 };
@@ -284,6 +335,10 @@ export function SpeakingExercise({
               </p>
             )}
           </div>
+        ) : isProcessing ? (
+          <p role="status" className="py-4 text-center text-sm text-on-surface-variant">
+            {t('Đang xử lý nhận diện giọng nói...')}
+          </p>
         ) : (isListening || isRecording) ? (
           <div className={`flex items-center ${compact ? 'w-full justify-center gap-3' : 'flex-col gap-3'}`}>
             <div className="relative flex items-center justify-center shrink-0">
@@ -314,7 +369,7 @@ export function SpeakingExercise({
               </span>
             </div>
           </div>
-        ) : (scoreResult !== null || (status === 'stopped' && Boolean(audioUrl))) ? (
+        ) : (scoreResult !== null || recognitionNotice !== null || (status === 'stopped' && Boolean(audioUrl))) ? (
           <div className={`flex flex-col items-center w-full ${compact ? 'gap-2' : 'gap-4'}`}>
             {audioUrl && (
               <audio
@@ -376,6 +431,12 @@ export function SpeakingExercise({
                   </span>
                 )}
               </div>
+            )}
+
+            {recognitionNotice && (
+              <p role="status" className="text-center text-sm text-on-surface-variant">
+                {t(recognitionNotice)}
+              </p>
             )}
 
             <div className="flex items-center justify-center gap-3 w-full">

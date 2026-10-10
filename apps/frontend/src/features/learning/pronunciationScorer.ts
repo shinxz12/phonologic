@@ -68,8 +68,21 @@ export function scorePronunciation(
   durationSeconds: number,
   averageVolumeRms = 0.5
 ): PronunciationScoreResult {
-  const cleanTarget = targetWord.trim().toLowerCase().replace(/[^a-z0-9\s]/g, '');
-  const cleanTranscript = transcript.trim().toLowerCase().replace(/[^a-z0-9\s]/g, '');
+  const cleanTarget = targetWord.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
+  const cleanTranscript = transcript.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
+
+  // Missing recognition data is not evidence of poor pronunciation.
+  if (!cleanTarget || !cleanTranscript) {
+    return {
+      score: 0,
+      grade: 'poor',
+      matched: false,
+      transcript: cleanTranscript,
+      targetWord: cleanTarget,
+      feedbackText: 'Chưa nhận diện được giọng nói. Hãy thử lại.',
+      details: { textSimilarity: 0, confidenceScore: 0, acousticQuality: 0 },
+    };
+  }
 
   // 1. Text Similarity (0 - 100)
   const similarity = calculateStringSimilarity(cleanTarget, cleanTranscript);
@@ -187,10 +200,11 @@ interface WebSpeechRecognitionConstructor {
 export function startClientSpeechRecognition(
   accent: Accent = 'US',
   onResult: (res: { transcript: string; confidence: number }) => void,
+  onComplete?: (error?: string) => void,
   onSpeechEnd?: () => void
-): { stop: () => void; isSupported: boolean } {
+): { stop: () => void; cancel: () => void; isSupported: boolean } {
   if (typeof window === 'undefined') {
-    return { stop: () => {}, isSupported: false };
+    return { stop: () => {}, cancel: () => {}, isSupported: false };
   }
 
   const windowWithSpeech = window as unknown as {
@@ -203,7 +217,7 @@ export function startClientSpeechRecognition(
     windowWithSpeech.webkitSpeechRecognition;
 
   if (!SpeechRec) {
-    return { stop: () => {}, isSupported: false };
+    return { stop: () => {}, cancel: () => {}, isSupported: false };
   }
 
   try {
@@ -213,15 +227,46 @@ export function startClientSpeechRecognition(
     recognition.maxAlternatives = 3;
     recognition.lang = accent === 'UK' ? 'en-GB' : 'en-US';
 
-    let captured = false;
-    let speechStarted = false;
+    let finished = false;
+    let stopRequested = false;
+    let finalizeTimeout: number | null = null;
 
-    recognition.onspeechstart = () => {
-      speechStarted = true;
+    const cleanup = () => {
+      if (finalizeTimeout !== null) window.clearTimeout(finalizeTimeout);
+      finalizeTimeout = null;
+      recognition.onresult = null;
+      recognition.onspeechend = null;
+      recognition.onerror = null;
+      recognition.onend = null;
+      try {
+        recognition.abort();
+      } catch {
+        // The service may already have disconnected.
+      }
+    };
+
+    const complete = (error?: string) => {
+      if (finished) return;
+      finished = true;
+      cleanup();
+      onComplete?.(error);
+    };
+
+    const stop = () => {
+      if (finished || stopRequested) return;
+      stopRequested = true;
+      // stop() asks the engine to return its pending result; it is asynchronous.
+      // Finish on a final result/end, with a bounded wait for an unresponsive service.
+      finalizeTimeout = window.setTimeout(() => complete(), 2000);
+      try {
+        recognition.stop();
+      } catch {
+        complete();
+      }
     };
 
     recognition.onresult = (event: WebSpeechRecognitionEvent) => {
-      speechStarted = true;
+      if (finished) return;
       if (event.results && event.results.length > 0) {
         let bestTranscript = '';
         let bestConfidence = 0;
@@ -233,7 +278,6 @@ export function startClientSpeechRecognition(
             for (let j = 0; j < res.length; j++) {
               const alt = res[j];
               if (alt && alt.transcript && alt.transcript.trim()) {
-                captured = true;
                 if (!bestTranscript || (alt.confidence && alt.confidence > bestConfidence)) {
                   bestTranscript = alt.transcript.trim();
                   bestConfidence = alt.confidence || 0;
@@ -253,39 +297,36 @@ export function startClientSpeechRecognition(
           });
         }
         if (isFinalDelivered) {
-          onSpeechEnd?.();
+          complete();
         }
       }
     };
 
     recognition.onspeechend = () => {
-      if (speechStarted && captured) {
-        onSpeechEnd?.();
-      }
+      if (finished) return;
+      onSpeechEnd?.();
+      stop();
     };
 
     recognition.onerror = (e: WebSpeechRecognitionErrorEvent) => {
-      console.warn('SpeechRecognition notice:', e.error);
+      complete(e.error);
     };
 
-    recognition.onend = () => {
-      // Never overwrite a captured transcript with empty
-    };
+    recognition.onend = () => complete();
 
     recognition.start();
 
     return {
-      stop: () => {
-        try {
-          recognition.stop();
-        } catch {
-          // ignore
-        }
+      stop,
+      cancel: () => {
+        if (finished) return;
+        finished = true;
+        cleanup();
       },
       isSupported: true,
     };
   } catch (err) {
     console.warn('SpeechRecognition start failed:', err);
-    return { stop: () => {}, isSupported: false };
+    return { stop: () => {}, cancel: () => {}, isSupported: false };
   }
 }
