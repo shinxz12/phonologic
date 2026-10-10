@@ -12,7 +12,8 @@ export function Icon({
   return (
     <span
       aria-hidden="true"
-      className={`material-symbols-outlined ${className}`}
+      translate="no"
+      className={`material-symbols-outlined notranslate ${className}`}
       style={{ fontSize: size }}
     >
       {name}

@@ -1,7 +1,18 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import type { Accent, ReadingView, ReadingTarget, Choice } from '@phonologic/shared-types';
+import type { Accent, ReadingView, ReadingTarget, Choice, LearningDashboard, Preferences } from '@phonologic/shared-types';
+
+const SPEEDS = ['0.5x', '0.75x', '1x', '1.25x', '1.5x'] as const;
+type SpeechSpeed = (typeof SPEEDS)[number];
+
+const SPEED_RATES: Record<SpeechSpeed, number> = {
+  '0.5x': 0.5,
+  '0.75x': 0.75,
+  '1x': 1.0,
+  '1.25x': 1.25,
+  '1.5x': 1.5,
+};
 import { api } from '../../lib/api';
 import { keys } from '../../lib/query';
 import { playBrowserTts } from '../learning/audioUtils';
@@ -43,6 +54,12 @@ export function ReadingDetail({ readingId, onExit, onUpdated }: ReadingDetailPro
     enabled: Boolean(readingId),
   });
 
+  // Fetch User Preferences from dashboard
+  const { data: dashboard } = useQuery<LearningDashboard>({
+    queryKey: keys.dashboard,
+    queryFn: () => api<LearningDashboard>('/learning/dashboard'),
+  });
+
   // Track initial target selection once per readingId
   const initializedReadingIdRef = useRef<string | null>(null);
 
@@ -60,15 +77,50 @@ export function ReadingDetail({ readingId, onExit, onUpdated }: ReadingDetailPro
 
   // Passage TTS state
   // Passage TTS state & Accent
-  const [passageSpeed, setPassageSpeed] = useState<'0.75x' | '1x'>('0.75x');
-  const [passageAccent, setPassageAccent] = useState<Accent>('US');
+  // Passage TTS state & Accent (follows user preference by default)
+  const [passageSpeed, setPassageSpeed] = useState<SpeechSpeed>('1x');
+  const preferredAccent: Accent = dashboard?.preferences?.accent || 'US';
+  const [passageAccent, setPassageAccent] = useState<Accent>(preferredAccent);
   const [practiceStep, setPracticeStep] = useState<'spell' | 'speak'>('spell');
   const [isPassageSpeakingOpen, setIsPassageSpeakingOpen] = useState(false);
+
   useEffect(() => {
-    if (reading?.accent) {
-      setPassageAccent(reading.accent);
+    if (dashboard?.preferences?.accent) {
+      setPassageAccent(dashboard.preferences.accent);
     }
-  }, [reading?.accent]);
+  }, [dashboard?.preferences?.accent]);
+
+  const updateAccentMutation = useMutation({
+    mutationFn: (accent: Accent) =>
+      api<Preferences>('/learning/preferences', {
+        method: 'PUT',
+        body: JSON.stringify({
+          goal: dashboard?.preferences.goal || 'communicate',
+          dailyMinutes: dashboard?.preferences.dailyMinutes || 15,
+          timezone: dashboard?.preferences.timezone || 'Asia/Ho_Chi_Minh',
+          accent,
+        }),
+      }),
+    onSuccess: (newPrefs) => {
+      queryClient.setQueryData<LearningDashboard>(keys.dashboard, (old) => {
+        if (!old) return old;
+        return { ...old, preferences: newPrefs };
+      });
+      queryClient.invalidateQueries({ queryKey: keys.dashboard });
+    },
+  });
+
+  const handleAccentChange = (acc: Accent) => {
+    setPassageAccent(acc);
+    updateAccentMutation.mutate(acc);
+  };
+
+  const handleCycleSpeed = () => {
+    setPassageSpeed((prev) => {
+      const idx = SPEEDS.indexOf(prev);
+      return SPEEDS[(idx + 1) % SPEEDS.length];
+    });
+  };
 
   useEffect(() => {
     setPracticeStep('spell');
@@ -166,7 +218,7 @@ export function ReadingDetail({ readingId, onExit, onUpdated }: ReadingDetailPro
   // Play Story Passage TTS using selected accent
   const handlePlayPassage = () => {
     if (!reading) return;
-    const rate = passageSpeed === '0.75x' ? 0.75 : 1.0;
+    const rate = SPEED_RATES[passageSpeed];
     playBrowserTts(reading.text, passageAccent, rate);
   };
   // Check Spelling Exercise for current target
@@ -363,36 +415,47 @@ export function ReadingDetail({ readingId, onExit, onUpdated }: ReadingDetailPro
             </div>
 
             {/* Passage Audio Toolbar with Accent & Speed */}
-            <div className="flex flex-wrap items-center justify-between gap-2.5 bg-surface-low p-2 rounded-2xl border border-outline-variant/20">
-              <div className="flex items-center gap-2 flex-wrap">
-                <AudioControl
-                  label={t('Nghe mẫu cả bài')}
-                  speed={passageSpeed}
-                  onPlay={handlePlayPassage}
-                  onSpeedChange={() => setPassageSpeed((s) => (s === '0.75x' ? '1x' : '0.75x'))}
+            {/* Passage Audio Toolbar: Icon-only, default 1x, following user preference */}
+            <div className="flex items-center justify-between gap-2.5 bg-surface-low p-2 rounded-2xl border border-outline-variant/20">
+              <div className="flex items-center gap-1.5">
+                <IconButton
+                  icon="volume_up"
+                  label={t('Nghe mẫu')}
+                  variant="secondary"
+                  size="sm"
+                  onClick={handlePlayPassage}
                 />
                 <Button
                   size="sm"
                   type="button"
-                  variant={isPassageSpeakingOpen ? 'primary' : 'outline'}
-                  onClick={() => setIsPassageSpeakingOpen((v) => !v)}
-                  className="gap-1.5"
+                  variant="outline"
+                  onClick={handleCycleSpeed}
+                  className="min-w-14 font-mono font-bold text-xs"
+                  title={t('Tốc độ đọc: {{speed}}', { speed: passageSpeed })}
                 >
-                  <Icon name="mic" size={16} />
-                  {t('Luyện đọc cả bài')}
+                  {passageSpeed}
                 </Button>
+                <IconButton
+                  icon="mic"
+                  label={t('Luyện đọc cả bài')}
+                  variant={isPassageSpeakingOpen ? 'primary' : 'outline'}
+                  size="sm"
+                  onClick={() => setIsPassageSpeakingOpen((v) => !v)}
+                />
               </div>
-              <div className="flex items-center gap-1 bg-white px-1.5 py-0.5 rounded-xl border border-outline-variant/30">
-                <span className="text-[11px] text-on-surface-variant font-medium mr-1">{t('Giọng:')}</span>
+
+              <div className="flex items-center bg-white p-0.5 rounded-xl border border-outline-variant/30">
                 {(['US', 'UK'] as const).map((acc) => (
                   <Button
                     key={acc}
                     size="sm"
                     type="button"
                     variant={passageAccent === acc ? 'secondary' : 'ghost'}
-                    onClick={() => setPassageAccent(acc)}
-                    className={`min-h-7! h-7! px-2! text-xs! font-bold! rounded-lg! ${
-                      passageAccent === acc ? 'bg-secondary text-on-secondary font-black' : ''
+                    onClick={() => handleAccentChange(acc)}
+                    className={`min-h-7! h-7! px-2.5! text-xs! font-bold! rounded-lg! ${
+                      passageAccent === acc
+                        ? 'bg-secondary text-on-secondary font-black shadow-xs'
+                        : 'text-on-surface-variant'
                     }`}
                   >
                     {acc}
@@ -400,7 +463,6 @@ export function ReadingDetail({ readingId, onExit, onUpdated }: ReadingDetailPro
                 ))}
               </div>
             </div>
-
             {isPassageSpeakingOpen && (
               <PassageSpeakingExercise
                 passageText={reading.text}

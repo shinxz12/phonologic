@@ -6,6 +6,17 @@ import { playBrowserTts } from '../audioUtils';
 import { Button, AudioControl, Card, Badge, Icon, IconButton } from '../../../components';
 import { assessPronunciationAzure, type AzurePronunciationResult } from '../azureSpeech';
 
+const SPEEDS = ['0.5x', '0.75x', '1x', '1.25x', '1.5x'] as const;
+type SpeechSpeed = (typeof SPEEDS)[number];
+
+const SPEED_RATES: Record<SpeechSpeed, number> = {
+  '0.5x': 0.5,
+  '0.75x': 0.75,
+  '1x': 1.0,
+  '1.25x': 1.25,
+  '1.5x': 1.5,
+};
+
 export interface SpeakingExerciseProps {
   word: string;
   accent: Accent;
@@ -46,7 +57,7 @@ export function SpeakingExercise({
   } = useAudioRecorder();
 
   const [isPlayingRecorded, setIsPlayingRecorded] = useState(false);
-  const [speed, setSpeed] = useState<'0.75x' | '1x'>('0.75x');
+  const [speed, setSpeed] = useState<SpeechSpeed>('1x');
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [scoreResult, setScoreResult] = useState<AzurePronunciationResult | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -101,11 +112,14 @@ export function SpeakingExercise({
   };
 
   const handlePlaySample = () => {
-    playBrowserTts(word, accent, speed === '0.75x' ? 0.75 : 1);
+    playBrowserTts(word, accent, SPEED_RATES[speed]);
   };
 
   const toggleSpeed = () => {
-    setSpeed((s) => (s === '1x' ? '0.75x' : '1x'));
+    setSpeed((s) => {
+      const idx = SPEEDS.indexOf(s);
+      return SPEEDS[(idx + 1) % SPEEDS.length];
+    });
   };
 
   const togglePlayRecorded = () => {
