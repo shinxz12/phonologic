@@ -36,9 +36,10 @@ export interface ReadingDetailProps {
   readingId: string;
   onExit: () => void;
   onUpdated: () => void;
+  userAccent?: Accent;
 }
 
-export function ReadingDetail({ readingId, onExit, onUpdated }: ReadingDetailProps) {
+export function ReadingDetail({ readingId, onExit, onUpdated, userAccent }: ReadingDetailProps) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
 
@@ -79,16 +80,18 @@ export function ReadingDetail({ readingId, onExit, onUpdated }: ReadingDetailPro
   // Passage TTS state & Accent
   // Passage TTS state & Accent (follows user preference by default)
   const [passageSpeed, setPassageSpeed] = useState<SpeechSpeed>('1x');
-  const preferredAccent: Accent = dashboard?.preferences?.accent || 'US';
+  const preferredAccent: Accent = userAccent || dashboard?.preferences?.accent || 'US';
   const [passageAccent, setPassageAccent] = useState<Accent>(preferredAccent);
   const [practiceStep, setPracticeStep] = useState<'spell' | 'speak'>('spell');
   const [isPassageSpeakingOpen, setIsPassageSpeakingOpen] = useState(false);
 
   useEffect(() => {
-    if (dashboard?.preferences?.accent) {
+    if (userAccent) {
+      setPassageAccent(userAccent);
+    } else if (dashboard?.preferences?.accent) {
       setPassageAccent(dashboard.preferences.accent);
     }
-  }, [dashboard?.preferences?.accent]);
+  }, [userAccent, dashboard?.preferences?.accent]);
 
   const updateAccentMutation = useMutation({
     mutationFn: (accent: Accent) =>
@@ -379,7 +382,7 @@ export function ReadingDetail({ readingId, onExit, onUpdated }: ReadingDetailPro
           </div>
 
           <Badge tone="blue">{t('Cấp {{level}}', { level: reading.level })}</Badge>
-          <Badge tone="neutral">{reading.accent}</Badge>
+          <Badge tone="neutral">{passageAccent}</Badge>
 
           <IconButton
             icon="flag"

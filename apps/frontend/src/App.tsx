@@ -196,7 +196,7 @@ export default function App() {
         <Suspense fallback={<p className="py-12 text-center text-outline" role="status">{t('Đang tải giao diện…')}</p>}>
         {loading ? <Card><p className="py-12 text-center text-outline" role="status">{t("Đang tải lộ trình của bạn…")}</p></Card> : !dashboard || !user ? <Card><div className="grid justify-items-center gap-5 py-10"><Icon name="cloud_off" size={42} /><h3>{t("Chưa kết nối được dữ liệu học tập")}</h3><Button onClick={() => void reload()}>{t("Thử lại")}</Button><Button variant="ghost" onClick={() => clearAuth()}>{t("Về đăng nhập")}</Button></div></Card> :
           sessionId ? <LearningSession key={sessionId} sessionId={sessionId} onExit={() => { navigate('learn'); void reload(); }} onUpdated={() => void reload()} /> :
-          readingId ? <ReadingDetail key={readingId} readingId={readingId} onExit={() => { navigate('reading'); void reload(); }} onUpdated={() => void reload()} /> :
+          readingId ? <ReadingDetail key={readingId} readingId={readingId} userAccent={dashboard?.preferences.accent} onExit={() => { navigate('reading'); void reload(); }} onUpdated={() => void reload()} /> :
           route === 'rules' ? <RuleHandbook /> :
           route === 'reading' ? <ReadingLibrary readings={dashboard.readings} admin={admin} onOpen={id => navigate(`reading/${id}`)} /> :
           route === 'progress' ? <ProgressProfile dashboard={dashboard} user={user} onUpdated={() => void reload()} onLogout={() => logoutMutation.mutate()} /> :
