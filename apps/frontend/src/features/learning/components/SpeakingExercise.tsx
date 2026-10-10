@@ -4,11 +4,10 @@ import type { Accent } from '@phonologic/shared-types';
 import { useAudioRecorder } from '../useAudioRecorder';
 import { playBrowserTts } from '../audioUtils';
 import {
-  startSpeechRecognition,
-  supportsSpeechRecognition,
-  type SpeechMatchController,
-  type SpeechMatchResult,
-} from '../speechRecognition';
+  scorePronunciation,
+  startClientSpeechRecognition,
+  type PronunciationScoreResult,
+} from '../pronunciationScorer';
 import { Button, AudioControl, Card, Badge, Icon, IconButton } from '../../../components';
 
 export interface SpeakingExerciseProps {
@@ -48,110 +47,110 @@ export function SpeakingExercise({
     resetRecording,
     uploadRecording,
   } = useAudioRecorder();
+
   const [isPlayingRecorded, setIsPlayingRecorded] = useState(false);
   const [speed, setSpeed] = useState<'0.75x' | '1x'>('0.75x');
   const [uploadSuccess, setUploadSuccess] = useState(false);
-  const [recognitionScore, setRecognitionScore] = useState<number | null>(null);
-  const [isListening, setIsListening] = useState(false);
-  const [listeningSeconds, setListeningSeconds] = useState(0);
+  const [scoreResult, setScoreResult] = useState<PronunciationScoreResult | null>(null);
+  const recognitionRef = useRef<{ stop: () => void; isSupported: boolean } | null>(null);
+  const transcriptRef = useRef<{ transcript: string; confidence: number }>({ transcript: '', confidence: 0 });
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const speechMatchRef = useRef<SpeechMatchController | null>(null);
-  const latestSpeechResultRef = useRef<SpeechMatchResult | null>(null);
+  const pressStartTimeRef = useRef<number>(0);
   const autoStopTimeoutRef = useRef<number | null>(null);
-  const listeningTimerRef = useRef<number | null>(null);
-  const autoStopSupported = supportsSpeechRecognition();
 
   const clearAutoStopTimeout = () => {
-    if (autoStopTimeoutRef.current === null) return;
-    window.clearTimeout(autoStopTimeoutRef.current);
-    autoStopTimeoutRef.current = null;
+    if (autoStopTimeoutRef.current !== null) {
+      window.clearTimeout(autoStopTimeoutRef.current);
+      autoStopTimeoutRef.current = null;
+    }
   };
 
-  const clearListeningTimer = () => {
-    if (listeningTimerRef.current === null) return;
-    window.clearInterval(listeningTimerRef.current);
-    listeningTimerRef.current = null;
-  };
-
-  const stopSpeechMatch = () => {
-    speechMatchRef.current?.stop();
-    speechMatchRef.current = null;
+  const stopRecognition = () => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+      recognitionRef.current = null;
+    }
   };
 
   useEffect(() => {
     return () => {
       clearAutoStopTimeout();
-      clearListeningTimer();
-      stopSpeechMatch();
+      stopRecognition();
     };
   }, []);
 
-  const finishSpeech = (score: number | null) => {
+  const handleStartRecording = async () => {
+    if (status === 'requesting' || isRecording) return;
     clearAutoStopTimeout();
-    clearListeningTimer();
-    stopSpeechMatch();
-    setIsListening(false);
-    setRecognitionScore(score);
+    setScoreResult(null);
+    transcriptRef.current = { transcript: '', confidence: 0 };
+    pressStartTimeRef.current = Date.now();
+
+    recognitionRef.current = startClientSpeechRecognition(
+      accent,
+      (res) => {
+        transcriptRef.current = res;
+      },
+      () => {
+        // onSpeechEnd: auto-stop when user stops speaking
+        handleStopRecording();
+      }
+    );
+
+    await startRecording();
+
+    // Auto-stop after 6.5s if no speech or long pause
+    autoStopTimeoutRef.current = window.setTimeout(() => {
+      handleStopRecording();
+    }, 6500);
   };
 
-  const handleStartRecording = async () => {
-    clearAutoStopTimeout();
-    clearListeningTimer();
-    stopSpeechMatch();
-    latestSpeechResultRef.current = null;
-    setRecognitionScore(null);
-    setUploadSuccess(false);
+  const handlePointerDown = () => {
+    handleStartRecording();
+  };
 
-    if (autoStopSupported) {
-      setIsListening(true);
-      setListeningSeconds(0);
-      listeningTimerRef.current = window.setInterval(() => {
-        setListeningSeconds((s) => s + 1);
-      }, 1000);
-
-      const controller = startSpeechRecognition(word, accent, (result, isFinal) => {
-        latestSpeechResultRef.current = result;
-        if (isFinal) {
-          finishSpeech(result.score);
-        }
-      });
-      speechMatchRef.current = controller;
-
-      if (controller) {
-        autoStopTimeoutRef.current = window.setTimeout(() => {
-          finishSpeech(latestSpeechResultRef.current?.score ?? 0);
-        }, 7000);
-      } else {
-        clearListeningTimer();
-        setIsListening(false);
-        await startRecording();
-      }
-    } else {
-      await startRecording();
+  const handlePointerUp = () => {
+    const pressDuration = Date.now() - pressStartTimeRef.current;
+    if (pressDuration < 300) {
+      // Short tap: keep recording for tap-to-speak
+      return;
+    }
+    if (isRecording) {
+      handleStopRecording();
     }
   };
 
   const handleStopRecording = () => {
-    if (isListening) {
-      finishSpeech(latestSpeechResultRef.current?.score ?? 0);
+    clearAutoStopTimeout();
+    stopRecording();
+    stopRecognition();
+
+    const applyScore = () => {
+      const res = scorePronunciation(
+        word,
+        transcriptRef.current.transcript,
+        transcriptRef.current.confidence,
+        duration,
+        0.5
+      );
+      setScoreResult(res);
+    };
+
+    if (transcriptRef.current.transcript) {
+      applyScore();
     } else {
-      clearAutoStopTimeout();
-      stopSpeechMatch();
-      setRecognitionScore(latestSpeechResultRef.current?.score ?? 0);
-      stopRecording();
+      setTimeout(applyScore, 300);
     }
   };
 
   const handleReset = () => {
     clearAutoStopTimeout();
-    clearListeningTimer();
-    stopSpeechMatch();
-    latestSpeechResultRef.current = null;
-    setRecognitionScore(null);
-    setIsListening(false);
-    setListeningSeconds(0);
+    stopRecognition();
+    setScoreResult(null);
+    transcriptRef.current = { transcript: '', confidence: 0 };
     resetRecording();
   };
+
   const handlePlaySample = () => {
     const rate = speed === '0.75x' ? 0.75 : 1.0;
     playBrowserTts(word, accent, rate);
@@ -196,40 +195,32 @@ export function SpeakingExercise({
     }
   };
 
-  const isBusy = isListening || isRecording;
-  const activeDuration = isListening ? listeningSeconds : duration;
-  const hasResult =
-    recognitionScore !== null || (status === 'stopped' && Boolean(audioUrl));
-
   return (
     <div className={`flex w-full flex-col mx-auto ${compact ? 'gap-3 max-w-none' : 'gap-6 max-w-xl'}`}>
       {!compact && (
-      /* Target Word Prominent Display */
-      <Card tone="soft" className="p-6! text-center flex flex-col items-center gap-3">
-        <div className="flex items-center gap-2">
-          <Badge tone="blue">{t('Giọng {{accent}}', { accent })}</Badge>
-          {notation && <Badge tone="yellow">{notation}</Badge>}
-        </div>
+        <Card tone="soft" className="p-6! text-center flex flex-col items-center gap-3">
+          <div className="flex items-center gap-2">
+            <Badge tone="blue">{t('Giọng {{accent}}', { accent })}</Badge>
+            {notation && <Badge tone="yellow">{notation}</Badge>}
+          </div>
 
-        <h2 className="font-display text-3xl font-extrabold tracking-tight text-on-surface uppercase">
-          {word}
-        </h2>
+          <h2 className="font-display text-3xl font-extrabold tracking-tight text-on-surface uppercase">
+            {word}
+          </h2>
 
-        {meaning && <p className="text-sm text-on-surface-variant font-medium">{meaning}</p>}
+          {meaning && <p className="text-sm text-on-surface-variant font-medium">{meaning}</p>}
 
-        {/* TTS Audio Control with Explicit Disclaimer */}
-        <div className="flex flex-col items-center gap-1.5 pt-1">
-          <AudioControl
-            label={t('Nghe âm mẫu')}
-            speed={speed}
-            onPlay={handlePlaySample}
-            onSpeedChange={handleToggleSpeed}
-          />
-        </div>
-      </Card>
+          <div className="flex flex-col items-center gap-1.5 pt-1">
+            <AudioControl
+              label={t('Nghe âm mẫu')}
+              speed={speed}
+              onPlay={handlePlaySample}
+              onSpeedChange={handleToggleSpeed}
+            />
+          </div>
+        </Card>
       )}
 
-      {/* Recording Studio Area */}
       <Card
         tone="white"
         className={
@@ -259,7 +250,6 @@ export function SpeakingExercise({
           </div>
         )}
 
-        {/* Big Tactile Microphone Button / Recording State */}
         {uploadSuccess ? (
           <div className={`${compact ? 'py-1' : 'py-4'} flex flex-col items-center gap-2 text-primary`}>
             <div className={`${compact ? 'w-12 h-12' : 'w-16 h-16'} rounded-full bg-primary/10 flex items-center justify-center`}>
@@ -274,13 +264,15 @@ export function SpeakingExercise({
               </p>
             )}
           </div>
-        ) : isBusy ? (
+        ) : isRecording ? (
           <div className={`flex items-center ${compact ? 'w-full justify-center gap-3' : 'flex-col gap-3'}`}>
             <div className="relative flex items-center justify-center shrink-0">
               <span className={`absolute ${compact ? 'w-16 h-16' : 'w-24 h-24'} rounded-full bg-error/25 animate-ping pointer-events-none`} />
               <Button
                 type="button"
                 variant="danger"
+                onPointerUp={handlePointerUp}
+                onPointerLeave={handlePointerUp}
                 onClick={handleStopRecording}
                 className={`relative z-10 ${compact ? 'size-16!' : 'size-24!'} rounded-full! p-0! shadow-lg`}
                 aria-label={t('Dừng thu âm')}
@@ -291,81 +283,86 @@ export function SpeakingExercise({
             <div className={`flex flex-col gap-1 ${compact ? 'min-w-0 items-start' : 'items-center'}`}>
               <div className="flex items-center gap-2 text-error font-mono font-bold text-sm">
                 <span className="w-2.5 h-2.5 rounded-full bg-error animate-pulse" />
-                00:{activeDuration < 10 ? `0${activeDuration}` : activeDuration}
+                00:{duration < 10 ? `0${duration}` : duration}
               </div>
               <span className={`text-xs text-on-surface-variant font-medium ${compact ? 'text-left' : 'text-center'}`}>
-                {autoStopSupported
+                {recognitionRef.current?.isSupported
                   ? t('Đang nghe từ "{{word}}"... Bản thu sẽ tự dừng khi bạn nói xong.', { word })
                   : t('Đang ghi âm... Nhấn nút vuông để dừng')}
               </span>
             </div>
           </div>
-        ) : hasResult ? (
+        ) : status === 'stopped' && audioUrl ? (
           <div className={`flex flex-col items-center w-full ${compact ? 'gap-2' : 'gap-4'}`}>
-            {audioUrl && (
-              <audio
-                ref={audioRef}
-                src={audioUrl}
-                onEnded={() => setIsPlayingRecorded(false)}
-                className="hidden"
-              />
-            )}
-            {recognitionScore !== null && (
-              <div
-                className={`relative shrink-0 ${compact ? 'size-16' : 'size-20'}`}
-                role="status"
-                aria-label={t('Khớp từ nhận diện: {{score}}%', { score: recognitionScore })}
-              >
-                <svg className="size-full -rotate-90" viewBox="0 0 80 80" aria-hidden="true">
-                  <circle
-                    cx="40"
-                    cy="40"
-                    r="32"
-                    className="fill-none stroke-surface-highest"
-                    strokeWidth="6"
-                  />
-                  <circle
-                    cx="40"
-                    cy="40"
-                    r="32"
-                    className={`fill-none ${
-                      recognitionScore >= 80
-                        ? 'stroke-primary'
-                        : recognitionScore >= 50
-                          ? 'stroke-tertiary'
-                          : 'stroke-error'
-                    }`}
-                    strokeWidth="6"
-                    strokeLinecap="round"
-                    strokeDasharray="201.06"
-                    strokeDashoffset={201.06 * (1 - recognitionScore / 100)}
-                  />
-                </svg>
-                <span
-                  className={`absolute inset-0 grid place-items-center font-display font-black ${
-                    recognitionScore >= 80
-                      ? 'text-primary'
-                      : recognitionScore >= 50
-                        ? 'text-tertiary'
-                        : 'text-error'
-                  } ${compact ? 'text-sm' : 'text-base'}`}
+            <audio
+              ref={audioRef}
+              src={audioUrl}
+              onEnded={() => setIsPlayingRecorded(false)}
+              className="hidden"
+            />
+            {scoreResult && (
+              <div className="flex flex-col items-center gap-1.5 py-1">
+                <div
+                  className={`relative shrink-0 ${compact ? 'size-16' : 'size-20'}`}
+                  role="status"
+                  aria-label={t('Khớp từ nhận diện: {{score}}%', { score: scoreResult.score })}
                 >
-                  {recognitionScore}%
-                </span>
+                  <svg className="size-full -rotate-90" viewBox="0 0 80 80" aria-hidden="true">
+                    <circle
+                      cx="40"
+                      cy="40"
+                      r="32"
+                      className="fill-none stroke-surface-highest"
+                      strokeWidth="6"
+                    />
+                    <circle
+                      cx="40"
+                      cy="40"
+                      r="32"
+                      className={`fill-none ${
+                        scoreResult.score >= 80
+                          ? 'stroke-primary'
+                          : scoreResult.score >= 50
+                            ? 'stroke-tertiary'
+                            : 'stroke-error'
+                      }`}
+                      strokeWidth="6"
+                      strokeLinecap="round"
+                      strokeDasharray="201.06"
+                      strokeDashoffset={201.06 * (1 - scoreResult.score / 100)}
+                    />
+                  </svg>
+                  <span
+                    className={`absolute inset-0 grid place-items-center font-display font-black ${
+                      scoreResult.score >= 80
+                        ? 'text-primary'
+                        : scoreResult.score >= 50
+                          ? 'text-tertiary'
+                          : 'text-error'
+                    } ${compact ? 'text-sm' : 'text-base'}`}
+                  >
+                    {scoreResult.score}%
+                  </span>
+                </div>
+
+                {scoreResult.transcript && (
+                  <span className="text-xs text-on-surface-variant font-medium text-center">
+                    {t('Nghe được:')} <strong className="text-on-surface font-bold">"{scoreResult.transcript}"</strong>
+                    {scoreResult.matched && <span className="text-primary ml-1 font-bold">✓</span>}
+                  </span>
+                )}
               </div>
             )}
 
             <div className="flex items-center justify-center gap-3 w-full">
-              {audioUrl && (
-                <IconButton
-                  type="button"
-                  variant="secondary"
-                  size="md"
-                  icon={isPlayingRecorded ? 'pause' : 'play_arrow'}
-                  label={isPlayingRecorded ? t('Tạm dừng') : t('Nghe lại bản thu')}
-                  onClick={handlePlayRecorded}
-                />
-              )}
+              <IconButton
+                type="button"
+                variant="secondary"
+                size="md"
+                icon={isPlayingRecorded ? 'pause' : 'play_arrow'}
+                label={isPlayingRecorded ? t('Tạm dừng') : t('Nghe lại bản thu')}
+                onClick={handlePlayRecorded}
+              />
               <IconButton
                 type="button"
                 variant="outline"
@@ -379,8 +376,8 @@ export function SpeakingExercise({
                   type="button"
                   variant="primary"
                   size="md"
-                  icon={audioUrl ? 'cloud_upload' : 'check'}
-                  label={audioUrl ? t('Lưu bản thu') : t('Hoàn thành')}
+                  icon="cloud_upload"
+                  label={t('Lưu bản thu')}
                   onClick={handleComplete}
                 />
               )}
@@ -390,6 +387,8 @@ export function SpeakingExercise({
           <div className={`flex items-center justify-center ${compact ? 'w-full gap-3' : 'flex-col gap-3'}`}>
             <Button
               type="button"
+              onPointerDown={handlePointerDown}
+              onPointerUp={handlePointerUp}
               onClick={handleStartRecording}
               disabled={status === 'requesting'}
               className={`${compact ? 'size-16!' : 'size-24!'} rounded-full! p-0! bg-primary text-white shadow-lg hover:scale-105 active:scale-95 transition-transform shrink-0`}
@@ -410,14 +409,12 @@ export function SpeakingExercise({
           </div>
         )}
 
-        {/* Error message if any */}
         {error && (
           <div className={`${compact ? 'p-2' : 'p-3'} rounded-xl bg-error-container text-error text-xs w-full text-center font-medium`}>
             {error}
           </div>
         )}
 
-        {/* Skip action */}
         {canSkip && !uploadSuccess && (
           <div className="pt-2 border-t border-outline-variant/20 w-full flex justify-center">
             <Button

@@ -69,8 +69,15 @@ let playbackGeneration = 0;
 let retryTimerId: number | null = null;
 
 export function getPronunciationAudioUrl(text: string, accent: Accent = 'US'): string {
-  const type = accent === 'UK' ? 1 : 2;
-  return `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(text)}&type=${type}`;
+  const clean = text.trim();
+  // Với từ đơn hoặc cụm từ ngắn (<= 3 từ): dùng Youdao stream chuẩn âm sắc US/UK
+  if (!clean.includes(' ') || clean.split(/\s+/).length <= 3) {
+    const type = accent === 'UK' ? 1 : 2;
+    return `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(clean)}&type=${type}`;
+  }
+  // Với câu dài và cả đoạn văn bài đọc: dùng Google Translate TTS hỗ trợ cả đoạn văn
+  const tl = accent === 'UK' ? 'en-GB' : 'en-US';
+  return `https://translate.google.com/translate_tts?ie=UTF-8&tl=${tl}&client=tw-ob&q=${encodeURIComponent(clean)}`;
 }
 export function findBestNaturalVoice(
   voices: SpeechSynthesisVoice[],
@@ -247,7 +254,7 @@ export function playBrowserTts(
   const cleanText = text.trim();
   if (!cleanText) return;
 
-  if (cleanText.length < 250 && typeof Audio !== 'undefined') {
+  if (cleanText.length < 1500 && typeof Audio !== 'undefined') {
     try {
       if (activeAudioElement) {
         activeAudioElement.pause();
