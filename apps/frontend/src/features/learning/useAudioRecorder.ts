@@ -21,7 +21,7 @@ export interface UseAudioRecorderReturn {
   audioUrl: string | null;
   duration: number;
   error: string | null;
-  startRecording: () => Promise<void>;
+  startRecording: () => Promise<boolean>;
   stopRecording: () => void;
   resetRecording: () => void;
   uploadRecording: (
@@ -128,7 +128,7 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
     if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
       setStatus('error');
       setRecorderError({ key: 'Trình duyệt của bạn không hỗ trợ ghi âm microphone.' });
-      return;
+      return false;
     }
 
     const currentGen = ++generationRef.current;
@@ -143,7 +143,7 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
       stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     } catch (err: unknown) {
       if (!mountedRef.current || generationRef.current !== currentGen) {
-        return;
+        return false;
       }
       setStatus('error');
       const key =
@@ -152,26 +152,31 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
           ? 'Quyền truy cập microphone bị từ chối. Vui lòng cho phép quyền microphone trên trình duyệt hoặc chọn Bỏ qua.'
           : 'Không thể kết nối với microphone thiết bị.';
       setRecorderError({ key });
-      return;
+      return false;
     }
 
     // If unmounted or reset while getUserMedia was pending, stop granted tracks immediately
     if (!mountedRef.current || generationRef.current !== currentGen) {
       stream.getTracks().forEach((track) => track.stop());
-      return;
+      return false;
     }
 
     streamRef.current = stream;
 
+    if (typeof MediaRecorder === 'undefined') {
+      cleanupStream();
+      setStatus('error');
+      setRecorderError({ key: 'Trình duyệt của bạn không hỗ trợ ghi âm microphone.' });
+      return false;
+    }
+
     let mimeType = '';
-    if (typeof MediaRecorder !== 'undefined') {
-      if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
-        mimeType = 'audio/webm;codecs=opus';
-      } else if (MediaRecorder.isTypeSupported('audio/webm')) {
-        mimeType = 'audio/webm';
-      } else if (MediaRecorder.isTypeSupported('audio/mp4')) {
-        mimeType = 'audio/mp4';
-      }
+    if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
+      mimeType = 'audio/webm;codecs=opus';
+    } else if (MediaRecorder.isTypeSupported('audio/webm')) {
+      mimeType = 'audio/webm';
+    } else if (MediaRecorder.isTypeSupported('audio/mp4')) {
+      mimeType = 'audio/mp4';
     }
 
     const recorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
@@ -217,6 +222,7 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
         setDuration(Math.floor((Date.now() - startTime) / 1000));
       }
     }, 500);
+    return true;
   }, [cleanupStream, clearTimer, detachAndStopRecorder]);
 
   const stopRecording = useCallback(() => {

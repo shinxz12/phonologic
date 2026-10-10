@@ -63,6 +63,8 @@ const US_PREFERRED_VOICE_PATTERNS = [
   'sandy (english (united states))',
 ];
 
+let activeUtterance: SpeechSynthesisUtterance | null = null;
+
 export function findBestNaturalVoice(
   voices: SpeechSynthesisVoice[],
   accent: Accent = 'US'
@@ -128,39 +130,44 @@ export function playBrowserTts(
   if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
     return;
   }
+
+  const cleanText = text.trim();
+  if (!cleanText) return;
+
   try {
-    window.speechSynthesis.cancel();
-
-    const cleanText = text.trim();
-    if (!cleanText) return;
-
+    const synthesis = window.speechSynthesis;
     const utterance = new SpeechSynthesisUtterance(cleanText);
     utterance.lang = accent === 'UK' ? 'en-GB' : 'en-US';
     utterance.rate = rate;
     utterance.pitch = 1.0;
     utterance.volume = 1.0;
 
-    const speakWithVoice = () => {
-      const voices = window.speechSynthesis.getVoices();
-      const bestVoice = findBestNaturalVoice(voices, accent);
-      if (bestVoice) {
-        utterance.voice = bestVoice;
-      }
-      window.speechSynthesis.speak(utterance);
-    };
-
-    const initialVoices = window.speechSynthesis.getVoices();
-    if (initialVoices.length > 0) {
-      speakWithVoice();
-    } else {
-      window.speechSynthesis.onvoiceschanged = () => {
-        speakWithVoice();
-        window.speechSynthesis.onvoiceschanged = null;
-      };
-      // Fallback in case onvoiceschanged does not fire
-      setTimeout(speakWithVoice, 200);
+    const bestVoice = findBestNaturalVoice(synthesis.getVoices(), accent);
+    if (bestVoice) {
+      utterance.voice = bestVoice;
     }
+
+    const releaseUtterance = () => {
+      if (activeUtterance === utterance) {
+        activeUtterance = null;
+      }
+    };
+    utterance.onend = releaseUtterance;
+    utterance.onerror = releaseUtterance;
+    activeUtterance = utterance;
+
+    if (synthesis.speaking || synthesis.pending) {
+      synthesis.cancel();
+    }
+    if (synthesis.paused) {
+      synthesis.resume();
+    }
+
+    // Mobile browsers require speak() inside the original user gesture.
+    // The default voice still works when getVoices() has not populated yet.
+    synthesis.speak(utterance);
   } catch (err) {
+    activeUtterance = null;
     console.warn('SpeechSynthesis error:', err);
   }
 }

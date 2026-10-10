@@ -13,6 +13,10 @@
     transform 0.12s,
     background 0.12s;
   white-space: normal;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 .ds-button--primary {
   background: var(--primary-container);
