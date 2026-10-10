@@ -14,6 +14,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import type { Response } from 'express';
 import { CurrentUser, type AuthUser } from '../auth/current-user.decorator';
+import { Public } from '../common/public.decorator';
 import { LearningService, type AudioUploadFile } from './learning.service';
 import {
   ContentReportDto,
@@ -172,6 +173,43 @@ export class LearningController {
     @Param('id') id: string,
   ): Promise<{ success: boolean }> {
     return this.learningService.deleteRecording(user.id, id);
+  }
+  @Public()
+  @Get('tts')
+  async streamTts(
+    @Query('text') text: string,
+    @Query('accent') accent: string = 'US',
+    @Res() res: Response,
+  ): Promise<void> {
+    if (!text || !text.trim()) {
+      res.status(400).send('Missing text parameter');
+      return;
+    }
+    const clean = text.trim();
+    const tl = accent === 'UK' ? 'en-GB' : 'en-US';
+    const googleUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${tl}&client=tw-ob&q=${encodeURIComponent(clean)}`;
+
+    try {
+      const upstream = await fetch(googleUrl, {
+        headers: {
+          'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        },
+      });
+
+      if (!upstream.ok) {
+        res.status(upstream.status).send('TTS upstream error');
+        return;
+      }
+
+      const buffer = Buffer.from(await upstream.arrayBuffer());
+      res.setHeader('Content-Type', 'audio/mpeg');
+      res.setHeader('Content-Length', buffer.length);
+      res.setHeader('Cache-Control', 'public, max-age=86400');
+      res.send(buffer);
+    } catch {
+      res.status(502).send('TTS fetch failed');
+    }
   }
 
   @Post('reports')

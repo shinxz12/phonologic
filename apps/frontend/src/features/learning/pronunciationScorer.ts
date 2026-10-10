@@ -170,6 +170,7 @@ interface WebSpeechRecognitionInstance {
   stop: () => void;
   abort: () => void;
   onresult: ((event: WebSpeechRecognitionEvent) => void) | null;
+  onspeechstart?: (() => void) | null;
   onspeechend?: (() => void) | null;
   onerror: ((event: WebSpeechRecognitionErrorEvent) => void) | null;
   onend: (() => void) | null;
@@ -213,9 +214,15 @@ export function startClientSpeechRecognition(
 
     let captured = false;
     let stopped = false;
+    let speechStarted = false;
+
+    recognition.onspeechstart = () => {
+      speechStarted = true;
+    };
 
     recognition.onresult = (event: WebSpeechRecognitionEvent) => {
       if (stopped) return;
+      speechStarted = true;
       if (event.results && event.results.length > 0) {
         for (let i = 0; i < event.results.length; i++) {
           const res = event.results[i];
@@ -237,7 +244,9 @@ export function startClientSpeechRecognition(
     };
 
     recognition.onspeechend = () => {
-      onSpeechEnd?.();
+      if (speechStarted && captured) {
+        onSpeechEnd?.();
+      }
     };
 
     recognition.onerror = (e: WebSpeechRecognitionErrorEvent) => {

@@ -55,7 +55,6 @@ export function SpeakingExercise({
   const recognitionRef = useRef<{ stop: () => void; isSupported: boolean } | null>(null);
   const transcriptRef = useRef<{ transcript: string; confidence: number }>({ transcript: '', confidence: 0 });
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const pressStartTimeRef = useRef<number>(0);
   const autoStopTimeoutRef = useRef<number | null>(null);
 
   const clearAutoStopTimeout = () => {
@@ -84,7 +83,6 @@ export function SpeakingExercise({
     clearAutoStopTimeout();
     setScoreResult(null);
     transcriptRef.current = { transcript: '', confidence: 0 };
-    pressStartTimeRef.current = Date.now();
 
     recognitionRef.current = startClientSpeechRecognition(
       accent,
@@ -103,21 +101,6 @@ export function SpeakingExercise({
     autoStopTimeoutRef.current = window.setTimeout(() => {
       handleStopRecording();
     }, 6500);
-  };
-
-  const handlePointerDown = () => {
-    handleStartRecording();
-  };
-
-  const handlePointerUp = () => {
-    const pressDuration = Date.now() - pressStartTimeRef.current;
-    if (pressDuration < 300) {
-      // Short tap: keep recording for tap-to-speak
-      return;
-    }
-    if (isRecording) {
-      handleStopRecording();
-    }
   };
 
   const handleStopRecording = () => {
@@ -142,6 +125,7 @@ export function SpeakingExercise({
       setTimeout(applyScore, 300);
     }
   };
+
 
   const handleReset = () => {
     clearAutoStopTimeout();
@@ -271,8 +255,6 @@ export function SpeakingExercise({
               <Button
                 type="button"
                 variant="danger"
-                onPointerUp={handlePointerUp}
-                onPointerLeave={handlePointerUp}
                 onClick={handleStopRecording}
                 className={`relative z-10 ${compact ? 'size-16!' : 'size-24!'} rounded-full! p-0! shadow-lg`}
                 aria-label={t('Dừng thu âm')}
@@ -387,8 +369,6 @@ export function SpeakingExercise({
           <div className={`flex items-center justify-center ${compact ? 'w-full gap-3' : 'flex-col gap-3'}`}>
             <Button
               type="button"
-              onPointerDown={handlePointerDown}
-              onPointerUp={handlePointerUp}
               onClick={handleStartRecording}
               disabled={status === 'requesting'}
               className={`${compact ? 'size-16!' : 'size-24!'} rounded-full! p-0! bg-primary text-white shadow-lg hover:scale-105 active:scale-95 transition-transform shrink-0`}

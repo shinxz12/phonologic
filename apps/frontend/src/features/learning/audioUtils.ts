@@ -75,9 +75,8 @@ export function getPronunciationAudioUrl(text: string, accent: Accent = 'US'): s
     const type = accent === 'UK' ? 1 : 2;
     return `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(clean)}&type=${type}`;
   }
-  // Với câu dài và cả đoạn văn bài đọc: dùng Google Translate TTS hỗ trợ cả đoạn văn
-  const tl = accent === 'UK' ? 'en-GB' : 'en-US';
-  return `https://translate.google.com/translate_tts?ie=UTF-8&tl=${tl}&client=tw-ob&q=${encodeURIComponent(clean)}`;
+  // Với câu dài và cả đoạn văn bài đọc: dùng backend proxy để tránh bị chặn Referer trên mobile
+  return `/api/learning/tts?text=${encodeURIComponent(clean)}&accent=${accent}`;
 }
 export function findBestNaturalVoice(
   voices: SpeechSynthesisVoice[],
