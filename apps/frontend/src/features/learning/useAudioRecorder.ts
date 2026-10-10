@@ -241,34 +241,41 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
         const analyser = ctx.createAnalyser();
         analyser.fftSize = 256;
         source.connect(analyser);
-        const timeData = new Uint8Array(analyser.fftSize);
+        const freqData = new Uint8Array(analyser.frequencyBinCount);
         const startRecordTime = Date.now();
         let lastSoundTime = Date.now();
 
         vadIntervalRef.current = window.setInterval(() => {
           if (!mountedRef.current || generationRef.current !== currentGen) return;
 
-          // Giới hạn thời gian tối đa
+          // 1. Giới hạn thời gian tối đa
           if (Date.now() - startRecordTime > maxDurationMs) {
+            if (vadIntervalRef.current) {
+              window.clearInterval(vadIntervalRef.current);
+              vadIntervalRef.current = null;
+            }
             stopRecording();
             return;
           }
 
-          // Tính năng lượng sóng âm thực tế RMS
-          analyser.getByteTimeDomainData(timeData);
-          let sumSquares = 0;
-          for (let i = 0; i < timeData.length; i++) {
-            const norm = (timeData[i] - 128) / 128;
-            sumSquares += norm * norm;
+          // 2. Đo năng lượng dải tần giọng người (bins 2 đến 36 ~150Hz - 4.5kHz)
+          // Bỏ qua bin 0 để loại bỏ 100% độ lệch DC (DC offset của phần cứng mic)
+          analyser.getByteFrequencyData(freqData);
+          let peakVoice = 0;
+          for (let i = 2; i < Math.min(36, freqData.length); i++) {
+            if (freqData[i] > peakVoice) peakVoice = freqData[i];
           }
-          const rms = Math.sqrt(sumSquares / timeData.length);
 
-          // RMS > 0.04 (4% volume) là có tiếng nói người thật, loại bỏ hoàn toàn tiếng xì mic
-          if (rms > 0.04) {
+          // Ngưỡng giọng người phát âm thật: peakVoice > 38 (loại bỏ tiếng ồn môi trường/quạt/xe cộ)
+          if (peakVoice > 38) {
             lastSoundTime = Date.now();
           } else {
-            // Cứ im lặng đúng 2s (từ) hoặc 4s (đoạn) -> ngắt lập tức
+            // Đúng 2s (từ) hoặc 4s (đoạn) im lặng -> ngắt lập tức
             if (Date.now() - lastSoundTime >= silenceTimeoutMs) {
+              if (vadIntervalRef.current) {
+                window.clearInterval(vadIntervalRef.current);
+                vadIntervalRef.current = null;
+              }
               stopRecording();
             }
           }
