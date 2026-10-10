@@ -15,6 +15,7 @@ export type AudioRecorderStatus =
   | 'error';
 
 export interface StartRecordingOptions {
+  prepTimeoutMs?: number;
   silenceTimeoutMs?: number;
   maxDurationMs?: number;
 }
@@ -139,7 +140,8 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
   });
 
   const startRecording = useCallback(async (options?: StartRecordingOptions) => {
-    const silenceTimeoutMs = options?.silenceTimeoutMs ?? 1500;
+    const prepTimeoutMs = options?.prepTimeoutMs ?? 2000;
+    const silenceTimeoutMs = options?.silenceTimeoutMs ?? 1000;
     const maxDurationMs = options?.maxDurationMs ?? 8000;
     if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
       setStatus('error');
@@ -263,6 +265,7 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
         const freqData = new Uint8Array(analyser.frequencyBinCount);
         const startRecordTime = Date.now();
         let lastSoundTime = Date.now();
+        let hasSpoken = false;
         let ambientNoiseFloor = 20;
         let calibrationSamples = 0;
 
@@ -298,15 +301,27 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
           const dynamicVoiceThreshold = Math.max(35, ambientNoiseFloor + 14);
 
           if (peakVoice > dynamicVoiceThreshold) {
+            hasSpoken = true;
             lastSoundTime = Date.now();
           } else {
-            // Đúng thời gian im lặng (1.5s với từ, 4s với đoạn) -> ngắt lập tức
-            if (Date.now() - lastSoundTime >= silenceTimeoutMs) {
-              if (vadIntervalRef.current) {
-                window.clearInterval(vadIntervalRef.current);
-                vadIntervalRef.current = null;
+            if (!hasSpoken) {
+              // Chưa nói: trong 2s chuẩn bị không nói gì -> tự động ngắt
+              if (Date.now() - startRecordTime >= prepTimeoutMs) {
+                if (vadIntervalRef.current) {
+                  window.clearInterval(vadIntervalRef.current);
+                  vadIntervalRef.current = null;
+                }
+                stopRecording();
               }
-              stopRecording();
+            } else {
+              // Đã nói xong: nếu im lặng đúng 1s -> dừng ngay lập tức
+              if (Date.now() - lastSoundTime >= silenceTimeoutMs) {
+                if (vadIntervalRef.current) {
+                  window.clearInterval(vadIntervalRef.current);
+                  vadIntervalRef.current = null;
+                }
+                stopRecording();
+              }
             }
           }
         }, 100);

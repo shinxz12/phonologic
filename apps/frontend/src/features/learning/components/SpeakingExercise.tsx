@@ -72,8 +72,8 @@ export function SpeakingExercise({
     setRecognitionNotice(null);
     setIsProcessing(false);
     processedBlobRef.current = null;
-    // Đọc từng từ: im lặng 1.5s -> tự động dừng
-    await startRecording({ silenceTimeoutMs: 1500, maxDurationMs: 8000 });
+    // 2s chuẩn bị (nếu không nói gì), 1s im lặng sau khi đọc xong -> tự động ngắt
+    await startRecording({ prepTimeoutMs: 2000, silenceTimeoutMs: 1000, maxDurationMs: 8000 });
   };
 
   const handleStopRecording = () => {
