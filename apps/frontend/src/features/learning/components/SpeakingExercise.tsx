@@ -23,6 +23,12 @@ export interface SpeakingExerciseProps {
   compact?: boolean;
 }
 
+function getSpeechRecognitionClass(): unknown {
+  if (typeof window === 'undefined') return undefined;
+  const w = window as unknown as Record<string, unknown>;
+  return w.SpeechRecognition || w.webkitSpeechRecognition;
+}
+
 export function SpeakingExercise({
   word,
   accent,
@@ -52,15 +58,26 @@ export function SpeakingExercise({
   const [speed, setSpeed] = useState<'0.75x' | '1x'>('0.75x');
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [scoreResult, setScoreResult] = useState<PronunciationScoreResult | null>(null);
+  const [isListening, setIsListening] = useState(false);
+  const [listeningSeconds, setListeningSeconds] = useState(0);
   const recognitionRef = useRef<{ stop: () => void; isSupported: boolean } | null>(null);
   const transcriptRef = useRef<{ transcript: string; confidence: number }>({ transcript: '', confidence: 0 });
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const autoStopTimeoutRef = useRef<number | null>(null);
+  const listeningTimerRef = useRef<number | null>(null);
+  const startTimeRef = useRef<number>(0);
 
   const clearAutoStopTimeout = () => {
     if (autoStopTimeoutRef.current !== null) {
       window.clearTimeout(autoStopTimeoutRef.current);
       autoStopTimeoutRef.current = null;
+    }
+  };
+
+  const clearListeningTimer = () => {
+    if (listeningTimerRef.current !== null) {
+      window.clearInterval(listeningTimerRef.current);
+      listeningTimerRef.current = null;
     }
   };
 
@@ -74,46 +91,62 @@ export function SpeakingExercise({
   useEffect(() => {
     return () => {
       clearAutoStopTimeout();
+      clearListeningTimer();
       stopRecognition();
     };
   }, []);
 
   const handleStartRecording = async () => {
-    if (status === 'requesting' || isRecording) return;
+    if (status === 'requesting' || isRecording || isListening) return;
     clearAutoStopTimeout();
+    clearListeningTimer();
     setScoreResult(null);
     transcriptRef.current = { transcript: '', confidence: 0 };
+    startTimeRef.current = Date.now();
 
-    recognitionRef.current = startClientSpeechRecognition(
-      accent,
-      (res) => {
-        transcriptRef.current = res;
-      },
-      () => {
-        // onSpeechEnd: auto-stop when user stops speaking
+    const isSpeechSupported = Boolean(getSpeechRecognitionClass());
+
+    if (isSpeechSupported) {
+      setIsListening(true);
+      setListeningSeconds(0);
+      listeningTimerRef.current = window.setInterval(() => {
+        setListeningSeconds((s) => s + 1);
+      }, 1000);
+
+      recognitionRef.current = startClientSpeechRecognition(
+        accent,
+        (res) => {
+          transcriptRef.current = res;
+        },
+        () => {
+          // onSpeechEnd: auto-stop when user stops speaking
+          handleStopRecording();
+        }
+      );
+
+      // Auto-stop after 6.5s fallback
+      autoStopTimeoutRef.current = window.setTimeout(() => {
         handleStopRecording();
-      }
-    );
-
-    await startRecording();
-
-    // Auto-stop after 6.5s if no speech or long pause
-    autoStopTimeoutRef.current = window.setTimeout(() => {
-      handleStopRecording();
-    }, 6500);
+      }, 6500);
+    } else {
+      await startRecording();
+    }
   };
 
   const handleStopRecording = () => {
     clearAutoStopTimeout();
-    stopRecording();
+    clearListeningTimer();
+    setIsListening(false);
     stopRecognition();
+    stopRecording();
 
+    const durationSeconds = Math.max(0.6, (Date.now() - startTimeRef.current) / 1000);
     const applyScore = () => {
       const res = scorePronunciation(
         word,
         transcriptRef.current.transcript,
         transcriptRef.current.confidence,
-        duration,
+        durationSeconds,
         0.5
       );
       setScoreResult(res);
@@ -122,18 +155,21 @@ export function SpeakingExercise({
     if (transcriptRef.current.transcript) {
       applyScore();
     } else {
-      setTimeout(applyScore, 300);
+      setTimeout(applyScore, 350);
     }
   };
 
-
   const handleReset = () => {
     clearAutoStopTimeout();
+    clearListeningTimer();
     stopRecognition();
+    setIsListening(false);
+    setListeningSeconds(0);
     setScoreResult(null);
     transcriptRef.current = { transcript: '', confidence: 0 };
     resetRecording();
   };
+
 
   const handlePlaySample = () => {
     const rate = speed === '0.75x' ? 0.75 : 1.0;
@@ -248,7 +284,7 @@ export function SpeakingExercise({
               </p>
             )}
           </div>
-        ) : isRecording ? (
+        ) : (isListening || isRecording) ? (
           <div className={`flex items-center ${compact ? 'w-full justify-center gap-3' : 'flex-col gap-3'}`}>
             <div className="relative flex items-center justify-center shrink-0">
               <span className={`absolute ${compact ? 'w-16 h-16' : 'w-24 h-24'} rounded-full bg-error/25 animate-ping pointer-events-none`} />
@@ -265,23 +301,29 @@ export function SpeakingExercise({
             <div className={`flex flex-col gap-1 ${compact ? 'min-w-0 items-start' : 'items-center'}`}>
               <div className="flex items-center gap-2 text-error font-mono font-bold text-sm">
                 <span className="w-2.5 h-2.5 rounded-full bg-error animate-pulse" />
-                00:{duration < 10 ? `0${duration}` : duration}
+                00:{
+                  (isListening ? listeningSeconds : duration) < 10
+                    ? `0${isListening ? listeningSeconds : duration}`
+                    : isListening ? listeningSeconds : duration
+                }
               </div>
               <span className={`text-xs text-on-surface-variant font-medium ${compact ? 'text-left' : 'text-center'}`}>
-                {recognitionRef.current?.isSupported
+                {isListening
                   ? t('Đang nghe từ "{{word}}"... Bản thu sẽ tự dừng khi bạn nói xong.', { word })
                   : t('Đang ghi âm... Nhấn nút vuông để dừng')}
               </span>
             </div>
           </div>
-        ) : status === 'stopped' && audioUrl ? (
+        ) : (scoreResult !== null || (status === 'stopped' && Boolean(audioUrl))) ? (
           <div className={`flex flex-col items-center w-full ${compact ? 'gap-2' : 'gap-4'}`}>
-            <audio
-              ref={audioRef}
-              src={audioUrl}
-              onEnded={() => setIsPlayingRecorded(false)}
-              className="hidden"
-            />
+            {audioUrl && (
+              <audio
+                ref={audioRef}
+                src={audioUrl}
+                onEnded={() => setIsPlayingRecorded(false)}
+                className="hidden"
+              />
+            )}
             {scoreResult && (
               <div className="flex flex-col items-center gap-1.5 py-1">
                 <div
@@ -337,14 +379,16 @@ export function SpeakingExercise({
             )}
 
             <div className="flex items-center justify-center gap-3 w-full">
-              <IconButton
-                type="button"
-                variant="secondary"
-                size="md"
-                icon={isPlayingRecorded ? 'pause' : 'play_arrow'}
-                label={isPlayingRecorded ? t('Tạm dừng') : t('Nghe lại bản thu')}
-                onClick={handlePlayRecorded}
-              />
+              {audioUrl && (
+                <IconButton
+                  type="button"
+                  variant="secondary"
+                  size="md"
+                  icon={isPlayingRecorded ? 'pause' : 'play_arrow'}
+                  label={isPlayingRecorded ? t('Tạm dừng') : t('Nghe lại bản thu')}
+                  onClick={handlePlayRecorded}
+                />
+              )}
               <IconButton
                 type="button"
                 variant="outline"
@@ -358,8 +402,8 @@ export function SpeakingExercise({
                   type="button"
                   variant="primary"
                   size="md"
-                  icon="cloud_upload"
-                  label={t('Lưu bản thu')}
+                  icon={audioUrl ? 'cloud_upload' : 'check'}
+                  label={audioUrl ? t('Lưu bản thu') : t('Hoàn thành')}
                   onClick={handleComplete}
                 />
               )}

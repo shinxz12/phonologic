@@ -151,7 +151,7 @@ describe('SpeakingExercise recording controls', () => {
     });
 
     expect(await screen.findByRole('button', { name: 'Thu lại' })).toBeTruthy();
-    expect(screen.getByRole('status', { name: 'Khớp từ nhận diện: 65%' }).textContent).toContain('65%');
+    expect(screen.getByRole('status', { name: 'Khớp từ nhận diện: 71%' }).textContent).toContain('71%');
   });
 
   it('scores the latest interim result when the learner stops manually', async () => {
@@ -173,7 +173,7 @@ describe('SpeakingExercise recording controls', () => {
     await user.click(screen.getByRole('button', { name: 'Dừng thu âm' }));
 
     expect(await screen.findByRole('button', { name: 'Thu lại' })).toBeTruthy();
-    expect(screen.getByRole('status', { name: 'Khớp từ nhận diện: 72%' }).textContent).toContain('72%');
+    expect(screen.getByRole('status', { name: 'Khớp từ nhận diện: 78%' }).textContent).toContain('78%');
   });
 
   it('uses recognition confidence instead of always awarding 100%', async () => {
@@ -194,6 +194,6 @@ describe('SpeakingExercise recording controls', () => {
     });
 
     expect(await screen.findByRole('button', { name: 'Thu lại' })).toBeTruthy();
-    expect(screen.getByRole('status', { name: 'Khớp từ nhận diện: 89%' }).textContent).toContain('89%');
+    expect(screen.getByRole('status', { name: 'Khớp từ nhận diện: 95%' }).textContent).toContain('95%');
   });
 });

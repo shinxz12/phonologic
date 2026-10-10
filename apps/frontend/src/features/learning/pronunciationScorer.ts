@@ -68,13 +68,15 @@ export function scorePronunciation(
   durationSeconds: number,
   averageVolumeRms = 0.5
 ): PronunciationScoreResult {
-  const cleanTarget = targetWord.trim().toLowerCase();
-  const cleanTranscript = transcript.trim().toLowerCase();
+  const cleanTarget = targetWord.trim().toLowerCase().replace(/[^a-z0-9\s]/g, '');
+  const cleanTranscript = transcript.trim().toLowerCase().replace(/[^a-z0-9\s]/g, '');
 
   // 1. Text Similarity (0 - 100)
   const similarity = calculateStringSimilarity(cleanTarget, cleanTranscript);
   const isExact = cleanTarget === cleanTranscript;
-  const isContained = cleanTranscript.includes(cleanTarget);
+  const isContained =
+    Boolean(cleanTarget && cleanTranscript) &&
+    (cleanTranscript.includes(cleanTarget) || cleanTarget.includes(cleanTranscript));
 
   let textScore = Math.round(similarity * 100);
   if (isExact) {
@@ -82,7 +84,6 @@ export function scorePronunciation(
   } else if (isContained) {
     textScore = Math.max(90, textScore);
   }
-
   // 2. Confidence Score (0 - 100)
   // Engine confidence is 0.0 - 1.0; nếu 0 hoặc không có thì ước lượng theo similarity
   const safeConfidence = confidence > 0 ? confidence : similarity;
@@ -213,7 +214,6 @@ export function startClientSpeechRecognition(
     recognition.lang = accent === 'UK' ? 'en-GB' : 'en-US';
 
     let captured = false;
-    let stopped = false;
     let speechStarted = false;
 
     recognition.onspeechstart = () => {
@@ -221,24 +221,39 @@ export function startClientSpeechRecognition(
     };
 
     recognition.onresult = (event: WebSpeechRecognitionEvent) => {
-      if (stopped) return;
       speechStarted = true;
       if (event.results && event.results.length > 0) {
+        let bestTranscript = '';
+        let bestConfidence = 0;
+        let isFinalDelivered = false;
+
         for (let i = 0; i < event.results.length; i++) {
           const res = event.results[i];
           if (res && res.length > 0) {
-            const top = res[0];
-            if (top && top.transcript) {
-              captured = true;
-              onResult({
-                transcript: top.transcript || '',
-                confidence: top.confidence || 0,
-              });
-              if (res.isFinal) {
-                onSpeechEnd?.();
+            for (let j = 0; j < res.length; j++) {
+              const alt = res[j];
+              if (alt && alt.transcript && alt.transcript.trim()) {
+                captured = true;
+                if (!bestTranscript || (alt.confidence && alt.confidence > bestConfidence)) {
+                  bestTranscript = alt.transcript.trim();
+                  bestConfidence = alt.confidence || 0;
+                }
               }
             }
+            if (res.isFinal) {
+              isFinalDelivered = true;
+            }
           }
+        }
+
+        if (bestTranscript) {
+          onResult({
+            transcript: bestTranscript,
+            confidence: bestConfidence,
+          });
+        }
+        if (isFinalDelivered) {
+          onSpeechEnd?.();
         }
       }
     };
@@ -254,17 +269,13 @@ export function startClientSpeechRecognition(
     };
 
     recognition.onend = () => {
-      if (!captured) {
-        onResult({ transcript: '', confidence: 0 });
-      }
+      // Never overwrite a captured transcript with empty
     };
 
     recognition.start();
 
     return {
       stop: () => {
-        if (stopped) return;
-        stopped = true;
         try {
           recognition.stop();
         } catch {
