@@ -141,12 +141,16 @@ export function PassageSpeakingExercise({
                 <Icon name="stop" size={28} />
               </Button>
             </div>
-            <div className="flex flex-col items-center">
-              <span className="font-mono text-error font-bold text-lg">
+            <div className="flex flex-col items-center gap-2">
+              <div className="flex items-center justify-center gap-1 h-5">
+                <span className="w-1 bg-error rounded-full animate-bounce h-2" style={{ animationDelay: '0ms' }} />
+                <span className="w-1 bg-error rounded-full animate-bounce h-4" style={{ animationDelay: '150ms' }} />
+                <span className="w-1 bg-error rounded-full animate-bounce h-5" style={{ animationDelay: '300ms' }} />
+                <span className="w-1 bg-error rounded-full animate-bounce h-3" style={{ animationDelay: '450ms' }} />
+                <span className="w-1 bg-error rounded-full animate-bounce h-2" style={{ animationDelay: '200ms' }} />
+              </div>
+              <span className="font-mono text-error font-bold text-base">
                 {Math.floor(duration / 60)}:{(duration % 60).toString().padStart(2, '0')}
-              </span>
-              <span className="text-xs text-error font-medium animate-pulse">
-                {t('Đang thu âm... Hãy đọc to và rõ ràng cả đoạn văn')}
               </span>
             </div>
           </div>
@@ -235,9 +239,6 @@ export function PassageSpeakingExercise({
               <Icon name="mic" size={20} className="mr-2" />
               {t('Bắt đầu đọc đoạn văn')}
             </Button>
-            <span className="text-xs text-on-surface-variant">
-              {t('Đọc trôi chảy đoạn văn. AI sẽ chấm độ chuẩn, độ trôi chảy và bắt lỗi từng từ.')}
-            </span>
           </div>
         )}
 

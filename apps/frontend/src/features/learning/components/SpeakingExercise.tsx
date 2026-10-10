@@ -236,16 +236,24 @@ export function SpeakingExercise({
               )}
             </div>
           ) : isProcessing ? (
-            <p role="status" className="py-4 text-center text-sm text-on-surface-variant">
-              {recognitionNotice || t('Đang xử lý nhận diện giọng nói...')}
-            </p>
-          ) : isRecording ? (
-            <div className="flex flex-col items-center gap-1.5 py-2">
-              <span className="font-mono text-error font-bold text-lg animate-pulse">
-                {Math.floor(duration / 60)}:{(duration % 60).toString().padStart(2, '0')}
+            <div className="flex items-center gap-2 py-4" role="status">
+              <div className="w-4 h-4 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+              <span className="text-xs text-on-surface-variant font-medium animate-pulse">
+                {t('Đang chấm điểm...')}
               </span>
-              <span className="text-xs text-error font-medium text-center px-4">
-                {t('Đang nghe... Tự động chấm điểm khi bạn đọc xong.')}
+            </div>
+          ) : isRecording ? (
+            <div className="flex flex-col items-center gap-1.5 py-3" aria-live="polite">
+              {/* Sóng âm thanh động chuẩn app học tiếng Anh */}
+              <div className="flex items-center justify-center gap-1 h-5">
+                <span className="w-1 bg-error rounded-full animate-bounce h-2" style={{ animationDelay: '0ms' }} />
+                <span className="w-1 bg-error rounded-full animate-bounce h-4" style={{ animationDelay: '150ms' }} />
+                <span className="w-1 bg-error rounded-full animate-bounce h-5" style={{ animationDelay: '300ms' }} />
+                <span className="w-1 bg-error rounded-full animate-bounce h-3" style={{ animationDelay: '450ms' }} />
+                <span className="w-1 bg-error rounded-full animate-bounce h-2" style={{ animationDelay: '200ms' }} />
+              </div>
+              <span className="font-mono text-error font-bold text-xs">
+                {Math.floor(duration / 60)}:{(duration % 60).toString().padStart(2, '0')}
               </span>
             </div>
           ) : (scoreResult !== null || recognitionNotice !== null || (status === 'stopped' && Boolean(audioUrl))) ? (
