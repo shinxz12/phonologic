@@ -425,16 +425,6 @@ export function ReadingDetail({ readingId, onExit, onUpdated }: ReadingDetailPro
                   size="sm"
                   onClick={handlePlayPassage}
                 />
-                <Button
-                  size="sm"
-                  type="button"
-                  variant="outline"
-                  onClick={handleCycleSpeed}
-                  className="min-w-14 font-mono font-bold text-xs"
-                  title={t('Tốc độ đọc: {{speed}}', { speed: passageSpeed })}
-                >
-                  {passageSpeed}
-                </Button>
                 <IconButton
                   icon="mic"
                   label={t('Luyện đọc cả bài')}
@@ -442,6 +432,16 @@ export function ReadingDetail({ readingId, onExit, onUpdated }: ReadingDetailPro
                   size="sm"
                   onClick={() => setIsPassageSpeakingOpen((v) => !v)}
                 />
+                <Button
+                  size="sm"
+                  type="button"
+                  variant="outline"
+                  onClick={handleCycleSpeed}
+                  className="min-w-13 h-9! font-mono font-bold text-xs px-2.5!"
+                  title={t('Tốc độ đọc: {{speed}}', { speed: passageSpeed })}
+                >
+                  {passageSpeed}
+                </Button>
               </div>
 
               <div className="flex items-center bg-white p-0.5 rounded-xl border border-outline-variant/30">

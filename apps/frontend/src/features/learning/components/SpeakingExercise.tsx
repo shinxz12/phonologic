@@ -147,16 +147,7 @@ export function SpeakingExercise({
   return (
     <Card tone="white" className={compact ? 'p-2' : 'p-6'}>
       <div className={`grid gap-4 ${compact ? '' : 'sm:gap-6'}`}>
-        {!compact && (
-          <div className="flex flex-col items-center gap-2">
-            <h3 className="text-xl font-display font-bold text-on-surface text-center px-4">
-              {t('Luyện phát âm cùng Microphone')}
-            </h3>
-            <p className="text-sm text-on-surface-variant text-center max-w-sm px-4">
-              {t('Nhấn nút để bắt đầu thu âm phát âm của bạn.')}
-            </p>
-          </div>
-        )}
+        {/* Bỏ tiêu đề dài dòng để rút gọn UI */}
 
         <div className="flex flex-col items-center gap-3">
           <Badge tone="blue">
@@ -170,13 +161,44 @@ export function SpeakingExercise({
             {meaning && <span className="text-sm text-on-surface-variant text-center px-4">{meaning}</span>}
           </div>
 
-          <div className="mt-1">
-            <AudioControl
-              onPlay={handlePlaySample}
-              speed={speed}
-              onSpeedChange={toggleSpeed}
+          {/* Thanh điều khiển: Loa và Mic đặt cạnh nhau, bằng nhau, kèm tốc độ */}
+          <div className="flex items-center gap-1.5 mt-2">
+            <IconButton
+              icon="volume_up"
               label={t('Nghe mẫu')}
+              variant="secondary"
+              size="sm"
+              onClick={handlePlaySample}
             />
+            {isRecording ? (
+              <IconButton
+                icon="stop"
+                label={t('Dừng thu âm')}
+                variant="danger"
+                size="sm"
+                onClick={handleStopRecording}
+                className="animate-pulse"
+              />
+            ) : (
+              <IconButton
+                icon="mic"
+                label={t('Thu âm')}
+                variant="primary"
+                size="sm"
+                onClick={handleStartRecording}
+                disabled={status === 'requesting'}
+              />
+            )}
+            <Button
+              size="sm"
+              type="button"
+              variant="outline"
+              onClick={toggleSpeed}
+              className="min-w-13 h-9! font-mono font-bold text-xs px-2.5!"
+              title={t('Tốc độ: {{speed}}', { speed })}
+            >
+              {speed}
+            </Button>
           </div>
         </div>
 
@@ -209,29 +231,13 @@ export function SpeakingExercise({
               {recognitionNotice || t('Đang xử lý nhận diện giọng nói...')}
             </p>
           ) : isRecording ? (
-            <div className={`flex items-center ${compact ? 'w-full justify-center gap-3' : 'flex-col gap-3'}`}>
-              <div className="relative flex items-center justify-center shrink-0">
-                <span className={`absolute ${compact ? 'w-16 h-16' : 'w-24 h-24'} rounded-full bg-error/25 animate-ping pointer-events-none`} />
-                <Button
-                  type="button"
-                  variant="danger"
-                  onClick={handleStopRecording}
-                  className={`relative z-10 ${compact ? 'w-12 h-12 p-0' : 'w-16 h-16 p-0'} rounded-full flex items-center justify-center`}
-                  aria-label={t('Dừng thu âm')}
-                >
-                  <Icon name="stop" className={compact ? 'text-2xl' : 'text-3xl'} />
-                </Button>
-              </div>
-              <div className="flex flex-col items-center gap-1">
-                <span className="font-mono text-error font-bold">
-                  {Math.floor(duration / 60)}:{(duration % 60).toString().padStart(2, '0')}
-                </span>
-                {!compact && (
-                  <span className="text-xs text-error font-medium animate-pulse text-center px-4">
-                    {t('Đang thu âm... Bản thu tự động được chấm điểm khi dừng.')}
-                  </span>
-                )}
-              </div>
+            <div className="flex flex-col items-center gap-1.5 py-2">
+              <span className="font-mono text-error font-bold text-lg animate-pulse">
+                {Math.floor(duration / 60)}:{(duration % 60).toString().padStart(2, '0')}
+              </span>
+              <span className="text-xs text-error font-medium text-center px-4">
+                {t('Đang nghe... Tự động chấm điểm khi bạn đọc xong.')}
+              </span>
             </div>
           ) : (scoreResult !== null || recognitionNotice !== null || (status === 'stopped' && Boolean(audioUrl))) ? (
             <div className={`flex flex-col items-center w-full ${compact ? 'gap-2' : 'gap-4'}`}>
@@ -312,18 +318,7 @@ export function SpeakingExercise({
                 )}
               </div>
             </div>
-          ) : (
-            <Button
-              type="button"
-              variant="primary"
-              onClick={handleStartRecording}
-              disabled={status === 'requesting'}
-              className="px-8"
-            >
-              <Icon name="mic" className="mr-2" />
-              {status === 'requesting' ? t('Đang kết nối...') : t('Bắt đầu thu âm')}
-            </Button>
-          )}
+          ) : null}
         </div>
 
         {canSkip && status === 'idle' && (

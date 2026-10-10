@@ -5,3 +5,15 @@
   border-radius: 50%;
   flex-shrink: 0;
 }
+
+.ds-icon-button.ds-button--sm {
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+}
+
+.ds-icon-button.ds-button--lg {
+  width: 52px;
+  height: 52px;
+  min-height: 52px;
+}
