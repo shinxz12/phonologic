@@ -43,7 +43,9 @@ class FakeSpeechRecognition {
   lang = '';
   onresult: ((event: {
     resultIndex: number;
-    results: Array<Array<{ transcript: string }> & { isFinal: boolean }>;
+    results: Array<
+      Array<{ transcript: string; confidence?: number }> & { isFinal: boolean }
+    >;
   }) => void) | null = null;
   abort = vi.fn();
 
@@ -53,11 +55,12 @@ class FakeSpeechRecognition {
 
   start() {}
 
-  emitFinal(...transcripts: string[]) {
-    const result = transcripts.map((transcript) => ({ transcript })) as Array<{
+  emit(transcript: string, confidence: number, isFinal: boolean) {
+    const result = [{ transcript, confidence }] as Array<{
       transcript: string;
+      confidence?: number;
     }> & { isFinal: boolean };
-    result.isFinal = true;
+    result.isFinal = isFinal;
     this.onresult?.({ resultIndex: 0, results: [result] });
   }
 }
@@ -128,7 +131,7 @@ describe('SpeakingExercise recording controls', () => {
     expect(stopTrack).toHaveBeenCalledTimes(1);
   });
 
-  it('stays recording after a wrong word and stops after an exact final match', async () => {
+  it('auto-stops after a wrong final result and displays its match score', async () => {
     const queryClient = new QueryClient({
       defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
     });
@@ -142,19 +145,56 @@ describe('SpeakingExercise recording controls', () => {
 
     await user.click(screen.getByRole('button', { name: 'Bắt đầu thu âm' }));
     expect(await screen.findByRole('button', { name: 'Dừng thu âm' })).toBeTruthy();
-    expect(FakeSpeechRecognition.instances).toHaveLength(1);
 
     await act(async () => {
-      FakeSpeechRecognition.instances[0].emitFinal('stick');
-    });
-    expect(screen.getByRole('button', { name: 'Dừng thu âm' })).toBeTruthy();
-
-    await act(async () => {
-      FakeSpeechRecognition.instances[0].emitFinal('STEAK.');
+      FakeSpeechRecognition.instances[0].emit('stick', 0.8, true);
     });
 
     expect(await screen.findByRole('button', { name: 'Nghe lại bản thu' })).toBeTruthy();
-    expect(screen.getByRole('status', { name: 'Khớp từ nhận diện: 100%' }).textContent).toContain('100%');
+    expect(screen.getByRole('status', { name: 'Khớp từ nhận diện: 65%' }).textContent).toContain('65%');
     expect(stopTrack).toHaveBeenCalledTimes(1);
+  });
+
+  it('scores the latest interim result when the learner stops manually', async () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    });
+    const user = userEvent.setup();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <SpeakingExercise word="steak" accent="US" canSkip={false} compact />
+      </QueryClientProvider>,
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Bắt đầu thu âm' }));
+    await act(async () => {
+      FakeSpeechRecognition.instances[0].emit('steam', 0.6, false);
+    });
+    await user.click(screen.getByRole('button', { name: 'Dừng thu âm' }));
+
+    expect(await screen.findByRole('button', { name: 'Nghe lại bản thu' })).toBeTruthy();
+    expect(screen.getByRole('status', { name: 'Khớp từ nhận diện: 75%' }).textContent).toContain('75%');
+  });
+
+  it('uses recognition confidence instead of always awarding 100%', async () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    });
+    const user = userEvent.setup();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <SpeakingExercise word="steak" accent="US" canSkip={false} />
+      </QueryClientProvider>,
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Bắt đầu thu âm' }));
+    await act(async () => {
+      FakeSpeechRecognition.instances[0].emit('STEAK.', 0.8, true);
+    });
+
+    expect(await screen.findByRole('button', { name: 'Nghe lại bản thu' })).toBeTruthy();
+    expect(screen.getByRole('status', { name: 'Khớp từ nhận diện: 95%' }).textContent).toContain('95%');
   });
 });

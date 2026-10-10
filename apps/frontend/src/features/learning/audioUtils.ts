@@ -64,6 +64,8 @@ const US_PREFERRED_VOICE_PATTERNS = [
 ];
 
 let activeUtterance: SpeechSynthesisUtterance | null = null;
+let playbackGeneration = 0;
+let retryTimerId: number | null = null;
 
 export function findBestNaturalVoice(
   voices: SpeechSynthesisVoice[],
@@ -136,37 +138,93 @@ export function playBrowserTts(
 
   try {
     const synthesis = window.speechSynthesis;
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-    utterance.lang = accent === 'UK' ? 'en-GB' : 'en-US';
-    utterance.rate = rate;
-    utterance.pitch = 1.0;
-    utterance.volume = 1.0;
+    const generation = ++playbackGeneration;
+    let hasStarted = false;
+    let hasRetried = false;
+    let voicesChangedHandler: (() => void) | null = null;
 
-    const bestVoice = findBestNaturalVoice(synthesis.getVoices(), accent);
-    if (bestVoice) {
-      utterance.voice = bestVoice;
+    if (retryTimerId !== null) {
+      window.clearTimeout(retryTimerId);
+      retryTimerId = null;
     }
-
-    const releaseUtterance = () => {
-      if (activeUtterance === utterance) {
-        activeUtterance = null;
-      }
-    };
-    utterance.onend = releaseUtterance;
-    utterance.onerror = releaseUtterance;
-    activeUtterance = utterance;
-
-    if (synthesis.speaking || synthesis.pending) {
+    if (activeUtterance || synthesis.speaking || synthesis.pending) {
       synthesis.cancel();
     }
-    if (synthesis.paused) {
+
+    const releasePlayback = () => {
+      if (generation !== playbackGeneration) return;
+      if (retryTimerId !== null) {
+        window.clearTimeout(retryTimerId);
+        retryTimerId = null;
+      }
+      if (
+        voicesChangedHandler &&
+        synthesis.onvoiceschanged === voicesChangedHandler
+      ) {
+        synthesis.onvoiceschanged = null;
+      }
+      activeUtterance = null;
+    };
+
+    const speak = (selectPreferredVoice: boolean) => {
+      const utterance = new SpeechSynthesisUtterance(cleanText);
+      utterance.lang = accent === 'UK' ? 'en-GB' : 'en-US';
+      utterance.rate = rate;
+      utterance.pitch = 1.0;
+      utterance.volume = 1.0;
+
+      if (selectPreferredVoice) {
+        const bestVoice = findBestNaturalVoice(synthesis.getVoices(), accent);
+        if (bestVoice) utterance.voice = bestVoice;
+      }
+
+      utterance.onstart = () => {
+        if (generation !== playbackGeneration) return;
+        hasStarted = true;
+        if (retryTimerId !== null) {
+          window.clearTimeout(retryTimerId);
+          retryTimerId = null;
+        }
+      };
+      utterance.onend = releasePlayback;
+      utterance.onerror = () => {
+        if (!hasStarted && !hasRetried) {
+          retry(false);
+          return;
+        }
+        releasePlayback();
+      };
+      activeUtterance = utterance;
+
+      // Chrome Android can leave the synthesis queue paused even when paused is false.
       synthesis.resume();
+      synthesis.speak(utterance);
+    };
+
+    const retry = (selectPreferredVoice: boolean) => {
+      if (generation !== playbackGeneration || hasStarted || hasRetried) return;
+      hasRetried = true;
+      synthesis.cancel();
+      speak(selectPreferredVoice);
+    };
+
+    const voices = synthesis.getVoices();
+    speak(voices.length > 0);
+
+    if (voices.length === 0) {
+      voicesChangedHandler = () => retry(true);
+      synthesis.onvoiceschanged = voicesChangedHandler;
     }
 
-    // Mobile browsers require speak() inside the original user gesture.
-    // The default voice still works when getVoices() has not populated yet.
-    synthesis.speak(utterance);
+    // Some Chrome Android versions accept the first speak() call but never start it.
+    // The first synchronous call unlocks TTS; this retry resets a stalled queue.
+    retryTimerId = window.setTimeout(() => retry(false), 900);
   } catch (err) {
+    playbackGeneration += 1;
+    if (retryTimerId !== null) {
+      window.clearTimeout(retryTimerId);
+      retryTimerId = null;
+    }
     activeUtterance = null;
     console.warn('SpeechSynthesis error:', err);
   }

@@ -8,6 +8,7 @@ class FakeUtterance {
   pitch = 1;
   volume = 1;
   voice: SpeechSynthesisVoice | null = null;
+  onstart: (() => void) | null = null;
   onend: (() => void) | null = null;
   onerror: (() => void) | null = null;
 
@@ -25,6 +26,7 @@ function installSpeechSynthesis(voices: SpeechSynthesisVoice[] = []) {
     speak: vi.fn(),
     cancel: vi.fn(),
     resume: vi.fn(),
+    onvoiceschanged: null as (() => void) | null,
   };
 
   Object.defineProperty(globalThis, 'SpeechSynthesisUtterance', {
@@ -40,6 +42,7 @@ function installSpeechSynthesis(voices: SpeechSynthesisVoice[] = []) {
 }
 
 afterEach(() => {
+  vi.useRealTimers();
   vi.restoreAllMocks();
 });
 
@@ -55,6 +58,8 @@ describe('playBrowserTts', () => {
     expect(utterance.lang).toBe('en-US');
     expect(utterance.rate).toBe(0.75);
     expect(synthesis.cancel).not.toHaveBeenCalled();
+    utterance.onstart?.();
+    utterance.onend?.();
   });
 
   it('replaces active speech and selects the requested accent voice', () => {
@@ -73,5 +78,50 @@ describe('playBrowserTts', () => {
     const utterance = synthesis.speak.mock.calls[0][0] as unknown as FakeUtterance;
     expect(utterance.voice).toBe(ukVoice);
     expect(utterance.lang).toBe('en-GB');
+    utterance.onstart?.();
+    utterance.onend?.();
+  });
+
+  it('retries with a loaded voice when Chrome initially exposes no voices', () => {
+    const voices: SpeechSynthesisVoice[] = [];
+    const synthesis = installSpeechSynthesis(voices);
+
+    playBrowserTts('steak', 'US');
+    expect(synthesis.speak).toHaveBeenCalledTimes(1);
+
+    const usVoice = {
+      name: 'Google US English',
+      lang: 'en-US',
+    } as SpeechSynthesisVoice;
+    voices.push(usVoice);
+    synthesis.onvoiceschanged?.();
+
+    expect(synthesis.cancel).toHaveBeenCalledTimes(1);
+    expect(synthesis.speak).toHaveBeenCalledTimes(2);
+    const retriedUtterance = synthesis.speak.mock.calls[1][0] as unknown as FakeUtterance;
+    expect(retriedUtterance.voice).toBe(usVoice);
+    retriedUtterance.onstart?.();
+    retriedUtterance.onend?.();
+  });
+
+  it('resets a Chrome synthesis queue that accepts speech but never starts it', () => {
+    vi.useFakeTimers();
+    const voice = {
+      name: 'Google US English',
+      lang: 'en-US',
+    } as SpeechSynthesisVoice;
+    const synthesis = installSpeechSynthesis([voice]);
+
+    playBrowserTts('steak', 'US');
+    expect(synthesis.speak).toHaveBeenCalledTimes(1);
+
+    vi.advanceTimersByTime(900);
+
+    expect(synthesis.cancel).toHaveBeenCalledTimes(1);
+    expect(synthesis.speak).toHaveBeenCalledTimes(2);
+    const retriedUtterance = synthesis.speak.mock.calls[1][0] as unknown as FakeUtterance;
+    expect(retriedUtterance.voice).toBeNull();
+    retriedUtterance.onstart?.();
+    retriedUtterance.onend?.();
   });
 });

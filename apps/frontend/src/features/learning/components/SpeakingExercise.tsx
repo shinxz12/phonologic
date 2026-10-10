@@ -4,9 +4,10 @@ import type { Accent } from '@phonologic/shared-types';
 import { useAudioRecorder } from '../useAudioRecorder';
 import { playBrowserTts } from '../audioUtils';
 import {
-  startExactSpeechMatch,
+  startSpeechRecognition,
   supportsSpeechRecognition,
   type SpeechMatchController,
+  type SpeechMatchResult,
 } from '../speechRecognition';
 import { Button, AudioControl, Card, Badge, Icon, IconButton } from '../../../components';
 
@@ -51,41 +52,72 @@ export function SpeakingExercise({
   const [isPlayingRecorded, setIsPlayingRecorded] = useState(false);
   const [speed, setSpeed] = useState<'0.75x' | '1x'>('0.75x');
   const [uploadSuccess, setUploadSuccess] = useState(false);
-  const [autoStopped, setAutoStopped] = useState(false);
+  const [recognitionScore, setRecognitionScore] = useState<number | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const speechMatchRef = useRef<SpeechMatchController | null>(null);
+  const latestSpeechResultRef = useRef<SpeechMatchResult | null>(null);
+  const autoStopTimeoutRef = useRef<number | null>(null);
   const autoStopSupported = supportsSpeechRecognition();
 
-  useEffect(() => {
-    return () => speechMatchRef.current?.stop();
-  }, []);
+  const clearAutoStopTimeout = () => {
+    if (autoStopTimeoutRef.current === null) return;
+    window.clearTimeout(autoStopTimeoutRef.current);
+    autoStopTimeoutRef.current = null;
+  };
 
   const stopSpeechMatch = () => {
     speechMatchRef.current?.stop();
     speechMatchRef.current = null;
   };
 
-  const handleStartRecording = async () => {
-    stopSpeechMatch();
-    setAutoStopped(false);
-    const started = await startRecording();
-    if (!started) return;
+  useEffect(() => {
+    return () => {
+      if (autoStopTimeoutRef.current !== null) {
+        window.clearTimeout(autoStopTimeoutRef.current);
+      }
+      speechMatchRef.current?.stop();
+    };
+  }, []);
 
-    speechMatchRef.current = startExactSpeechMatch(word, accent, () => {
-      speechMatchRef.current = null;
-      setAutoStopped(true);
-      stopRecording();
-    });
-  };
-
-  const handleStopRecording = () => {
+  const finishRecording = (score: number | null) => {
+    clearAutoStopTimeout();
     stopSpeechMatch();
+    setRecognitionScore(score);
     stopRecording();
   };
 
-  const handleReset = () => {
+  const handleStartRecording = async () => {
+    clearAutoStopTimeout();
     stopSpeechMatch();
-    setAutoStopped(false);
+    latestSpeechResultRef.current = null;
+    setRecognitionScore(null);
+    const started = await startRecording();
+    if (!started) return;
+
+    const controller = startSpeechRecognition(word, accent, (result, isFinal) => {
+      latestSpeechResultRef.current = result;
+      if (isFinal) finishRecording(result.score);
+    });
+    speechMatchRef.current = controller;
+
+    if (controller) {
+      autoStopTimeoutRef.current = window.setTimeout(() => {
+        finishRecording(latestSpeechResultRef.current?.score ?? 0);
+      }, 8000);
+    }
+  };
+
+  const handleStopRecording = () => {
+    finishRecording(
+      latestSpeechResultRef.current?.score ?? (speechMatchRef.current ? 0 : null)
+    );
+  };
+
+  const handleReset = () => {
+    clearAutoStopTimeout();
+    stopSpeechMatch();
+    latestSpeechResultRef.current = null;
+    setRecognitionScore(null);
     resetRecording();
   };
 
@@ -216,7 +248,7 @@ export function SpeakingExercise({
               </div>
               <span className={`text-xs text-on-surface-variant font-medium ${compact ? 'text-left' : 'text-center'}`}>
                 {autoStopSupported
-                  ? t('Đang nghe từ "{{word}}"... Bản thu sẽ tự dừng khi nhận diện đúng.', { word })
+                  ? t('Đang nghe từ "{{word}}"... Bản thu sẽ tự dừng khi bạn nói xong.', { word })
                   : t('Đang ghi âm... Nhấn nút vuông để dừng')}
               </span>
             </div>
@@ -229,11 +261,11 @@ export function SpeakingExercise({
               onEnded={() => setIsPlayingRecorded(false)}
               className="hidden"
             />
-            {autoStopped && (
+            {recognitionScore !== null && (
               <div
                 className={`relative shrink-0 ${compact ? 'size-16' : 'size-20'}`}
                 role="status"
-                aria-label={t('Khớp từ nhận diện: {{score}}%', { score: 100 })}
+                aria-label={t('Khớp từ nhận diện: {{score}}%', { score: recognitionScore })}
               >
                 <svg className="size-full -rotate-90" viewBox="0 0 80 80" aria-hidden="true">
                   <circle
@@ -247,14 +279,29 @@ export function SpeakingExercise({
                     cx="40"
                     cy="40"
                     r="32"
-                    className="fill-none stroke-primary"
+                    className={`fill-none ${
+                      recognitionScore >= 80
+                        ? 'stroke-primary'
+                        : recognitionScore >= 50
+                          ? 'stroke-tertiary'
+                          : 'stroke-error'
+                    }`}
                     strokeWidth="6"
                     strokeLinecap="round"
                     strokeDasharray="201.06"
+                    strokeDashoffset={201.06 * (1 - recognitionScore / 100)}
                   />
                 </svg>
-                <span className={`absolute inset-0 grid place-items-center font-display font-black text-primary ${compact ? 'text-sm' : 'text-base'}`}>
-                  100%
+                <span
+                  className={`absolute inset-0 grid place-items-center font-display font-black ${
+                    recognitionScore >= 80
+                      ? 'text-primary'
+                      : recognitionScore >= 50
+                        ? 'text-tertiary'
+                        : 'text-error'
+                  } ${compact ? 'text-sm' : 'text-base'}`}
+                >
+                  {recognitionScore}%
                 </span>
               </div>
             )}

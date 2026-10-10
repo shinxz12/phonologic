@@ -266,7 +266,7 @@
   "Bản ghi âm thực tế của bạn đã được lưu trữ vào hệ thống.": "Bản ghi âm thực tế của bạn đã được lưu trữ vào hệ thống.",
   "Dừng thu âm": "Dừng thu âm",
   "Đang ghi âm... Nhấn nút vuông để dừng": "Đang ghi âm... Nhấn nút vuông để dừng",
-  "Đang nghe từ \"{{word}}\"... Bản thu sẽ tự dừng khi nhận diện đúng.": "Đang nghe từ \"{{word}}\"... Bản thu sẽ tự dừng khi nhận diện đúng.",
+  "Đang nghe từ \"{{word}}\"... Bản thu sẽ tự dừng khi bạn nói xong.": "Đang nghe từ \"{{word}}\"... Bản thu sẽ tự dừng khi bạn nói xong.",
   "Khớp từ nhận diện: {{score}}%": "Khớp từ nhận diện: {{score}}%",
   "Tạm dừng": "Tạm dừng",
   "Nghe lại bản thu": "Nghe lại bản thu",

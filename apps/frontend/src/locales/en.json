@@ -266,7 +266,7 @@
   "Bản ghi âm thực tế của bạn đã được lưu trữ vào hệ thống.": "Your actual audio recording has been saved to the system.",
   "Dừng thu âm": "Stop recording",
   "Đang ghi âm... Nhấn nút vuông để dừng": "Recording... Press the square button to stop",
-  "Đang nghe từ \"{{word}}\"... Bản thu sẽ tự dừng khi nhận diện đúng.": "Listening for \"{{word}}\"... Recording will stop when the word is recognized.",
+  "Đang nghe từ \"{{word}}\"... Bản thu sẽ tự dừng khi bạn nói xong.": "Listening for \"{{word}}\"... Recording will stop when you finish speaking.",
   "Khớp từ nhận diện: {{score}}%": "Recognized word match: {{score}}%",
   "Tạm dừng": "Pause",
   "Nghe lại bản thu": "Listen to recording",
