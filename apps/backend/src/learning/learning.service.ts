@@ -57,10 +57,43 @@ const ALLOWED_AUDIO_MIME_TYPES = new Set([
   'audio/aac',
 ]);
 
+
 @Injectable()
 export class LearningService {
   constructor(@Inject(DB_CONNECTION) private readonly db: Database) {}
 
+
+  async getAzureSpeechToken(): Promise<{ token: string; region: string }> {
+    const key = process.env.AZURE_SPEECH_KEY;
+    const region = process.env.AZURE_SPEECH_REGION;
+
+    if (!key || !region) {
+      throw new AppException('INTERNAL_SERVER_ERROR', {
+        message: 'Tính năng chấm điểm chưa được cấu hình trên máy chủ.',
+      });
+    }
+
+    try {
+      const response = await fetch(`https://${region}.api.cognitive.microsoft.com/sts/v1.0/issueToken`, {
+        method: 'POST',
+        headers: {
+          'Ocp-Apim-Subscription-Key': key,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Azure token endpoint trả về lỗi');
+      }
+
+      const token = await response.text();
+      return { token, region };
+    } catch {
+      throw new AppException('INTERNAL_SERVER_ERROR', {
+        message: 'Không thể khởi tạo dịch vụ chấm điểm.',
+      });
+    }
+  }
   // 1. Preferences
   async getPreferences(userId: string): Promise<Preferences> {
     const [row] = await this.db

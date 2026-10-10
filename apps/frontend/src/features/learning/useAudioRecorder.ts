@@ -14,6 +14,11 @@ export type AudioRecorderStatus =
   | 'uploaded'
   | 'error';
 
+export interface StartRecordingOptions {
+  silenceTimeoutMs?: number;
+  maxDurationMs?: number;
+}
+
 export interface UseAudioRecorderReturn {
   status: AudioRecorderStatus;
   isRecording: boolean;
@@ -21,7 +26,7 @@ export interface UseAudioRecorderReturn {
   audioUrl: string | null;
   duration: number;
   error: string | null;
-  startRecording: () => Promise<boolean>;
+  startRecording: (options?: StartRecordingOptions) => Promise<boolean>;
   stopRecording: () => void;
   resetRecording: () => void;
   uploadRecording: (
@@ -44,11 +49,21 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
   const streamRef = useRef<MediaStream | null>(null);
   const timerRef = useRef<number | null>(null);
   const audioUrlRef = useRef<string | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const vadIntervalRef = useRef<number | null>(null);
 
   // Sync ref with audioUrl
   audioUrlRef.current = audioUrl;
 
   const cleanupStream = useCallback(() => {
+    if (vadIntervalRef.current) {
+      window.clearInterval(vadIntervalRef.current);
+      vadIntervalRef.current = null;
+    }
+    if (audioContextRef.current) {
+      audioContextRef.current.close().catch(() => {});
+      audioContextRef.current = null;
+    }
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
@@ -123,8 +138,9 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
     },
   });
 
-  const startRecording = useCallback(async () => {
-    setRecorderError(null);
+  const startRecording = useCallback(async (options?: StartRecordingOptions) => {
+    const silenceTimeoutMs = options?.silenceTimeoutMs ?? 2000;
+    const maxDurationMs = options?.maxDurationMs ?? 8000;
     if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
       setStatus('error');
       setRecorderError({ key: 'Trình duyệt của bạn không hỗ trợ ghi âm microphone.' });
@@ -211,10 +227,56 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
       setStatus('error');
       setRecorderError({ key: 'Không thể kết nối với microphone thiết bị.' });
     };
-
     recorder.start(200);
     setStatus('recording');
     setDuration(0);
+
+    // Voice Activity Detection & Auto-stop
+    try {
+      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (AudioCtx) {
+        const ctx = new AudioCtx();
+        audioContextRef.current = ctx;
+        const source = ctx.createMediaStreamSource(stream);
+        const analyser = ctx.createAnalyser();
+        analyser.fftSize = 256;
+        source.connect(analyser);
+        const timeData = new Uint8Array(analyser.fftSize);
+        const startRecordTime = Date.now();
+        let lastSoundTime = Date.now();
+
+        vadIntervalRef.current = window.setInterval(() => {
+          if (!mountedRef.current || generationRef.current !== currentGen) return;
+
+          // Giới hạn thời gian tối đa
+          if (Date.now() - startRecordTime > maxDurationMs) {
+            stopRecording();
+            return;
+          }
+
+          // Tính năng lượng sóng âm thực tế RMS
+          analyser.getByteTimeDomainData(timeData);
+          let sumSquares = 0;
+          for (let i = 0; i < timeData.length; i++) {
+            const norm = (timeData[i] - 128) / 128;
+            sumSquares += norm * norm;
+          }
+          const rms = Math.sqrt(sumSquares / timeData.length);
+
+          // RMS > 0.04 (4% volume) là có tiếng nói người thật, loại bỏ hoàn toàn tiếng xì mic
+          if (rms > 0.04) {
+            lastSoundTime = Date.now();
+          } else {
+            // Cứ im lặng đúng 2s (từ) hoặc 4s (đoạn) -> ngắt lập tức
+            if (Date.now() - lastSoundTime >= silenceTimeoutMs) {
+              stopRecording();
+            }
+          }
+        }, 100);
+      }
+    } catch {
+      // Fallback
+    }
 
     const startTime = Date.now();
     timerRef.current = window.setInterval(() => {

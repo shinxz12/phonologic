@@ -42,6 +42,12 @@ export class LearningController {
     return this.learningService.getDashboard(user.id);
   }
 
+
+  @Public()
+  @Get('speech-token')
+  getSpeechToken(): Promise<{ token: string; region: string }> {
+    return this.learningService.getAzureSpeechToken();
+  }
   @Put('preferences')
   updatePreferences(
     @CurrentUser() user: AuthUser,

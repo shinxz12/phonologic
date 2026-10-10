@@ -3,12 +3,8 @@ import { useTranslation } from 'react-i18next';
 import type { Accent } from '@phonologic/shared-types';
 import { useAudioRecorder } from '../useAudioRecorder';
 import { playBrowserTts } from '../audioUtils';
-import {
-  scorePronunciation,
-  startClientSpeechRecognition,
-  type PronunciationScoreResult,
-} from '../pronunciationScorer';
 import { Button, AudioControl, Card, Badge, Icon, IconButton } from '../../../components';
+import { assessPronunciationAzure, type AzurePronunciationResult } from '../azureSpeech';
 
 export interface SpeakingExerciseProps {
   word: string;
@@ -21,12 +17,6 @@ export interface SpeakingExerciseProps {
   onSkipped?: () => void;
   canSkip?: boolean;
   compact?: boolean;
-}
-
-function getSpeechRecognitionClass(): unknown {
-  if (typeof window === 'undefined') return undefined;
-  const w = window as unknown as Record<string, unknown>;
-  return w.SpeechRecognition || w.webkitSpeechRecognition;
 }
 
 export function SpeakingExercise({
@@ -46,6 +36,7 @@ export function SpeakingExercise({
     status,
     isRecording,
     audioUrl,
+    audioBlob,
     duration,
     error,
     startRecording,
@@ -57,182 +48,67 @@ export function SpeakingExercise({
   const [isPlayingRecorded, setIsPlayingRecorded] = useState(false);
   const [speed, setSpeed] = useState<'0.75x' | '1x'>('0.75x');
   const [uploadSuccess, setUploadSuccess] = useState(false);
-  const [scoreResult, setScoreResult] = useState<PronunciationScoreResult | null>(null);
-  const [isListening, setIsListening] = useState(false);
+  const [scoreResult, setScoreResult] = useState<AzurePronunciationResult | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [recognitionNotice, setRecognitionNotice] = useState<string | null>(null);
-  const [listeningSeconds, setListeningSeconds] = useState(0);
-  const recognitionRef = useRef<ReturnType<typeof startClientSpeechRecognition> | null>(null);
-  const recognitionGenerationRef = useRef(0);
-  const transcriptRef = useRef<{ transcript: string; confidence: number }>({ transcript: '', confidence: 0 });
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const autoStopTimeoutRef = useRef<number | null>(null);
-  const listeningTimerRef = useRef<number | null>(null);
-  const startTimeRef = useRef<number>(0);
-  const stopTimeRef = useRef<number | null>(null);
+  const processedBlobRef = useRef<Blob | null>(null);
 
-  const clearAutoStopTimeout = () => {
-    if (autoStopTimeoutRef.current !== null) {
-      window.clearTimeout(autoStopTimeoutRef.current);
-      autoStopTimeoutRef.current = null;
-    }
-  };
-
-  const clearListeningTimer = () => {
-    if (listeningTimerRef.current !== null) {
-      window.clearInterval(listeningTimerRef.current);
-      listeningTimerRef.current = null;
-    }
-  };
-
-  const cancelRecognition = () => {
-    if (recognitionRef.current) {
-      recognitionRef.current.cancel();
-      recognitionRef.current = null;
-    }
-  };
-
-  useEffect(() => {
-    return () => {
-      recognitionGenerationRef.current += 1;
-      clearAutoStopTimeout();
-      clearListeningTimer();
-      cancelRecognition();
-    };
-  }, []);
 
   const handleStartRecording = async () => {
-    if (status === 'requesting' || isRecording || isListening || isProcessing) return;
-    const generation = ++recognitionGenerationRef.current;
-    clearAutoStopTimeout();
-    clearListeningTimer();
-    cancelRecognition();
+    if (status === 'requesting' || isRecording || isProcessing) return;
     setScoreResult(null);
     setRecognitionNotice(null);
     setIsProcessing(false);
-    transcriptRef.current = { transcript: '', confidence: 0 };
-    startTimeRef.current = Date.now();
-    stopTimeRef.current = null;
-
-    const isSpeechSupported = Boolean(getSpeechRecognitionClass());
-
-    if (isSpeechSupported) {
-      setIsListening(true);
-      setListeningSeconds(0);
-      listeningTimerRef.current = window.setInterval(() => {
-        setListeningSeconds((s) => s + 1);
-      }, 1000);
-
-      recognitionRef.current = startClientSpeechRecognition(
-        accent,
-        (res) => {
-          if (generation !== recognitionGenerationRef.current) return;
-          transcriptRef.current = res;
-        },
-        (recognitionError) => {
-          if (generation !== recognitionGenerationRef.current) return;
-          clearAutoStopTimeout();
-          clearListeningTimer();
-          recognitionRef.current = null;
-          setIsListening(false);
-          setIsProcessing(false);
-
-          if (recognitionError) {
-            const message = recognitionError === 'no-speech'
-              ? 'Chưa nhận diện được giọng nói. Hãy thử lại.'
-              : recognitionError === 'network'
-                ? 'Không thể nhận diện giọng nói do lỗi kết nối. Kiểm tra mạng và thử lại.'
-                : recognitionError === 'not-allowed' || recognitionError === 'service-not-allowed'
-                  ? 'Quyền nhận diện giọng nói bị từ chối. Hãy cho phép microphone và thử lại.'
-                  : 'Không thể nhận diện giọng nói trên thiết bị này. Hãy thử lại.';
-            setRecognitionNotice(message);
-            return;
-          }
-
-          const durationSeconds = Math.max(
-            0.6,
-            ((stopTimeRef.current ?? Date.now()) - startTimeRef.current) / 1000
-          );
-          const result = scorePronunciation(
-            word,
-            transcriptRef.current.transcript,
-            transcriptRef.current.confidence,
-            durationSeconds,
-            0.5
-          );
-          if (result.transcript) {
-            setScoreResult(result);
-          } else {
-            setRecognitionNotice('Chưa nhận diện được giọng nói. Hãy thử lại.');
-          }
-        },
-        () => {
-          if (generation !== recognitionGenerationRef.current) return;
-          handleStopRecording();
-        }
-      );
-
-      if (!recognitionRef.current.isSupported) {
-        recognitionRef.current = null;
-        clearListeningTimer();
-        setIsListening(false);
-        const started = await startRecording();
-        if (started && generation === recognitionGenerationRef.current) {
-          setRecognitionNotice('Trình duyệt chưa hỗ trợ nhận diện giọng nói. Bạn có thể nghe lại bản thu để tự đối chiếu.');
-        }
-        return;
-      }
-
-      // Auto-stop after 6.5s fallback
-      autoStopTimeoutRef.current = window.setTimeout(() => {
-        handleStopRecording();
-      }, 6500);
-    } else {
-      const started = await startRecording();
-      if (started && generation === recognitionGenerationRef.current) {
-        setRecognitionNotice('Trình duyệt chưa hỗ trợ nhận diện giọng nói. Bạn có thể nghe lại bản thu để tự đối chiếu.');
-      }
-    }
+    processedBlobRef.current = null;
+    // Đọc từng từ: im lặng 2s -> tự động dừng
+    await startRecording({ silenceTimeoutMs: 2000, maxDurationMs: 8000 });
   };
 
   const handleStopRecording = () => {
-    clearAutoStopTimeout();
-    clearListeningTimer();
-    setIsListening(false);
     stopRecording();
-    stopTimeRef.current ??= Date.now();
-    if (recognitionRef.current) {
-      setIsProcessing(true);
-      recognitionRef.current.stop();
+  };
+
+  // Watch for audioBlob changes to trigger Azure AI scoring
+  useEffect(() => {
+    if (audioBlob && status === 'stopped' && processedBlobRef.current !== audioBlob) {
+      processedBlobRef.current = audioBlob;
+      scoreWithAzure(audioBlob);
+    }
+  }, [audioBlob, status]);
+
+  const scoreWithAzure = async (blob: Blob) => {
+    setIsProcessing(true);
+    setRecognitionNotice('AI đang phân tích chi tiết phát âm...');
+    try {
+      const result = await assessPronunciationAzure(blob, word, accent);
+      setScoreResult(result);
+      setRecognitionNotice(null);
+    } catch (err: any) {
+      console.error(err);
+      setRecognitionNotice(err.message || 'Lỗi khi kết nối Azure AI. Bạn có thể nghe lại để đối chiếu.');
+    } finally {
+      setIsProcessing(false);
     }
   };
 
   const handleReset = () => {
-    recognitionGenerationRef.current += 1;
-    clearAutoStopTimeout();
-    clearListeningTimer();
-    cancelRecognition();
-    setIsListening(false);
-    setIsProcessing(false);
-    setRecognitionNotice(null);
-    setListeningSeconds(0);
-    setScoreResult(null);
-    transcriptRef.current = { transcript: '', confidence: 0 };
     resetRecording();
+    setScoreResult(null);
+    setRecognitionNotice(null);
+    setUploadSuccess(false);
+    setIsProcessing(false);
   };
-
 
   const handlePlaySample = () => {
-    const rate = speed === '0.75x' ? 0.75 : 1.0;
-    playBrowserTts(word, accent, rate);
+    playBrowserTts(word, accent, speed === '0.75x' ? 0.75 : 1);
   };
 
-  const handleToggleSpeed = () => {
-    setSpeed((s) => (s === '0.75x' ? '1x' : '0.75x'));
+  const toggleSpeed = () => {
+    setSpeed((s) => (s === '1x' ? '0.75x' : '1x'));
   };
 
-  const handlePlayRecorded = () => {
-    if (!audioUrl) return;
+  const togglePlayRecorded = () => {
     if (audioRef.current) {
       if (isPlayingRecorded) {
         audioRef.current.pause();
@@ -245,276 +121,205 @@ export function SpeakingExercise({
     }
   };
 
-  const handleUpload = async () => {
+  const handleSave = async () => {
+    if (uploadSuccess) return;
     const res = await uploadRecording(word, { sessionId, readingId });
     if (res) {
       setUploadSuccess(true);
-      if (onUploaded) {
-        setTimeout(onUploaded, 1200);
-      }
-    }
-  };
-
-  const handleComplete = async () => {
-    if (audioUrl) {
-      await handleUpload();
-      return;
-    }
-    setUploadSuccess(true);
-    if (onUploaded) {
-      setTimeout(onUploaded, 600);
+      onUploaded?.();
     }
   };
 
   return (
-    <div className={`flex w-full flex-col mx-auto ${compact ? 'gap-3 max-w-none' : 'gap-6 max-w-xl'}`}>
-      {!compact && (
-        <Card tone="soft" className="p-6! text-center flex flex-col items-center gap-3">
-          <div className="flex items-center gap-2">
-            <Badge tone="blue">{t('Giọng {{accent}}', { accent })}</Badge>
-            {notation && <Badge tone="yellow">{notation}</Badge>}
-          </div>
-
-          <h2 className="font-display text-3xl font-extrabold tracking-tight text-on-surface uppercase">
-            {word}
-          </h2>
-
-          {meaning && <p className="text-sm text-on-surface-variant font-medium">{meaning}</p>}
-
-          <div className="flex flex-col items-center gap-1.5 pt-1">
-            <AudioControl
-              label={t('Nghe âm mẫu')}
-              speed={speed}
-              onPlay={handlePlaySample}
-              onSpeedChange={handleToggleSpeed}
-            />
-          </div>
-        </Card>
-      )}
-
-      <Card
-        tone="white"
-        className={
-          compact
-            ? 'p-0! flex flex-col items-center gap-3 border-0! shadow-none! rounded-none! bg-transparent!'
-            : 'p-6! flex flex-col items-center gap-5 border border-outline-variant/30'
-        }
-      >
-        {compact ? (
-          <div className="flex w-full flex-wrap items-center justify-between gap-2 rounded-2xl bg-surface-low px-3 py-2 border border-outline-variant/20">
-            <Badge tone="blue">{t('Giọng {{accent}}', { accent })}</Badge>
-            <AudioControl
-              label={t('Nghe âm mẫu')}
-              speed={speed}
-              onPlay={handlePlaySample}
-              onSpeedChange={handleToggleSpeed}
-            />
-          </div>
-        ) : (
-          <div className="text-center">
-            <h3 className="font-display font-bold text-base text-on-surface">
+    <Card tone="white" className={compact ? 'p-2' : 'p-6'}>
+      <div className={`grid gap-4 ${compact ? '' : 'sm:gap-6'}`}>
+        {!compact && (
+          <div className="flex flex-col items-center gap-2">
+            <h3 className="text-xl font-display font-bold text-on-surface text-center px-4">
               {t('Luyện phát âm cùng Microphone')}
             </h3>
-            <p className="text-xs text-on-surface-variant mt-1">
-              {t('Nhấn nút để bắt đầu thu âm phát âm của bạn. Không chấm điểm giả lập AI.')}
+            <p className="text-sm text-on-surface-variant text-center max-w-sm px-4">
+              {t('Nhấn nút để bắt đầu thu âm phát âm của bạn.')}
             </p>
           </div>
         )}
 
-        {uploadSuccess ? (
-          <div className={`${compact ? 'py-1' : 'py-4'} flex flex-col items-center gap-2 text-primary`}>
-            <div className={`${compact ? 'w-12 h-12' : 'w-16 h-16'} rounded-full bg-primary/10 flex items-center justify-center`}>
-              <Icon name="check_circle" size={compact ? 28 : 40} />
-            </div>
-            <p className="font-display font-bold text-sm text-on-surface">
-              {t('Đã lưu bản thu âm thành công!')}
-            </p>
-            {!compact && (
-              <p className="text-xs text-on-surface-variant text-center max-w-xs">
-                {t('Bản ghi âm thực tế của bạn đã được lưu trữ vào hệ thống.')}
-              </p>
-            )}
+        <div className="flex flex-col items-center gap-3">
+          <Badge tone="blue">
+            {accent}
+          </Badge>
+          <div className="flex flex-col items-center gap-1">
+            <span className={`font-display font-black text-on-surface ${compact ? 'text-3xl' : 'text-4xl'}`}>
+              {word}
+            </span>
+            {notation && <span className="font-serif text-lg text-primary">{notation}</span>}
+            {meaning && <span className="text-sm text-on-surface-variant text-center px-4">{meaning}</span>}
           </div>
-        ) : isProcessing ? (
-          <p role="status" className="py-4 text-center text-sm text-on-surface-variant">
-            {t('Đang xử lý nhận diện giọng nói...')}
-          </p>
-        ) : (isListening || isRecording) ? (
-          <div className={`flex items-center ${compact ? 'w-full justify-center gap-3' : 'flex-col gap-3'}`}>
-            <div className="relative flex items-center justify-center shrink-0">
-              <span className={`absolute ${compact ? 'w-16 h-16' : 'w-24 h-24'} rounded-full bg-error/25 animate-ping pointer-events-none`} />
-              <Button
-                type="button"
-                variant="danger"
-                onClick={handleStopRecording}
-                className={`relative z-10 ${compact ? 'size-16!' : 'size-24!'} rounded-full! p-0! shadow-lg`}
-                aria-label={t('Dừng thu âm')}
-              >
-                <Icon name="stop" size={compact ? 30 : 42} />
+
+          <div className="mt-1">
+            <AudioControl
+              onPlay={handlePlaySample}
+              speed={speed}
+              onSpeedChange={toggleSpeed}
+              label={t('Nghe mẫu')}
+            />
+          </div>
+        </div>
+
+        <div className={`flex flex-col items-center min-h-[140px] justify-center ${compact ? 'gap-3' : 'gap-4'}`}>
+          {error ? (
+            <div className="flex flex-col items-center gap-3 text-error px-4 text-center">
+              <Icon name="mic_off" className="text-3xl" />
+              <p className="text-sm font-medium">{t(error)}</p>
+              <Button type="button" variant="outline" onClick={handleReset}>
+                {t('Thử lại')}
               </Button>
             </div>
-            <div className={`flex flex-col gap-1 ${compact ? 'min-w-0 items-start' : 'items-center'}`}>
-              <div className="flex items-center gap-2 text-error font-mono font-bold text-sm">
-                <span className="w-2.5 h-2.5 rounded-full bg-error animate-pulse" />
-                00:{
-                  (isListening ? listeningSeconds : duration) < 10
-                    ? `0${isListening ? listeningSeconds : duration}`
-                    : isListening ? listeningSeconds : duration
-                }
-              </div>
-              <span className={`text-xs text-on-surface-variant font-medium ${compact ? 'text-left' : 'text-center'}`}>
-                {isListening
-                  ? t('Đang nghe từ "{{word}}"... Bản thu sẽ tự dừng khi bạn nói xong.', { word })
-                  : t('Đang ghi âm... Nhấn nút vuông để dừng')}
-              </span>
+          ) : status === 'uploading' ? (
+            <div className="flex flex-col items-center gap-3 text-on-surface-variant">
+              <Icon name="cloud_upload" className="text-3xl animate-pulse" />
+              <p className="text-sm font-medium">{t('Đang lưu bản thu...')}</p>
             </div>
-          </div>
-        ) : (scoreResult !== null || recognitionNotice !== null || (status === 'stopped' && Boolean(audioUrl))) ? (
-          <div className={`flex flex-col items-center w-full ${compact ? 'gap-2' : 'gap-4'}`}>
-            {audioUrl && (
-              <audio
-                ref={audioRef}
-                src={audioUrl}
-                onEnded={() => setIsPlayingRecorded(false)}
-                className="hidden"
-              />
-            )}
-            {scoreResult && (
-              <div className="flex flex-col items-center gap-1.5 py-1">
-                <div
-                  className={`relative shrink-0 ${compact ? 'size-16' : 'size-20'}`}
-                  role="status"
-                  aria-label={t('Khớp từ nhận diện: {{score}}%', { score: scoreResult.score })}
+          ) : uploadSuccess ? (
+            <div className={`${compact ? 'py-1' : 'py-4'} flex flex-col items-center gap-2 text-primary`}>
+              <Icon name="check_circle" className="text-4xl" />
+              <p className="text-sm font-bold text-center px-4">{t('Đã lưu bản thu âm thành công!')}</p>
+              {!compact && (
+                <p className="text-xs text-on-surface-variant text-center max-w-xs">
+                  {t('Bản ghi âm thực tế của bạn đã được lưu trữ vào hệ thống.')}
+                </p>
+              )}
+            </div>
+          ) : isProcessing ? (
+            <p role="status" className="py-4 text-center text-sm text-on-surface-variant">
+              {recognitionNotice || t('Đang xử lý nhận diện giọng nói...')}
+            </p>
+          ) : isRecording ? (
+            <div className={`flex items-center ${compact ? 'w-full justify-center gap-3' : 'flex-col gap-3'}`}>
+              <div className="relative flex items-center justify-center shrink-0">
+                <span className={`absolute ${compact ? 'w-16 h-16' : 'w-24 h-24'} rounded-full bg-error/25 animate-ping pointer-events-none`} />
+                <Button
+                  type="button"
+                  variant="danger"
+                  onClick={handleStopRecording}
+                  className={`relative z-10 ${compact ? 'w-12 h-12 p-0' : 'w-16 h-16 p-0'} rounded-full flex items-center justify-center`}
+                  aria-label={t('Dừng thu âm')}
                 >
-                  <svg className="size-full -rotate-90" viewBox="0 0 80 80" aria-hidden="true">
-                    <circle
-                      cx="40"
-                      cy="40"
-                      r="32"
-                      className="fill-none stroke-surface-highest"
-                      strokeWidth="6"
-                    />
-                    <circle
-                      cx="40"
-                      cy="40"
-                      r="32"
-                      className={`fill-none ${
-                        scoreResult.score >= 80
-                          ? 'stroke-primary'
-                          : scoreResult.score >= 50
-                            ? 'stroke-tertiary'
-                            : 'stroke-error'
-                      }`}
-                      strokeWidth="6"
-                      strokeLinecap="round"
-                      strokeDasharray="201.06"
-                      strokeDashoffset={201.06 * (1 - scoreResult.score / 100)}
-                    />
-                  </svg>
-                  <span
-                    className={`absolute inset-0 grid place-items-center font-display font-black ${
-                      scoreResult.score >= 80
-                        ? 'text-primary'
-                        : scoreResult.score >= 50
-                          ? 'text-tertiary'
-                          : 'text-error'
-                    } ${compact ? 'text-sm' : 'text-base'}`}
-                  >
-                    {scoreResult.score}%
-                  </span>
-                </div>
-
-                {scoreResult.transcript && (
-                  <span className="text-xs text-on-surface-variant font-medium text-center">
-                    {t('Nghe được:')} <strong className="text-on-surface font-bold">"{scoreResult.transcript}"</strong>
-                    {scoreResult.matched && <span className="text-primary ml-1 font-bold">✓</span>}
+                  <Icon name="stop" className={compact ? 'text-2xl' : 'text-3xl'} />
+                </Button>
+              </div>
+              <div className="flex flex-col items-center gap-1">
+                <span className="font-mono text-error font-bold">
+                  {Math.floor(duration / 60)}:{(duration % 60).toString().padStart(2, '0')}
+                </span>
+                {!compact && (
+                  <span className="text-xs text-error font-medium animate-pulse text-center px-4">
+                    {t('Đang thu âm... Bản thu tự động được chấm điểm khi dừng.')}
                   </span>
                 )}
               </div>
-            )}
-
-            {recognitionNotice && (
-              <p role="status" className="text-center text-sm text-on-surface-variant">
-                {t(recognitionNotice)}
-              </p>
-            )}
-
-            <div className="flex items-center justify-center gap-3 w-full">
-              {audioUrl && (
-                <IconButton
-                  type="button"
-                  variant="secondary"
-                  size="md"
-                  icon={isPlayingRecorded ? 'pause' : 'play_arrow'}
-                  label={isPlayingRecorded ? t('Tạm dừng') : t('Nghe lại bản thu')}
-                  onClick={handlePlayRecorded}
-                />
-              )}
-              <IconButton
-                type="button"
-                variant="outline"
-                size="md"
-                icon="replay"
-                label={t('Thu lại')}
-                onClick={handleReset}
-              />
-              {onUploaded && (
-                <IconButton
-                  type="button"
-                  variant="primary"
-                  size="md"
-                  icon={audioUrl ? 'cloud_upload' : 'check'}
-                  label={audioUrl ? t('Lưu bản thu') : t('Hoàn thành')}
-                  onClick={handleComplete}
-                />
-              )}
             </div>
-          </div>
-        ) : (
-          <div className={`flex items-center justify-center ${compact ? 'w-full gap-3' : 'flex-col gap-3'}`}>
-            <Button
-              type="button"
-              onClick={handleStartRecording}
-              disabled={status === 'requesting'}
-              className={`${compact ? 'size-16!' : 'size-24!'} rounded-full! p-0! bg-primary text-white shadow-lg hover:scale-105 active:scale-95 transition-transform shrink-0`}
-              aria-label={t('Bắt đầu thu âm')}
-            >
-              <Icon name="mic" size={compact ? 30 : 42} />
-            </Button>
-            <div className={compact ? 'min-w-0' : 'contents'}>
-              {compact && (
-                <p className="font-display text-sm font-bold text-on-surface">
-                  {t('Luyện phát âm cùng Microphone')}
+          ) : (scoreResult !== null || recognitionNotice !== null || (status === 'stopped' && Boolean(audioUrl))) ? (
+            <div className={`flex flex-col items-center w-full ${compact ? 'gap-2' : 'gap-4'}`}>
+              {audioUrl && (
+                <audio
+                  ref={audioRef}
+                  src={audioUrl}
+                  onEnded={() => setIsPlayingRecorded(false)}
+                  className="hidden"
+                />
+              )}
+              {scoreResult && (
+                <div className="flex flex-col items-center gap-2 py-1 w-full max-w-sm">
+                  <div className="flex gap-6 items-center justify-center mb-2">
+                    <div className="flex flex-col items-center">
+                      <span className="text-xs text-on-surface-variant uppercase font-bold tracking-wider">{t('Chuẩn âm')}</span>
+                      <span className={`text-3xl font-black ${
+                        scoreResult.score >= 80 ? 'text-primary' : scoreResult.score >= 60 ? 'text-tertiary' : 'text-error'
+                      }`}>{scoreResult.score}%</span>
+                    </div>
+                    <div className="w-px h-8 bg-surface-highest" />
+                    <div className="flex flex-col items-center">
+                      <span className="text-xs text-on-surface-variant uppercase font-bold tracking-wider">{t('Nhận diện')}</span>
+                      <span className="text-xl font-bold text-on-surface">{scoreResult.accuracyScore}%</span>
+                    </div>
+                  </div>
+
+                  {scoreResult.phonemes.length > 0 && (
+                    <div className="flex flex-col items-center gap-1.5 mt-1 w-full bg-surface-low p-3 rounded-2xl border border-outline-variant/20">
+                      <span className="text-[11px] text-on-surface-variant font-medium">{t('Chi tiết từng âm tiết:')}</span>
+                      <div className="flex flex-wrap justify-center gap-2">
+                        {scoreResult.phonemes.map((p, i) => {
+                          const isGood = p.accuracyScore >= 80;
+                          const isFair = p.accuracyScore >= 60 && p.accuracyScore < 80;
+                          return (
+                            <div
+                              key={i}
+                              className={`flex flex-col items-center px-2 py-1 rounded-xl border ${
+                                isGood
+                                  ? 'bg-primary-container/30 border-primary/30 text-primary'
+                                  : isFair
+                                    ? 'bg-tertiary-container/30 border-tertiary/30 text-tertiary'
+                                    : 'bg-error-container/30 border-error/40 text-error font-bold'
+                              }`}
+                            >
+                              <span className="text-base font-serif font-black">{p.phoneme}</span>
+                              <span className="text-[10px] font-mono">{p.accuracyScore}%</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                  {/* Bỏ dòng "Nghe được:" theo yêu cầu */}
+                </div>
+              )}
+
+              {recognitionNotice && (
+                <p role="status" className="text-center text-sm text-on-surface-variant">
+                  {t(recognitionNotice)}
                 </p>
               )}
-              <span className={`text-xs text-on-surface-variant font-medium ${compact ? 'block mt-0.5' : ''}`} aria-live="polite">
-                {status === 'requesting' ? t('Đang kết nối microphone...') : t('Nhấn mic để bắt đầu nói')}
-              </span>
+
+              <div className="flex items-center gap-2 flex-wrap justify-center mt-2">
+                <Button type="button" variant="outline" onClick={handleReset}>
+                  {t('Thu lại')}
+                </Button>
+                {audioUrl && (
+                  <Button type="button" variant="outline" onClick={togglePlayRecorded}>
+                    <Icon name={isPlayingRecorded ? 'stop' : 'play_arrow'} className="mr-1" />
+                    {t('Nghe lại')}
+                  </Button>
+                )}
+                {onUploaded && (
+                  <Button type="button" variant="primary" onClick={onUploaded}>
+                    {t('Tiếp tục')}
+                  </Button>
+                )}
+              </div>
             </div>
-          </div>
-        )}
-
-        {error && (
-          <div className={`${compact ? 'p-2' : 'p-3'} rounded-xl bg-error-container text-error text-xs w-full text-center font-medium`}>
-            {error}
-          </div>
-        )}
-
-        {canSkip && !uploadSuccess && (
-          <div className="pt-2 border-t border-outline-variant/20 w-full flex justify-center">
+          ) : (
             <Button
               type="button"
-              variant="ghost"
-              size="sm"
-              onClick={onSkipped}
-              className="text-on-surface-variant hover:text-on-surface"
+              variant="primary"
+              onClick={handleStartRecording}
+              disabled={status === 'requesting'}
+              className="px-8"
             >
-              {t('Bỏ qua bước nói')}
-              <Icon name="skip_next" size={18} />
+              <Icon name="mic" className="mr-2" />
+              {status === 'requesting' ? t('Đang kết nối...') : t('Bắt đầu thu âm')}
+            </Button>
+          )}
+        </div>
+
+        {canSkip && status === 'idle' && (
+          <div className="flex justify-center border-t border-surface-highest pt-4">
+            <Button type="button" variant="ghost" size="sm" onClick={onSkipped}>
+              {t('Bỏ qua bài này')}
             </Button>
           </div>
         )}
-      </Card>
-    </div>
+      </div>
+    </Card>
   );
 }

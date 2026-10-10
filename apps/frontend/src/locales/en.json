@@ -273,6 +273,7 @@
   "Không thể nhận diện giọng nói do lỗi kết nối. Kiểm tra mạng và thử lại.": "Speech recognition could not connect. Check your connection and try again.",
   "Quyền nhận diện giọng nói bị từ chối. Hãy cho phép microphone và thử lại.": "Speech recognition permission was denied. Allow microphone access and try again.",
   "Không thể nhận diện giọng nói trên thiết bị này. Hãy thử lại.": "Speech recognition failed on this device. Please try again.",
+  "Trình duyệt lỗi nhận diện giọng nói, đã tự động chuyển sang chế độ thu âm thủ công. Hãy thử thu âm lại nhé.": "Browser speech recognition failed. Switched to manual recording mode. Please try recording again.",
   "Trình duyệt chưa hỗ trợ nhận diện giọng nói. Bạn có thể nghe lại bản thu để tự đối chiếu.": "This browser does not support speech recognition. Listen to your recording to compare it with the sample.",
   "Tạm dừng": "Pause",
   "Nghe lại bản thu": "Listen to recording",

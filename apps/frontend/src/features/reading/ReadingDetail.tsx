@@ -8,6 +8,7 @@ import { playBrowserTts } from '../learning/audioUtils';
 import { SpellingExercise } from '../learning/components/SpellingExercise';
 import { SpeakingExercise } from '../learning/components/SpeakingExercise';
 import { ReportDialog } from '../learning/components/ReportDialog';
+import { PassageSpeakingExercise } from './components/PassageSpeakingExercise';
 import {
   Button,
   IconButton,
@@ -62,7 +63,7 @@ export function ReadingDetail({ readingId, onExit, onUpdated }: ReadingDetailPro
   const [passageSpeed, setPassageSpeed] = useState<'0.75x' | '1x'>('0.75x');
   const [passageAccent, setPassageAccent] = useState<Accent>('US');
   const [practiceStep, setPracticeStep] = useState<'spell' | 'speak'>('spell');
-
+  const [isPassageSpeakingOpen, setIsPassageSpeakingOpen] = useState(false);
   useEffect(() => {
     if (reading?.accent) {
       setPassageAccent(reading.accent);
@@ -363,12 +364,24 @@ export function ReadingDetail({ readingId, onExit, onUpdated }: ReadingDetailPro
 
             {/* Passage Audio Toolbar with Accent & Speed */}
             <div className="flex flex-wrap items-center justify-between gap-2.5 bg-surface-low p-2 rounded-2xl border border-outline-variant/20">
-              <AudioControl
-                label={t('Đọc cả bài')}
-                speed={passageSpeed}
-                onPlay={handlePlayPassage}
-                onSpeedChange={() => setPassageSpeed((s) => (s === '0.75x' ? '1x' : '0.75x'))}
-              />
+              <div className="flex items-center gap-2 flex-wrap">
+                <AudioControl
+                  label={t('Nghe mẫu cả bài')}
+                  speed={passageSpeed}
+                  onPlay={handlePlayPassage}
+                  onSpeedChange={() => setPassageSpeed((s) => (s === '0.75x' ? '1x' : '0.75x'))}
+                />
+                <Button
+                  size="sm"
+                  type="button"
+                  variant={isPassageSpeakingOpen ? 'primary' : 'outline'}
+                  onClick={() => setIsPassageSpeakingOpen((v) => !v)}
+                  className="gap-1.5"
+                >
+                  <Icon name="mic" size={16} />
+                  {t('Luyện đọc cả bài')}
+                </Button>
+              </div>
               <div className="flex items-center gap-1 bg-white px-1.5 py-0.5 rounded-xl border border-outline-variant/30">
                 <span className="text-[11px] text-on-surface-variant font-medium mr-1">{t('Giọng:')}</span>
                 {(['US', 'UK'] as const).map((acc) => (
@@ -387,6 +400,15 @@ export function ReadingDetail({ readingId, onExit, onUpdated }: ReadingDetailPro
                 ))}
               </div>
             </div>
+
+            {isPassageSpeakingOpen && (
+              <PassageSpeakingExercise
+                passageText={reading.text}
+                accent={passageAccent}
+                title={reading.title}
+                onClose={() => setIsPassageSpeakingOpen(false)}
+              />
+            )}
 
             {/* Passage Content with Interactive Spans */}
             <div

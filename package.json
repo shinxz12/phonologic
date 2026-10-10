@@ -25,5 +25,8 @@
     "typescript": "^5.4.5",
     "xlsx": "^0.18.5"
   },
-  "packageManager": "bun@1.1.8"
+  "packageManager": "bun@1.1.8",
+  "dependencies": {
+    "microsoft-cognitiveservices-speech-sdk": "^1.52.0"
+  }
 }

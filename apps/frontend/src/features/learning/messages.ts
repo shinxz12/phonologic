@@ -122,6 +122,8 @@ export const learningEn: Record<string, string> = {
   'Quyền truy cập microphone bị từ chối. Vui lòng cho phép quyền microphone trên trình duyệt hoặc chọn Bỏ qua.':
     'Microphone access was denied. Please allow microphone permission in your browser or choose Skip.',
   'Không thể kết nối với microphone thiết bị.': 'Could not connect to device microphone.',
+  'Trình duyệt lỗi nhận diện giọng nói, đã tự động chuyển sang chế độ thu âm thủ công. Hãy thử thu âm lại nhé.':
+    'Browser speech recognition failed. Switched to manual recording mode. Please try recording again.',
   'Chưa có bản thu âm để lưu.': 'No recording available to save.',
   'Lỗi khi tải bản thu lên máy chủ.': 'Error uploading recording to server.',
   'Lỗi khi kiểm tra đáp án.': 'Error checking answer.',
