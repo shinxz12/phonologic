@@ -64,9 +64,14 @@ const US_PREFERRED_VOICE_PATTERNS = [
 ];
 
 let activeUtterance: SpeechSynthesisUtterance | null = null;
+let activeAudioElement: HTMLAudioElement | null = null;
 let playbackGeneration = 0;
 let retryTimerId: number | null = null;
 
+export function getPronunciationAudioUrl(text: string, accent: Accent = 'US'): string {
+  const type = accent === 'UK' ? 1 : 2;
+  return `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(text)}&type=${type}`;
+}
 export function findBestNaturalVoice(
   voices: SpeechSynthesisVoice[],
   accent: Accent = 'US'
@@ -124,7 +129,7 @@ export function findBestNaturalVoice(
  * Phát âm tự nhiên với giọng đọc người thật (Samantha, Daniel, Google/Microsoft Natural).
  * Tinh chỉnh rate 0.90 và pitch 1.0 cho âm sắc ấm áp, tròn vành rõ chữ, không bị méo tiếng máy.
  */
-export function playBrowserTts(
+export function playViaSpeechSynthesis(
   text: string,
   accent: Accent = 'US',
   rate = 0.9
@@ -196,7 +201,6 @@ export function playBrowserTts(
       };
       activeUtterance = utterance;
 
-      // Chrome Android can leave the synthesis queue paused even when paused is false.
       synthesis.resume();
       synthesis.speak(utterance);
     };
@@ -216,8 +220,6 @@ export function playBrowserTts(
       synthesis.onvoiceschanged = voicesChangedHandler;
     }
 
-    // Some Chrome Android versions accept the first speak() call but never start it.
-    // The first synchronous call unlocks TTS; this retry resets a stalled queue.
     retryTimerId = window.setTimeout(() => retry(false), 900);
   } catch (err) {
     playbackGeneration += 1;
@@ -228,4 +230,51 @@ export function playBrowserTts(
     activeUtterance = null;
     console.warn('SpeechSynthesis error:', err);
   }
+}
+
+/**
+ * Phát âm mẫu cho người học:
+ * 1. Với từ vựng và câu ngắn (< 250 ký tự): dùng stream audio MP3 chất lượng cao
+ *    chuẩn bản xứ (US/UK) qua HTML5 Audio - chạy 100% trên mobile Chrome, iOS Safari, desktop.
+ * 2. Fallback sang SpeechSynthesis của trình duyệt khi offline hoặc bài đọc dài.
+ */
+export function playBrowserTts(
+  text: string,
+  accent: Accent = 'US',
+  rate = 0.9
+): void {
+  if (typeof window === 'undefined') return;
+  const cleanText = text.trim();
+  if (!cleanText) return;
+
+  if (cleanText.length < 250 && typeof Audio !== 'undefined') {
+    try {
+      if (activeAudioElement) {
+        activeAudioElement.pause();
+        activeAudioElement.currentTime = 0;
+        activeAudioElement = null;
+      }
+
+      const audio = new Audio(getPronunciationAudioUrl(cleanText, accent));
+      audio.playbackRate = rate;
+      activeAudioElement = audio;
+
+      audio.onended = () => {
+        if (activeAudioElement === audio) activeAudioElement = null;
+      };
+
+      const playPromise = audio.play();
+      if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch(() => {
+          if (activeAudioElement === audio) activeAudioElement = null;
+          playViaSpeechSynthesis(cleanText, accent, rate);
+        });
+      }
+      return;
+    } catch {
+      // Fallback to speech synthesis
+    }
+  }
+
+  playViaSpeechSynthesis(cleanText, accent, rate);
 }

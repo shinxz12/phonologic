@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { playBrowserTts } from './audioUtils';
+import { playBrowserTts, playViaSpeechSynthesis } from './audioUtils';
 
 class FakeUtterance {
   readonly text: string;
@@ -46,11 +46,11 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe('playBrowserTts', () => {
+describe('playViaSpeechSynthesis', () => {
   it('starts speech synchronously with the default voice while mobile voices are still loading', () => {
     const synthesis = installSpeechSynthesis();
 
-    playBrowserTts('  steak  ', 'US', 0.75);
+    playViaSpeechSynthesis('  steak  ', 'US', 0.75);
 
     expect(synthesis.speak).toHaveBeenCalledTimes(1);
     const utterance = synthesis.speak.mock.calls[0][0] as unknown as FakeUtterance;
@@ -71,7 +71,7 @@ describe('playBrowserTts', () => {
     synthesis.speaking = true;
     synthesis.paused = true;
 
-    playBrowserTts('water', 'UK');
+    playViaSpeechSynthesis('water', 'UK');
 
     expect(synthesis.cancel).toHaveBeenCalledTimes(1);
     expect(synthesis.resume).toHaveBeenCalledTimes(1);
@@ -86,7 +86,7 @@ describe('playBrowserTts', () => {
     const voices: SpeechSynthesisVoice[] = [];
     const synthesis = installSpeechSynthesis(voices);
 
-    playBrowserTts('steak', 'US');
+    playViaSpeechSynthesis('steak', 'US');
     expect(synthesis.speak).toHaveBeenCalledTimes(1);
 
     const usVoice = {
@@ -112,7 +112,7 @@ describe('playBrowserTts', () => {
     } as SpeechSynthesisVoice;
     const synthesis = installSpeechSynthesis([voice]);
 
-    playBrowserTts('steak', 'US');
+    playViaSpeechSynthesis('steak', 'US');
     expect(synthesis.speak).toHaveBeenCalledTimes(1);
 
     vi.advanceTimersByTime(900);
@@ -123,5 +123,32 @@ describe('playBrowserTts', () => {
     expect(retriedUtterance.voice).toBeNull();
     retriedUtterance.onstart?.();
     retriedUtterance.onend?.();
+  });
+});
+
+describe('playBrowserTts', () => {
+  it('plays high-quality native audio stream using HTML5 Audio on mobile and desktop', () => {
+    const play = vi.fn().mockResolvedValue(undefined);
+    const pause = vi.fn();
+    class FakeAudio {
+      src: string;
+      playbackRate = 1;
+      play = play;
+      pause = pause;
+      currentTime = 0;
+      onended: (() => void) | null = null;
+      onerror: (() => void) | null = null;
+      constructor(src: string) {
+        this.src = src;
+      }
+    }
+    Object.defineProperty(window, 'Audio', {
+      configurable: true,
+      value: FakeAudio,
+    });
+
+    playBrowserTts('steak', 'US', 0.75);
+
+    expect(play).toHaveBeenCalledTimes(1);
   });
 });

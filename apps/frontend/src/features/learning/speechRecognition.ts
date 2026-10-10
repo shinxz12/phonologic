@@ -27,6 +27,9 @@ interface SpeechRecognitionInstanceLike {
   start: () => void;
   abort: () => void;
   onresult: ((event: SpeechRecognitionEventLike) => void) | null;
+  onspeechend?: (() => void) | null;
+  onerror?: ((event: { error: string }) => void) | null;
+  onend?: (() => void) | null;
 }
 
 interface SpeechRecognitionConstructorLike {
@@ -129,14 +132,25 @@ export function startSpeechRecognition(
   try {
     const recognition = new SpeechRecognition();
     let stopped = false;
-    recognition.continuous = false;
+    let finalizeTimer: number | null = null;
+    let bestResult: SpeechMatchResult | null = null;
+
+    recognition.continuous = true;
     recognition.interimResults = true;
     recognition.maxAlternatives = 5;
     recognition.lang = accent === 'UK' ? 'en-GB' : 'en-US';
 
+    const clearFinalizeTimer = () => {
+      if (finalizeTimer !== null) {
+        window.clearTimeout(finalizeTimer);
+        finalizeTimer = null;
+      }
+    };
+
     const stop = () => {
       if (stopped) return;
       stopped = true;
+      clearFinalizeTimer();
       try {
         recognition.abort();
       } catch {
@@ -151,7 +165,6 @@ export function startSpeechRecognition(
         const recognitionResult = event.results[resultIndex];
         if (!recognitionResult) continue;
 
-        let bestResult: SpeechMatchResult | null = null;
         for (
           let alternativeIndex = 0;
           alternativeIndex < recognitionResult.length;
@@ -173,6 +186,36 @@ export function startSpeechRecognition(
           return;
         }
       }
+    };
+
+    // On mobile devices, onspeechend triggers the moment the user stops speaking.
+    // Wait 350ms for any pending final result to process, then auto-stop immediately.
+    recognition.onspeechend = () => {
+      if (stopped) return;
+      clearFinalizeTimer();
+      finalizeTimer = window.setTimeout(() => {
+        if (stopped) return;
+        if (bestResult) {
+          onResult(bestResult, true);
+        }
+        stop();
+      }, 350);
+    };
+
+    recognition.onerror = () => {
+      if (stopped) return;
+      if (bestResult) {
+        onResult(bestResult, true);
+      }
+      stop();
+    };
+
+    recognition.onend = () => {
+      if (stopped) return;
+      if (bestResult) {
+        onResult(bestResult, true);
+      }
+      stop();
     };
 
     recognition.start();

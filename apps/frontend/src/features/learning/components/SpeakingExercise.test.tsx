@@ -150,9 +150,8 @@ describe('SpeakingExercise recording controls', () => {
       FakeSpeechRecognition.instances[0].emit('stick', 0.8, true);
     });
 
-    expect(await screen.findByRole('button', { name: 'Nghe lại bản thu' })).toBeTruthy();
+    expect(await screen.findByRole('button', { name: 'Thu lại' })).toBeTruthy();
     expect(screen.getByRole('status', { name: 'Khớp từ nhận diện: 65%' }).textContent).toContain('65%');
-    expect(stopTrack).toHaveBeenCalledTimes(1);
   });
 
   it('scores the latest interim result when the learner stops manually', async () => {
@@ -173,7 +172,7 @@ describe('SpeakingExercise recording controls', () => {
     });
     await user.click(screen.getByRole('button', { name: 'Dừng thu âm' }));
 
-    expect(await screen.findByRole('button', { name: 'Nghe lại bản thu' })).toBeTruthy();
+    expect(await screen.findByRole('button', { name: 'Thu lại' })).toBeTruthy();
     expect(screen.getByRole('status', { name: 'Khớp từ nhận diện: 75%' }).textContent).toContain('75%');
   });
 
@@ -194,7 +193,7 @@ describe('SpeakingExercise recording controls', () => {
       FakeSpeechRecognition.instances[0].emit('STEAK.', 0.8, true);
     });
 
-    expect(await screen.findByRole('button', { name: 'Nghe lại bản thu' })).toBeTruthy();
+    expect(await screen.findByRole('button', { name: 'Thu lại' })).toBeTruthy();
     expect(screen.getByRole('status', { name: 'Khớp từ nhận diện: 95%' }).textContent).toContain('95%');
   });
 });
