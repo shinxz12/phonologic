@@ -139,7 +139,7 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
   });
 
   const startRecording = useCallback(async (options?: StartRecordingOptions) => {
-    const silenceTimeoutMs = options?.silenceTimeoutMs ?? 2000;
+    const silenceTimeoutMs = options?.silenceTimeoutMs ?? 1500;
     const maxDurationMs = options?.maxDurationMs ?? 8000;
     if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
       setStatus('error');

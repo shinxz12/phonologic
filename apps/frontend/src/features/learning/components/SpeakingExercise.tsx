@@ -72,8 +72,8 @@ export function SpeakingExercise({
     setRecognitionNotice(null);
     setIsProcessing(false);
     processedBlobRef.current = null;
-    // Đọc từng từ: im lặng 2s -> tự động dừng
-    await startRecording({ silenceTimeoutMs: 2000, maxDurationMs: 8000 });
+    // Đọc từng từ: im lặng 1.5s -> tự động dừng
+    await startRecording({ silenceTimeoutMs: 1500, maxDurationMs: 8000 });
   };
 
   const handleStopRecording = () => {
@@ -189,6 +189,15 @@ export function SpeakingExercise({
                 disabled={status === 'requesting'}
               />
             )}
+            {audioUrl && !isRecording && (
+              <IconButton
+                icon={isPlayingRecorded ? 'stop' : 'play_arrow'}
+                label={t('Nghe lại')}
+                variant="outline"
+                size="sm"
+                onClick={togglePlayRecorded}
+              />
+            )}
             <Button
               size="sm"
               type="button"
@@ -301,22 +310,13 @@ export function SpeakingExercise({
                 </p>
               )}
 
-              <div className="flex items-center gap-2 flex-wrap justify-center mt-2">
-                <Button type="button" variant="outline" onClick={handleReset}>
-                  {t('Thu lại')}
-                </Button>
-                {audioUrl && (
-                  <Button type="button" variant="outline" onClick={togglePlayRecorded}>
-                    <Icon name={isPlayingRecorded ? 'stop' : 'play_arrow'} className="mr-1" />
-                    {t('Nghe lại')}
-                  </Button>
-                )}
-                {onUploaded && (
+              {onUploaded && (
+                <div className="flex items-center justify-center mt-3">
                   <Button type="button" variant="primary" onClick={onUploaded}>
                     {t('Tiếp tục')}
                   </Button>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           ) : null}
         </div>

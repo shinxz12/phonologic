@@ -5,8 +5,10 @@ import "./IconButton.css";
 export function IconButton({
   label,
   icon,
+  iconSize,
   ...props
-}: Omit<ButtonProps, "children" | "icon"> & { label: string; icon: string }) {
+}: Omit<ButtonProps, "children" | "icon"> & { label: string; icon: string; iconSize?: number }) {
+  const computedIconSize = iconSize ?? (props.size === 'sm' ? 20 : props.size === 'lg' ? 28 : 24);
   return (
     <Button
       {...props}
@@ -14,7 +16,7 @@ export function IconButton({
       aria-label={label}
       title={props.title ?? label}
     >
-      <Icon name={icon} />
+      <Icon name={icon} size={computedIconSize} />
     </Button>
   );
 }

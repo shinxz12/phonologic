@@ -426,9 +426,9 @@ export function ReadingDetail({ readingId, onExit, onUpdated }: ReadingDetailPro
                   onClick={handlePlayPassage}
                 />
                 <IconButton
-                  icon="mic"
+                  icon={isPassageSpeakingOpen ? 'close' : 'mic'}
                   label={t('Luyện đọc cả bài')}
-                  variant={isPassageSpeakingOpen ? 'primary' : 'outline'}
+                  variant={isPassageSpeakingOpen ? 'danger' : 'primary'}
                   size="sm"
                   onClick={() => setIsPassageSpeakingOpen((v) => !v)}
                 />
