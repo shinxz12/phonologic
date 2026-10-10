@@ -306,4 +306,12 @@ export const adminEn: Record<string, string> = {
     'readings[{{index}}].targets[{{tIndex}}]: Missing "word".',
   'readings[{{index}}].targets[{{tIndex}}]: "start" và "end" phải là vị trí số (offset).':
     'readings[{{index}}].targets[{{tIndex}}]: "start" and "end" must be numeric offsets.',
+  'Lọc theo trạng thái': 'Filter by status',
+  'Lọc theo ký hiệu': 'Filter by notation',
+  'Lọc báo cáo': 'Filter reports',
+  'Tài liệu hướng dẫn': 'Documentation guide',
+  'Ví dụ: ey, iy, ow...': 'E.g.: ey, iy, ow...',
+  'Ví dụ: 2 âm tiết, trọng âm rơi vào âm tiết đầu...': 'E.g.: 2 syllables, stress on first syllable...',
+  'Ví dụ: Cần kiểm tra dialect US/UK, từ hiếm, từ ngoại lệ...': 'E.g.: Check US/UK dialect, rare words, exceptions...',
+  'Ví dụ: 2026.10-v1 hoặc 1.0.0': 'E.g.: 2026.10-v1 or 1.0.0',
 };

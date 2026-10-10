@@ -126,4 +126,13 @@ export const learningEn: Record<string, string> = {
   'Lỗi khi tải bản thu lên máy chủ.': 'Error uploading recording to server.',
   'Lỗi khi kiểm tra đáp án.': 'Error checking answer.',
   'Không thể bỏ qua bước nói.': 'Could not skip speaking step.',
+  'Nghe được:': 'Heard:',
+  'Phát âm chuẩn xác xuất sắc! Nhận diện chuẩn từ "{{target}}".': 'Excellent pronunciation! Accurately recognized "{{target}}".',
+  'Phát âm tốt! Máy nghe được: "{{transcript}}".': 'Good pronunciation! Heard: "{{transcript}}".',
+  'Phát âm chưa thật chuẩn. Máy nghe được: "{{transcript}}" (từ mục tiêu là "{{target}}"). Hãy nghe lại âm mẫu và thử lại!':
+    'Pronunciation needs practice. Heard: "{{transcript}}" (target was "{{target}}"). Listen to the sample and try again!',
+  'Máy nghe thành: "{{transcript}}". Hãy đọc to và rõ ràng hơn từ "{{target}}".':
+    'Heard as: "{{transcript}}". Please speak louder and clearer for "{{target}}".',
+  'Chưa nghe rõ phát âm. Hãy bật mic gần hơn và đọc rõ từ "{{target}}".':
+    'Could not clearly hear your pronunciation. Speak closer to the microphone and say "{{target}}" clearly.',
 };

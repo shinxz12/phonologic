@@ -471,7 +471,7 @@ export function AdminRulesTab({
                           type="text"
                           value={editNotation}
                           onChange={(e) => setEditNotation(e.target.value)}
-                          placeholder="Ví dụ: ey, iy, ow..."
+                          placeholder={t('Ví dụ: ey, iy, ow...')}
                           className="w-full px-3 py-2 rounded-xl border border-outline-variant bg-surface-lowest text-sm font-mono focus:ring-2 focus:ring-primary focus:outline-none"
                         />
                       </div>
@@ -518,7 +518,7 @@ export function AdminRulesTab({
                           type="text"
                           value={editCondition}
                           onChange={(e) => setEditCondition(e.target.value)}
-                          placeholder="Ví dụ: 2 âm tiết, trọng âm rơi vào âm tiết đầu..."
+                          placeholder={t('Ví dụ: 2 âm tiết, trọng âm rơi vào âm tiết đầu...')}
                           className="w-full px-3 py-2 rounded-xl border border-outline-variant bg-surface-lowest text-xs focus:ring-2 focus:ring-primary focus:outline-none"
                         />
                       </div>
@@ -536,7 +536,7 @@ export function AdminRulesTab({
                           type="text"
                           value={editNote}
                           onChange={(e) => setEditNote(e.target.value)}
-                          placeholder="Ví dụ: Cần kiểm tra dialect US/UK, từ hiếm, từ ngoại lệ..."
+                          placeholder={t('Ví dụ: Cần kiểm tra dialect US/UK, từ hiếm, từ ngoại lệ...')}
                           className="w-full px-3 py-2 rounded-xl border border-outline-variant bg-surface-lowest text-xs focus:ring-2 focus:ring-primary focus:outline-none"
                         />
                       </div>

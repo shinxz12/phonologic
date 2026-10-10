@@ -68,6 +68,15 @@ http.interceptors.request.use(config => {
   const auth = getStoredAuth();
   if (auth) config.headers.set('Authorization', `Bearer ${auth.accessToken}`);
   else config.headers.delete('Authorization');
+  const lang = i18n.language || 'vi';
+  config.headers.set('Accept-Language', lang);
+  config.headers.set('X-Lang', lang);
+  return config;
+});
+refreshHttp.interceptors.request.use(config => {
+  const lang = i18n.language || 'vi';
+  config.headers.set('Accept-Language', lang);
+  config.headers.set('X-Lang', lang);
   return config;
 });
 http.interceptors.response.use(response => response, async (error: AxiosError<{ code?: string }>) => {

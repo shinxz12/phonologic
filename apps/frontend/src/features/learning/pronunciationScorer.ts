@@ -1,4 +1,5 @@
 import type { Accent } from '@phonologic/shared-types';
+import i18n from '../../lib/i18n';
 
 export interface PronunciationScoreResult {
   score: number; // 0 - 100
@@ -79,7 +80,7 @@ export function scorePronunciation(
       matched: false,
       transcript: cleanTranscript,
       targetWord: cleanTarget,
-      feedbackText: 'Chưa nhận diện được giọng nói. Hãy thử lại.',
+      feedbackText: i18n.t('Chưa nhận diện được giọng nói. Hãy thử lại.'),
       details: { textSimilarity: 0, confidenceScore: 0, acousticQuality: 0 },
     };
   }
@@ -128,18 +129,21 @@ export function scorePronunciation(
 
   if (totalScore >= 85) {
     grade = 'excellent';
-    feedbackText = `Phát âm chuẩn xác xuất sắc! Nhận diện chuẩn từ "${cleanTarget}".`;
+    feedbackText = i18n.t('Phát âm chuẩn xác xuất sắc! Nhận diện chuẩn từ "{{target}}".', { target: cleanTarget });
   } else if (totalScore >= 70) {
     grade = 'good';
-    feedbackText = `Phát âm tốt! Máy nghe được: "${cleanTranscript}".`;
+    feedbackText = i18n.t('Phát âm tốt! Máy nghe được: "{{transcript}}".', { transcript: cleanTranscript });
   } else if (totalScore >= 50) {
     grade = 'fair';
-    feedbackText = `Phát âm chưa thật chuẩn. Máy nghe được: "${cleanTranscript}" (từ mục tiêu là "${cleanTarget}"). Hãy nghe lại âm mẫu và thử lại!`;
+    feedbackText = i18n.t(
+      'Phát âm chưa thật chuẩn. Máy nghe được: "{{transcript}}" (từ mục tiêu là "{{target}}"). Hãy nghe lại âm mẫu và thử lại!',
+      { transcript: cleanTranscript, target: cleanTarget }
+    );
   } else {
     grade = 'poor';
     feedbackText = cleanTranscript
-      ? `Máy nghe thành: "${cleanTranscript}". Hãy đọc to và rõ ràng hơn từ "${cleanTarget}".`
-      : `Chưa nghe rõ phát âm. Hãy bật mic gần hơn và đọc rõ từ "${cleanTarget}".`;
+      ? i18n.t('Máy nghe thành: "{{transcript}}". Hãy đọc to và rõ ràng hơn từ "{{target}}".', { transcript: cleanTranscript, target: cleanTarget })
+      : i18n.t('Chưa nghe rõ phát âm. Hãy bật mic gần hơn và đọc rõ từ "{{target}}".', { target: cleanTarget });
   }
 
   return {

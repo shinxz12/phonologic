@@ -288,7 +288,7 @@ export function AdminPublishTab({
                 required
                 value={notationVersion}
                 onChange={(e) => setNotationVersion(e.target.value)}
-                placeholder="Ví dụ: 2026.10-v1 hoặc 1.0.0"
+                placeholder={t('Ví dụ: 2026.10-v1 hoặc 1.0.0')}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant bg-surface-low text-sm font-mono focus:ring-2 focus:ring-primary focus:outline-none"
               />
               <span className="block text-[11px] text-on-surface-variant mt-1">

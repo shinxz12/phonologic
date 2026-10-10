@@ -74,4 +74,9 @@ export const uiEn: Record<string, string> = {
   'Yêu cầu thất bại': 'Request failed', 'Yêu cầu thất bại ({{status}})': 'Request failed ({{status}})',
   'Phiên đăng nhập đã hết hiệu lực.': 'Your session has expired.', 'Phiên đăng nhập đã thay đổi.': 'Your sign-in session has changed.',
   'Dữ liệu không hợp lệ': 'Invalid data',
+  'Đóng menu': 'Close menu',
+  'Mở menu điều hướng': 'Open navigation menu',
+  'Mở rộng thanh bên': 'Expand sidebar',
+  'Thu gọn thanh bên': 'Collapse sidebar',
+  'Chuyển giọng: hiện tại {{accent}}': 'Switch accent: currently {{accent}}',
 };

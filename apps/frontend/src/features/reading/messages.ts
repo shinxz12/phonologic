@@ -96,4 +96,7 @@ export const readingEn: Record<string, string> = {
   'Vui lòng nhập ít nhất một từ mục tiêu trong bài đọc.': 'Please add at least one target word in the passage.',
   'Từ "{{word}}" không có trong nội dung bài đọc.': 'Word "{{word}}" is not found in the passage text.',
   'Lỗi khi thêm bài đọc': 'Failed to add reading passage',
+  'Bước 1: Ghép chữ': 'Step 1: Spelling',
+  'Bước 2: Luyện phát âm': 'Step 2: Pronunciation',
+  'Chuyển sang Luyện phát âm': 'Switch to Pronunciation',
 };
