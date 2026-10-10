@@ -1,6 +1,6 @@
 # PhonoLogic core UI
 
-Import from `./components`. Each component imports its adjacent stylesheet. Tokens and global resets are loaded once by main.tsx. Fonts are Plus Jakarta Sans, Nunito Sans and Material Symbols Outlined, loaded in the styles/globals.css.
+Import from `./components`. Each component imports its adjacent stylesheet. Tokens and global resets are loaded once by main.tsx. Plus Jakarta Sans and Nunito Sans are loaded in `styles/globals.css`; the subsetted Material Symbols font is served locally so icon ligatures never flash as text while Google Fonts loads.
 
 ## Components
 

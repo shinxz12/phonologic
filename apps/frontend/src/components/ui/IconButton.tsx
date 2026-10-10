@@ -12,6 +12,7 @@ export function IconButton({
       {...props}
       className={`ds-icon-button ${props.className ?? ""}`}
       aria-label={label}
+      title={props.title ?? label}
     >
       <Icon name={icon} />
     </Button>

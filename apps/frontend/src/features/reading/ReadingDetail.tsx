@@ -479,19 +479,18 @@ export function ReadingDetail({ readingId, onExit, onUpdated }: ReadingDetailPro
         {/* Right Column: Focused Word Practice Arena (6 cols on desktop/iPad landscape) */}
         <aside className="lg:col-span-6 flex flex-col gap-5 sticky top-18">
           {selectedTarget ? (
-            <Card tone="white" className="p-5! sm:p-6! rounded-3xl border border-outline-variant/30 flex flex-col gap-4 shadow-xs">
+            <Card tone="white" className="p-4! sm:p-5! rounded-3xl border border-outline-variant/30 flex flex-col gap-3 shadow-xs">
               {/* Target Header */}
-              <div className="flex items-start justify-between gap-3 pb-3 border-b border-outline-variant/20">
-                <div>
-                  <span className="text-xs text-on-surface-variant font-medium uppercase tracking-wider">
-                    {t('Từ vựng mục tiêu:')}
-                  </span>
-                  <h3 className="font-display text-2xl sm:text-3xl font-black text-on-surface uppercase tracking-tight mt-0.5">
-                    {selectedTarget.word}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-secondary font-bold mt-0.5">
-                    {selectedTarget.meaning}
-                  </p>
+              <div className="flex items-start justify-between gap-3 pb-2 border-b border-outline-variant/20">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                    <h3 className="font-display text-2xl font-black text-on-surface uppercase tracking-tight">
+                      {selectedTarget.word}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-secondary font-bold">
+                      {selectedTarget.meaning}
+                    </p>
+                  </div>
                 </div>
 
                 {reading.completedTargetIds.includes(selectedTarget.id) ? (
@@ -507,8 +506,8 @@ export function ReadingDetail({ readingId, onExit, onUpdated }: ReadingDetailPro
 
               {/* Segments breakdown if available */}
               {selectedTarget.segments && selectedTarget.segments.length > 0 && (
-                <div className="flex flex-col gap-1.5">
-                  <span className="text-xs text-on-surface-variant font-medium">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-xs text-on-surface-variant font-medium shrink-0">
                     {t('Bóc tách chữ – âm:')}
                   </span>
                   <div className="flex flex-wrap items-center gap-1.5">
@@ -519,6 +518,7 @@ export function ReadingDetail({ readingId, onExit, onUpdated }: ReadingDetailPro
                         notation={s.notation}
                         selected={false}
                         state="idle"
+                        className="min-h-12! min-w-13! px-2.5! py-1.5!"
                       />
                     ))}
                   </div>
@@ -535,7 +535,8 @@ export function ReadingDetail({ readingId, onExit, onUpdated }: ReadingDetailPro
                   className={`flex-1 font-bold text-xs! min-h-9! h-9! ${practiceStep === 'spell' ? 'bg-white text-primary shadow-xs' : ''}`}
                 >
                   <Icon name="spellcheck" size={18} />
-                  {t('Bước 1: Ghép chữ')}
+                  <span className="hidden sm:inline">{t('Bước 1: Ghép chữ')}</span>
+                  <span className="sm:hidden">{t('Ghép chữ')}</span>
                 </Button>
                 <Button
                   size="sm"
@@ -545,13 +546,14 @@ export function ReadingDetail({ readingId, onExit, onUpdated }: ReadingDetailPro
                   className={`flex-1 font-bold text-xs! min-h-9! h-9! ${practiceStep === 'speak' ? 'bg-white text-primary shadow-xs' : ''}`}
                 >
                   <Icon name="record_voice_over" size={18} />
-                  {t('Bước 2: Luyện phát âm')}
+                  <span className="hidden sm:inline">{t('Bước 2: Luyện phát âm')}</span>
+                  <span className="sm:hidden">{t('Luyện nói')}</span>
                 </Button>
               </div>
 
               {/* Step 1: Spelling Exercise */}
               {practiceStep === 'spell' && (
-                <div className="flex flex-col gap-3 pt-1">
+                <div className="flex flex-col gap-2">
                   <SpellingExercise
                     choices={spellingTokens}
                     selectedIds={selectedTokenIds}
@@ -603,13 +605,14 @@ export function ReadingDetail({ readingId, onExit, onUpdated }: ReadingDetailPro
 
               {/* Step 2: Speaking / Pronunciation */}
               {practiceStep === 'speak' && (
-                <div className="flex flex-col gap-3 pt-1">
+                <div className="flex flex-col gap-2">
                   <SpeakingExercise
                     word={selectedTarget.word}
                     accent={passageAccent}
                     readingId={reading.id}
                     meaning={selectedTarget.meaning}
                     canSkip={false}
+                    compact
                   />
                 </div>
               )}

@@ -113,7 +113,7 @@ describe('SpeakingExercise recording controls', () => {
 
     render(
       <QueryClientProvider client={queryClient}>
-        <SpeakingExercise word="steak" accent="US" canSkip={false} />
+        <SpeakingExercise word="steak" accent="US" canSkip={false} compact />
       </QueryClientProvider>,
     );
 
@@ -154,7 +154,7 @@ describe('SpeakingExercise recording controls', () => {
     });
 
     expect(await screen.findByRole('button', { name: 'Nghe lại bản thu' })).toBeTruthy();
-    expect(screen.getByRole('status').textContent).toContain('tự dừng bản thu');
+    expect(screen.getByRole('status', { name: 'Khớp từ nhận diện: 100%' }).textContent).toContain('100%');
     expect(stopTrack).toHaveBeenCalledTimes(1);
   });
 });
